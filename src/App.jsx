@@ -37,6 +37,61 @@ function formatMenuDate(dateStr) {
 }
 
 /**
+ * Encodes menu data for URL sharing
+ * Format: date_day1RecipeNum.portions_day2RecipeNum.portions_...
+ * @param {string} menuDate - The menu start date
+ * @param {Object} weekPlan - The week plan object
+ * @param {Object} weekPortions - The portions per day
+ * @returns {string} Encoded menu string
+ */
+function encodeMenuForSharing(menuDate, weekPlan, weekPortions) {
+  const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
+  const parts = [menuDate]
+
+  days.forEach(day => {
+    const recipeNum = weekPlan[day]
+    const portions = weekPortions[day] || 4
+    if (recipeNum) {
+      parts.push(`${recipeNum}.${portions}`)
+    } else {
+      parts.push('0.0')
+    }
+  })
+
+  return btoa(parts.join('_'))
+}
+
+/**
+ * Decodes a shared menu string
+ * @param {string} encoded - The encoded menu string
+ * @returns {Object|null} Decoded menu data or null if invalid
+ */
+function decodeSharedMenu(encoded) {
+  try {
+    const decoded = atob(encoded)
+    const parts = decoded.split('_')
+
+    if (parts.length !== 8) return null
+
+    const menuDate = parts[0]
+    const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
+    const weekPlan = {}
+    const weekPortions = {}
+
+    days.forEach((day, index) => {
+      const [recipeNum, portions] = parts[index + 1].split('.').map(Number)
+      weekPlan[day] = recipeNum === 0 ? null : recipeNum
+      weekPortions[day] = portions === 0 ? 4 : portions
+    })
+
+    return { menuDate, weekPlan, weekPortions }
+  } catch (e) {
+    console.error('Error decoding shared menu:', e)
+    return null
+  }
+}
+
+/**
  * Loads state from localStorage
  * @returns {Object|null} The saved state or null
  */
@@ -233,6 +288,36 @@ function App() {
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light')
   }, [darkMode])
+
+  // Check for shared menu in URL on load
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const sharedMenu = params.get('menu')
+
+    if (sharedMenu) {
+      const decoded = decodeSharedMenu(sharedMenu)
+      if (decoded) {
+        const menuDateFormatted = formatMenuDate(decoded.menuDate)
+        const recipesInMenu = Object.values(decoded.weekPlan).filter(v => v !== null).length
+
+        if (confirm(`Charger le menu de la semaine du ${menuDateFormatted} (${recipesInMenu} recettes)?\n\nCela remplacera votre menu actuel.`)) {
+          setMenuStartDate(decoded.menuDate)
+          setWeekPlan(decoded.weekPlan)
+          setWeekPortions(decoded.weekPortions)
+          // Select the recipes from the shared menu
+          const recipeNums = Object.values(decoded.weekPlan).filter(v => v !== null)
+          setSelectedRecipes(new Set(recipeNums))
+          // Reset owned/purchased for new menu
+          setOwnedIngredients(new Set())
+          setPurchasedItems(new Set())
+          // Go to menu tab
+          setActiveTab('menu')
+        }
+        // Clean URL
+        window.history.replaceState({}, '', window.location.pathname)
+      }
+    }
+  }, [])
 
   // Auto-select all recipes for printing when entering cuisiner tab
   useEffect(() => {
@@ -431,6 +516,45 @@ function App() {
       return newSet
     })
   }, [])
+
+  const [shareFeedback, setShareFeedback] = useState(false)
+
+  const shareMenu = useCallback(async () => {
+    const hasRecipes = Object.values(weekPlan).some(v => v !== null)
+    if (!hasRecipes) {
+      alert('Ajoutez au moins une recette au menu avant de partager.')
+      return
+    }
+
+    const encoded = encodeMenuForSharing(menuStartDate, weekPlan, weekPortions)
+    const shareUrl = `${window.location.origin}${window.location.pathname}?menu=${encoded}`
+
+    try {
+      // Try native share first (mobile)
+      if (navigator.share) {
+        await navigator.share({
+          title: `Menu de la semaine du ${formatMenuDate(menuStartDate)}`,
+          text: 'Voici mon menu de la semaine!',
+          url: shareUrl
+        })
+      } else {
+        // Fallback to clipboard
+        await navigator.clipboard.writeText(shareUrl)
+        setShareFeedback(true)
+        setTimeout(() => setShareFeedback(false), 2000)
+      }
+    } catch (err) {
+      // If share was cancelled or failed, try clipboard
+      try {
+        await navigator.clipboard.writeText(shareUrl)
+        setShareFeedback(true)
+        setTimeout(() => setShareFeedback(false), 2000)
+      } catch (clipErr) {
+        console.error('Error sharing:', clipErr)
+        alert(`Lien à partager:\n${shareUrl}`)
+      }
+    }
+  }, [menuStartDate, weekPlan, weekPortions])
 
   const getSelectedRecipesList = useCallback(() => {
     return RECETTES.filter(r => selectedRecipes.has(r.num))
@@ -712,6 +836,9 @@ function App() {
               <button className="btn btn-primary" onClick={startNewMenu}>
                 Nouveau menu
               </button>
+              <button className="btn btn-secondary" onClick={shareMenu}>
+                {shareFeedback ? 'Lien copié!' : 'Partager'}
+              </button>
               <button className="btn btn-secondary" onClick={autoFillWeek}>
                 Remplissage auto
               </button>
@@ -783,7 +910,6 @@ function App() {
             onToggleShoppingMode={() => setShoppingMode(!shoppingMode)}
             purchasedItems={purchasedItems}
             onTogglePurchased={togglePurchased}
-            menuStartDate={menuStartDate}
           />
         </div>
 

@@ -16,7 +16,6 @@ import { normalizeIngredient } from '../data/categories'
  * @param {Function} props.onToggleShoppingMode - Toggle shopping mode callback
  * @param {Set} props.purchasedItems - Set of purchased item names
  * @param {Function} props.onTogglePurchased - Toggle purchased item callback
- * @param {string} props.menuStartDate - Menu start date
  */
 function TasksPanel({
   selectedRecipes,
@@ -30,8 +29,7 @@ function TasksPanel({
   shoppingMode = false,
   onToggleShoppingMode,
   purchasedItems = new Set(),
-  onTogglePurchased,
-  menuStartDate
+  onTogglePurchased
 }) {
   const [copyFeedback, setCopyFeedback] = useState(false)
 
@@ -48,9 +46,6 @@ function TasksPanel({
     { key: 'Huiles & Matières grasses', icon: '◈' },
     { key: 'Autres', icon: '□' }
   ]
-
-  const totalIngredients = Object.values(categorizedIngredients)
-    .reduce((acc, set) => acc + (set?.size || 0), 0)
 
   // Count items to buy (not owned and not purchased)
   const itemsToBuy = Object.values(categorizedIngredients)
