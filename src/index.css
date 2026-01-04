@@ -2837,6 +2837,25 @@ header {
 
 /* Mobile small screen adjustments */
 @media (max-width: 420px) {
+  /* Tabs on single line for mobile */
+  .tabs {
+    flex-wrap: nowrap;
+    padding: var(--space-xs) var(--space-sm);
+    gap: var(--space-xs);
+  }
+
+  .tab-btn {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 0.75rem;
+    flex: 1;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .tab-icon {
+    margin-right: 2px;
+  }
+
   .recipe-detail {
     padding: var(--space-sm);
   }
