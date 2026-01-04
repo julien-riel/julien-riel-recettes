@@ -1,0 +1,51 @@
+export const recette9 = {
+  "num": 9,
+  "nom": "Falafel maison et taboulé",
+  "origine": "Liban",
+  "temps_prep_semaine": "20 min",
+  "temps_prep_weekend": "45 min + trempage",
+  "prep_weekend": "Tremper et mixer pois chiches, former falafels",
+  "conservation": "Falafels crus congélateur 2 mois | Cuits frigo 4 jours",
+  "rechauffage": "Four 180°C 10 min pour recroquanter",
+  "proteines": "Pois chiches secs (200g)",
+  "legumes": "Persil, menthe, tomates, concombre, oignon",
+  "feculents": "Boulgour (150g)",
+  "variantes": "Falafels aux fèves, version sans friture (au four)",
+  "ingredients": [
+    "200g de pois chiches secs (trempés 24h)",
+    "150g de boulgour fin",
+    "1 gros bouquet de persil plat",
+    "1/2 bouquet de menthe",
+    "1 oignon, en quartiers",
+    "4 gousses d'ail",
+    "1 c. à café de cumin",
+    "1 c. à café de coriandre moulue",
+    "1/2 c. à café de bicarbonate",
+    "2 tomates, en dés",
+    "1/2 concombre, en dés",
+    "Jus de 2 citrons",
+    "4 c. à soupe d'huile d'olive",
+    "Huile pour friture"
+  ],
+  "etapes": [
+    "Égoutter les pois chiches trempés (ne pas les cuire).",
+    "Mixer avec oignon, ail, persil (garder 1/2 pour taboulé), cumin, coriandre jusqu'à obtenir une pâte granuleuse.",
+    "Ajouter le bicarbonate, assaisonner. Réfrigérer 30 min.",
+    "Pour le taboulé: réhydrater le boulgour 20 min dans l'eau tiède.",
+    "Mélanger boulgour, tomates, concombre, persil et menthe hachés.",
+    "Assaisonner de citron, huile d'olive, sel et poivre.",
+    "Former des galettes de falafel, frire dans l'huile chaude 3-4 min par côté.",
+    "Égoutter sur papier absorbant. Servir avec le taboulé."
+  ],
+  "portions": 4,
+  "description": "Les falafels seraient nés en Égypte copte comme alternative végétarienne pendant le Carême, avant de se répandre au Levant. Au Liban, ils sont indissociables du taboulé, cette salade de persil originaire des montagnes libanaises où le boulgour joue un rôle secondaire.",
+  "etapes_weekend": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "note_weekend": "Les falafels peuvent être formés (non frits) et le taboulé préparé entièrement."
+};

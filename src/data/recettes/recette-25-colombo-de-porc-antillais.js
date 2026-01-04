@@ -1,0 +1,51 @@
+export const recette25 = {
+  "num": 25,
+  "nom": "Colombo de porc antillais",
+  "origine": "Martinique / Antilles",
+  "temps_prep_semaine": "20 min",
+  "temps_prep_weekend": "1h",
+  "prep_weekend": "Préparer colombo complet (se bonifie)",
+  "conservation": "Frigo 5 jours | Congélateur 3 mois",
+  "rechauffage": "Se réchauffe parfaitement",
+  "proteines": "Porc (350g)",
+  "legumes": "Aubergine, christophine, tomates, oignons",
+  "feculents": "Riz créole (200g)",
+  "variantes": "Poulet, cabri, poisson, légumes seuls",
+  "ingredients": [
+    "350g d'épaule de porc, en cubes",
+    "200g de riz",
+    "3 c. à soupe de poudre à colombo",
+    "1 aubergine, en cubes",
+    "1 christophine (chayotte), en cubes",
+    "2 tomates, en dés",
+    "2 oignons, émincés",
+    "4 gousses d'ail, hachées",
+    "1 bouquet garni (thym, laurier, persil, oignon vert)",
+    "1 piment antillais",
+    "Jus de 2 citrons verts",
+    "3 c. à soupe d'huile",
+    "400ml d'eau"
+  ],
+  "etapes": [
+    "Mariner le porc avec le jus de citron, l'ail et 1 c. à soupe de colombo 1h.",
+    "Faire dorer le porc dans l'huile chaude. Réserver.",
+    "Faire revenir les oignons, ajouter le reste du colombo, cuire 2 min.",
+    "Ajouter les tomates, cuire 5 min.",
+    "Remettre le porc, verser l'eau, ajouter le bouquet garni et piment entier.",
+    "Couvrir et mijoter 30 min.",
+    "Ajouter l'aubergine et la christophine, poursuivre 20 min.",
+    "Cuire le riz. Servir le colombo sur le riz créole."
+  ],
+  "portions": 4,
+  "description": "Le colombo est l'héritage des travailleurs indiens arrivés aux Antilles au 19e siècle. Cette poudre d'épices, adaptation locale du curry, porte le nom de la capitale du Sri Lanka d'où partaient les bateaux. Le colombo de porc est devenu emblématique de la Martinique.",
+  "etapes_weekend": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "note_weekend": "Ce plat mijoté peut être entièrement préparé et se bonifie au repos."
+};

@@ -1,0 +1,50 @@
+export const recette10 = {
+  "num": 10,
+  "nom": "Tajine de poulet aux olives et citron",
+  "origine": "Maroc",
+  "temps_prep_semaine": "15 min",
+  "temps_prep_weekend": "1h (mijoté)",
+  "prep_weekend": "Préparer le tajine complet, il se bonifie",
+  "conservation": "Frigo 4 jours | Congélateur 3 mois",
+  "rechauffage": "Se réchauffe parfaitement à feu doux",
+  "proteines": "Poulet (400g)",
+  "legumes": "Oignons, olives vertes, citron confit",
+  "feculents": "Semoule de couscous (200g)",
+  "variantes": "Agneau, poulet aux abricots, version légumes",
+  "ingredients": [
+    "400g de cuisses de poulet",
+    "200g de semoule de couscous",
+    "2 oignons, émincés",
+    "100g d'olives vertes dénoyautées",
+    "2 citrons confits, en quartiers (ou 1 citron frais en tranches)",
+    "4 gousses d'ail, hachées",
+    "1 c. à café de gingembre moulu",
+    "1 c. à café de curcuma",
+    "1/2 c. à café de safran (ou curcuma)",
+    "1 bouquet de coriandre",
+    "300ml de bouillon de poulet",
+    "3 c. à soupe d'huile d'olive"
+  ],
+  "etapes": [
+    "Mélanger gingembre, curcuma et safran avec un peu d'huile. Enrober le poulet.",
+    "Chauffer l'huile dans un tajine ou cocotte, dorer le poulet. Réserver.",
+    "Faire fondre les oignons 10 minutes à feu doux.",
+    "Ajouter l'ail, remettre le poulet, verser le bouillon.",
+    "Couvrir et laisser mijoter 30 minutes à feu doux.",
+    "Ajouter les olives et citron confit, poursuivre 15 minutes.",
+    "Préparer le couscous selon les instructions.",
+    "Servir le tajine sur le couscous, garnir de coriandre fraîche."
+  ],
+  "portions": 4,
+  "description": "Le tajine de poulet aux olives et citron confit est un joyau de la cuisine marocaine, cuit lentement dans le plat conique en terre cuite qui lui donne son nom. Les citrons confits au sel, spécialité de Marrakech, apportent cette saveur unique impossible à reproduire autrement.",
+  "etapes_weekend": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "note_weekend": "Le tajine peut être préparé entièrement, il se bonifie au repos."
+};

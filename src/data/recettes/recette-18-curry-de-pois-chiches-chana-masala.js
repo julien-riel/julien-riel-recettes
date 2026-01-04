@@ -1,0 +1,51 @@
+export const recette18 = {
+  "num": 18,
+  "nom": "Curry de pois chiches (Chana Masala)",
+  "origine": "Inde",
+  "temps_prep_semaine": "15 min",
+  "temps_prep_weekend": "35 min",
+  "prep_weekend": "Préparer le curry complet",
+  "conservation": "Frigo 5 jours | Congélateur 3 mois",
+  "rechauffage": "Se réchauffe parfaitement",
+  "proteines": "Pois chiches (400g)",
+  "legumes": "Tomates, oignons, épinards, gingembre",
+  "feculents": "Pain naan ou riz (150g)",
+  "variantes": "Ajouter pommes de terre, paneer, poulet",
+  "ingredients": [
+    "400g de pois chiches en conserve (ou 200g secs, cuits)",
+    "150g de riz basmati ou 2 naans",
+    "100g d'épinards",
+    "400g de tomates concassées",
+    "2 oignons, hachés",
+    "4 gousses d'ail",
+    "3 cm de gingembre, râpé",
+    "2 c. à café de garam masala",
+    "1 c. à café de cumin moulu",
+    "1 c. à café de coriandre moulue",
+    "1/2 c. à café de curcuma",
+    "1 c. à café de piment (ajuster)",
+    "2 c. à soupe d'huile",
+    "Coriandre fraîche"
+  ],
+  "etapes": [
+    "Chauffer l'huile, faire revenir les oignons 8 min jusqu'à dorés.",
+    "Ajouter ail et gingembre, cuire 2 min.",
+    "Incorporer toutes les épices, mélanger 1 min.",
+    "Verser les tomates, laisser mijoter 10 min.",
+    "Ajouter les pois chiches égouttés et 100ml d'eau.",
+    "Cuire 15 min, écraser quelques pois chiches pour épaissir.",
+    "Incorporer les épinards en fin de cuisson.",
+    "Servir avec riz ou naan, garnir de coriandre."
+  ],
+  "portions": 4,
+  "description": "Le chana masala est un pilier de la cuisine punjabi, région à cheval entre l'Inde et le Pakistan. Les pois chiches mijotés dans cette sauce tomate aux épices complexes sont un plat végétarien nourrissant, souvent servi avec des bhaturas, pains frits gonflés.",
+  "etapes_weekend": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "note_weekend": "Ce plat peut être entièrement préparé et se bonifie au repos."
+};

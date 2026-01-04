@@ -1,0 +1,51 @@
+export const recette19 = {
+  "num": 19,
+  "nom": "Biryani aux légumes",
+  "origine": "Inde",
+  "temps_prep_semaine": "25 min",
+  "temps_prep_weekend": "1h",
+  "prep_weekend": "Préparer biryani complet (se bonifie)",
+  "conservation": "Frigo 4 jours | Congélateur 2 mois",
+  "rechauffage": "Four couvert 180°C 15 min ou micro-ondes",
+  "proteines": "Tofu ou paneer (200g) + noix de cajou",
+  "legumes": "Carottes, haricots verts, petits pois, oignons frits",
+  "feculents": "Riz basmati (250g)",
+  "variantes": "Poulet, agneau, crevettes, œufs durs",
+  "ingredients": [
+    "250g de riz basmati",
+    "200g de tofu ferme, en cubes (ou légumes variés)",
+    "100g de petits pois",
+    "1 carotte, en dés",
+    "100g de haricots verts, en tronçons",
+    "2 oignons, émincés finement",
+    "4 gousses d'ail, hachées",
+    "2 cm de gingembre, râpé",
+    "1 c. à café de garam masala",
+    "1/2 c. à café de curcuma",
+    "4 gousses de cardamome",
+    "1 bâton de cannelle",
+    "Quelques brins de safran dans 3 c. à soupe de lait de coco chaud",
+    "50g de noix de cajou",
+    "Menthe et coriandre fraîches",
+    "3 c. à soupe de ghee ou huile"
+  ],
+  "etapes": [
+    "Faire tremper le riz 30 min, égoutter.",
+    "Frire la moitié des oignons jusqu'à dorés et croustillants. Réserver.",
+    "Faire revenir l'autre moitié avec ail, gingembre et épices entières.",
+    "Ajouter les légumes et tofu, cuire 5 min.",
+    "Dans une autre casserole, cuire le riz à 70% dans l'eau salée.",
+    "Dans un plat à four, alterner couches de légumes et riz.",
+    "Verser le lait de coco safrané, parsemer de cajou et oignons frits.",
+    "Couvrir hermétiquement, cuire au four 180°C 25 min. Garnir d'herbes."
+  ],
+  "portions": 4,
+  "description": "Le biryani est un festin royal d'origine persane, perfectionné dans les cuisines des empereurs moghols. Ce riz parfumé au safran, cuit en couches avec viande et épices, était préparé pour les grandes célébrations. Chaque ville indienne revendique sa version authentique.",
+  "etapes_weekend": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "note_weekend": "Le riz et les légumes peuvent être préparés séparément, l'assemblage final se fait au réchauffage."
+};

@@ -1,0 +1,50 @@
+export const recette28 = {
+  "num": 28,
+  "nom": "Poulet au citron et olives à la méditerranéenne",
+  "origine": "Italie / Méditerranée",
+  "temps_prep_semaine": "15 min",
+  "temps_prep_weekend": "45 min",
+  "prep_weekend": "Mariner poulet, préparer légumes",
+  "conservation": "Frigo 4 jours | Congélateur 2 mois",
+  "rechauffage": "Se réchauffe bien au four",
+  "proteines": "Poulet (400g)",
+  "legumes": "Tomates cerises, olives, artichauts, oignons",
+  "feculents": "Polenta crémeuse (200g)",
+  "variantes": "Poisson, crevettes, tofu",
+  "ingredients": [
+    "400g de hauts de cuisse de poulet",
+    "200g de polenta instantanée",
+    "200g de tomates cerises",
+    "100g d'olives variées",
+    "200g de cœurs d'artichauts (en conserve), égouttés",
+    "1 oignon rouge, en quartiers",
+    "4 gousses d'ail, en chemise",
+    "2 citrons (1 en tranches, 1 pour jus)",
+    "2 c. à soupe d'huile d'olive",
+    "1 c. à café d'herbes de Provence",
+    "Câpres (optionnel)",
+    "Basilic frais"
+  ],
+  "etapes": [
+    "Préchauffer le four à 200°C.",
+    "Assaisonner le poulet d'herbes de Provence, sel et poivre.",
+    "Dans un plat à four, disposer le poulet, oignon, tomates, olives, artichauts et ail.",
+    "Arroser d'huile d'olive et du jus d'un citron, ajouter les tranches de citron.",
+    "Enfourner 35-40 min jusqu'à ce que le poulet soit doré.",
+    "Pendant ce temps, préparer la polenta selon les instructions.",
+    "Ajouter un filet d'huile d'olive à la polenta pour la rendre crémeuse.",
+    "Servir le poulet et légumes sur la polenta, garnir de basilic."
+  ],
+  "portions": 4,
+  "description": "Le poulet aux citrons confits et olives évoque les riads de Fès et les souks parfumés de Marrakech. Cette combinaison aigre-douce-salée est typique de la cuisine marocaine raffinée, héritière des influences berbères, arabes, andalouses et juives séfarades.",
+  "etapes_weekend": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "note_weekend": "Ce tajine peut être entièrement préparé et se bonifie au repos."
+};

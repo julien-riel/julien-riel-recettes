@@ -1,0 +1,50 @@
+export const recette31 = {
+  "num": 31,
+  "nom": "Pâté chinois revisité",
+  "origine": "Québec",
+  "temps_prep_semaine": "15 min",
+  "temps_prep_weekend": "45 min",
+  "prep_weekend": "Cuire viande assaisonnée, préparer purée de pommes de terre",
+  "conservation": "Frigo 4 jours | Congélateur 3 mois",
+  "rechauffage": "Se réchauffe parfaitement au four",
+  "proteines": "Bœuf haché (400g)",
+  "legumes": "Maïs en grains, oignons, céleri, carottes",
+  "feculents": "Pommes de terre (500g)",
+  "variantes": "Dinde hachée, lentilles, patates douces en purée",
+  "portions": 6,
+  "description": "Le pâté chinois est un pilier de la cuisine familiale québécoise, hérité des ouvriers chinois du chemin de fer au 19e siècle. Ce plat réconfortant en trois étages — viande, maïs, purée — est le comfort food par excellence des soupers de semaine au Québec.",
+  "ingredients": [
+    "400g de bœuf haché maigre",
+    "500g de pommes de terre Yukon Gold",
+    "350g de maïs en grains (frais ou surgelé)",
+    "1 oignon, haché finement",
+    "2 branches de céleri, en dés",
+    "1 carotte, râpée",
+    "2 gousses d'ail, hachées",
+    "1 c. à café de paprika",
+    "1/2 c. à café de thym séché",
+    "60ml de lait d'avoine ou bouillon",
+    "2 c. à soupe d'huile d'olive",
+    "Sel, poivre",
+    "Paprika pour gratiner"
+  ],
+  "etapes": [
+    "Éplucher et couper les pommes de terre en cubes. Cuire à l'eau salée jusqu'à tendreté.",
+    "Pendant ce temps, chauffer l'huile et faire revenir l'oignon, le céleri et la carotte 5 minutes.",
+    "Ajouter le bœuf haché, l'ail, le paprika et le thym. Cuire en émiettant jusqu'à coloration.",
+    "Assaisonner généreusement. La viande doit être bien goûteuse.",
+    "Égoutter les pommes de terre et réduire en purée avec le lait d'avoine. Assaisonner.",
+    "Dans un plat allant au four, étaler la viande en première couche.",
+    "Couvrir uniformément de maïs en grains.",
+    "Étaler la purée sur le dessus, créer des stries à la fourchette, saupoudrer de paprika.",
+    "Gratiner au four à 200°C (400°F) pendant 20 minutes jusqu'à doré."
+  ],
+  "etapes_weekend": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "note_weekend": "La viande assaisonnée et la purée peuvent être préparées séparément. Assembler et gratiner le jour même."
+};

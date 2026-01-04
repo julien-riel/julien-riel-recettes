@@ -1,0 +1,50 @@
+export const recette33 = {
+  "num": 33,
+  "nom": "Soupe aux pois à l'ancienne",
+  "origine": "Québec",
+  "temps_prep_semaine": "10 min",
+  "temps_prep_weekend": "2h (avec trempage)",
+  "prep_weekend": "Préparer la soupe complète",
+  "conservation": "Frigo 5 jours | Congélateur 3 mois",
+  "rechauffage": "Se réchauffe parfaitement, ajouter du bouillon si trop épaisse",
+  "proteines": "Jambon fumé ou lardons (200g)",
+  "legumes": "Carottes, céleri, oignons, poireaux",
+  "feculents": "Pois jaunes secs (300g)",
+  "variantes": "Version végétarienne aux herbes salées, avec saucisses fumées",
+  "portions": 8,
+  "description": "La soupe aux pois est l'âme de l'hiver québécois, héritée des colons français. Nourrissante et économique, elle mijotait sur le poêle à bois des familles canadiennes-françaises. Le jambon fumé ou les herbes salées du Bas-du-Fleuve lui donnent sa signature.",
+  "ingredients": [
+    "300g de pois jaunes secs, trempés",
+    "200g de jambon fumé, en cubes (ou jarret)",
+    "2 carottes, en rondelles",
+    "2 branches de céleri, en dés",
+    "1 oignon, haché",
+    "1 poireau, émincé",
+    "2 gousses d'ail, hachées",
+    "1 feuille de laurier",
+    "1 c. à café de sarriette",
+    "2L d'eau ou bouillon",
+    "Sel, poivre",
+    "Herbes salées du Bas-du-Fleuve (optionnel)"
+  ],
+  "etapes": [
+    "Tremper les pois jaunes dans l'eau froide toute la nuit (ou minimum 4h). Égoutter.",
+    "Dans une grande marmite, déposer les pois, le jambon, les légumes et les aromates.",
+    "Couvrir d'eau ou de bouillon.",
+    "Porter à ébullition, écumer si nécessaire.",
+    "Réduire le feu et laisser mijoter 1h30 à 2h, jusqu'à ce que les pois soient fondants.",
+    "Retirer le laurier. Écraser légèrement une partie des pois pour épaissir.",
+    "Ajuster l'assaisonnement. Ajouter les herbes salées si désiré.",
+    "Servir très chaud avec du pain croûté."
+  ],
+  "etapes_weekend": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "note_weekend": "Cette soupe se prépare entièrement le week-end et est encore meilleure réchauffée le lendemain."
+};
