@@ -49,6 +49,6 @@ export const recette3 = {
     "type": "family",
     "rating": 5,
     "note": "Recette de grand-maman Riel. Un classique du dimanche soir depuis 30 ans!",
-    "photos": []
+    "photos": ["/assets/photos/curry-japonais-01.jpg"]
   }
 };

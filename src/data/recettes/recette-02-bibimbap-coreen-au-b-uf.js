@@ -49,6 +49,6 @@ export const recette2 = {
     "type": "ai-tested",
     "rating": 4,
     "note": "Très bon! Le gochujang fait toute la différence. Prochaine fois, ajouter un œuf au plat.",
-    "photos": []
+    "photos": ["/assets/photos/bibimbap-01.jpg"]
   }
 };

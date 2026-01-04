@@ -1,4 +1,5 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 /**
  * Recipe detail modal component
@@ -16,10 +17,17 @@ import { useEffect } from 'react'
 function RecipeDetail({ recette, isSelected, isFavorite, onClose, onToggle, onToggleFavorite, portions, onUpdatePortions, scaleIngredient }) {
   const portionOptions = [2, 4, 6, 8]
   const multiplier = portions / 4
+  const [lightboxPhoto, setLightboxPhoto] = useState(null)
 
   useEffect(() => {
     const handleEscape = (e) => {
-      if (e.key === 'Escape') onClose()
+      if (e.key === 'Escape') {
+        if (lightboxPhoto) {
+          setLightboxPhoto(null)
+        } else {
+          onClose()
+        }
+      }
     }
     document.addEventListener('keydown', handleEscape)
     document.body.style.overflow = 'hidden'
@@ -28,7 +36,7 @@ function RecipeDetail({ recette, isSelected, isFavorite, onClose, onToggle, onTo
       document.removeEventListener('keydown', handleEscape)
       document.body.style.overflow = ''
     }
-  }, [onClose])
+  }, [onClose, lightboxPhoto])
 
   const handleBackdropClick = (e) => {
     if (e.target.classList.contains('recipe-detail')) {
@@ -38,6 +46,7 @@ function RecipeDetail({ recette, isSelected, isFavorite, onClose, onToggle, onTo
 
   const handleToggle = () => {
     onToggle(recette.num)
+    onClose()
   }
 
   const handleFavorite = (e) => {
@@ -161,6 +170,19 @@ function RecipeDetail({ recette, isSelected, isFavorite, onClose, onToggle, onTo
           {recette.source?.note && (
             <p className="source-note">{recette.source.note}</p>
           )}
+          {recette.source?.photos && recette.source.photos.length > 0 && (
+            <div className="source-photos">
+              {recette.source.photos.map((photo, idx) => (
+                <img
+                  key={idx}
+                  src={photo}
+                  alt={`${recette.nom} - photo ${idx + 1}`}
+                  className="source-photo"
+                  onClick={() => setLightboxPhoto(photo)}
+                />
+              ))}
+            </div>
+          )}
           {!recette.source && (
             <p className="source-note source-untested">Cette recette n'a pas encore été testée. Les quantités et étapes sont générées par IA.</p>
           )}
@@ -175,6 +197,14 @@ function RecipeDetail({ recette, isSelected, isFavorite, onClose, onToggle, onTo
           </button>
         </div>
       </div>
+
+      {lightboxPhoto && createPortal(
+        <div className="photo-lightbox" onClick={() => setLightboxPhoto(null)}>
+          <button className="lightbox-close" aria-label="Fermer">✕</button>
+          <img src={lightboxPhoto} alt={recette.nom} />
+        </div>,
+        document.body
+      )}
     </div>
   )
 }

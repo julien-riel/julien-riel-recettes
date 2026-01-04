@@ -62,11 +62,18 @@ function RecipeCard({ recette, isSelected, isFavorite, onToggle, onToggleFavorit
 
   const sourceInfo = getSourceInfo(recette.source)
 
+  const hasPhoto = recette.source?.photos?.length > 0
+
   return (
     <div
-      className={`recipe-card ${isSelected ? 'selected' : ''}`}
+      className={`recipe-card ${isSelected ? 'selected' : ''} ${hasPhoto ? 'has-photo' : ''}`}
       onClick={handleClick}
     >
+      {hasPhoto && (
+        <div className="recipe-card-photo">
+          <img src={recette.source.photos[0]} alt={recette.nom} />
+        </div>
+      )}
       <button
         className={`favorite-btn ${isFavorite ? 'active' : ''}`}
         onClick={handleFavoriteClick}

@@ -77,8 +77,10 @@
   padding: 0;
 }
 
-html {
+html, body {
   scroll-behavior: smooth;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 body {
@@ -89,7 +91,6 @@ body {
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
 }
 
 /* Texture de fond subtile */
@@ -174,6 +175,7 @@ header p {
   max-width: 1400px;
   margin: 0 auto;
   padding: var(--space-lg);
+  overflow-x: hidden;
 }
 
 /* ============================================
@@ -641,6 +643,28 @@ header p {
 .recipe-card.selected::before {
   transform: scaleY(1);
   background: var(--terre-cuite);
+}
+
+.recipe-card.has-photo {
+  padding-top: 0;
+}
+
+.recipe-card-photo {
+  width: calc(100% + var(--space-lg) * 2);
+  margin: 0 calc(-1 * var(--space-lg)) var(--space-md);
+  height: 120px;
+  overflow: hidden;
+}
+
+.recipe-card-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--duration-slow) var(--ease-out-expo);
+}
+
+.recipe-card:hover .recipe-card-photo img {
+  transform: scale(1.05);
 }
 
 .recipe-card .header {
@@ -1261,6 +1285,7 @@ header p {
   position: relative;
   box-shadow: var(--shadow-lg);
   animation: modalSlideUp var(--duration-slow) var(--ease-out-expo);
+  overflow-x: hidden;
 }
 
 @keyframes modalSlideUp {
@@ -1848,6 +1873,83 @@ header p {
 
 .source-note.source-untested {
   opacity: 0.8;
+}
+
+.source-photos {
+  display: flex;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.source-photo {
+  max-width: 200px;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transition: transform var(--duration-normal) var(--ease-out-expo),
+              box-shadow var(--duration-normal) var(--ease-out-expo);
+}
+
+.source-photo:hover {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-lg);
+}
+
+.photo-lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  cursor: pointer;
+  animation: fadeIn var(--duration-fast) var(--ease-out-expo);
+}
+
+.photo-lightbox img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: zoomIn var(--duration-normal) var(--ease-out-back);
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background var(--duration-fast);
+}
+
+.lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .detail-actions {
