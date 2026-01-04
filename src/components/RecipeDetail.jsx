@@ -14,7 +14,12 @@ function RecipeDetail({ recette, isSelected, onClose, onToggle }) {
       if (e.key === 'Escape') onClose()
     }
     document.addEventListener('keydown', handleEscape)
-    return () => document.removeEventListener('keydown', handleEscape)
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape)
+      document.body.style.overflow = ''
+    }
   }, [onClose])
 
   const handleBackdropClick = (e) => {
@@ -27,13 +32,20 @@ function RecipeDetail({ recette, isSelected, onClose, onToggle }) {
     onToggle(recette.num)
   }
 
+
   return (
     <div className="recipe-detail open" onClick={handleBackdropClick}>
       <div className="recipe-detail-content">
-        <button className="close-btn" onClick={onClose}>x</button>
+        <button className="close-btn" onClick={onClose} aria-label="Fermer">
+          ✕
+        </button>
 
-        <h2>#{recette.num} - {recette.nom}</h2>
-        <div className="origine">{recette.origine} - {recette.portions} portions</div>
+        <h2>
+          <span className="recipe-num">#{recette.num}</span> {recette.nom}
+        </h2>
+        <div className="origine">
+          {recette.origine} • {recette.portions} portions
+        </div>
 
         <div className="description-box">
           {recette.description}
@@ -41,7 +53,7 @@ function RecipeDetail({ recette, isSelected, onClose, onToggle }) {
 
         <div className="info-grid">
           <div className="info-box">
-            <label>Semaine</label>
+            <label>Préparation</label>
             <strong>{recette.temps_prep_semaine}</strong>
           </div>
           <div className="info-box">
@@ -58,31 +70,31 @@ function RecipeDetail({ recette, isSelected, onClose, onToggle }) {
           </div>
         </div>
 
-        <div className="info-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
-          <div className="info-box" style={{ background: 'var(--vert-clair)' }}>
-            <label>Legumes (50%)</label>
+        <div className="info-grid nutrition-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+          <div className="info-box legumes-box">
+            <label>Légumes (50%)</label>
             <span>{recette.legumes}</span>
           </div>
-          <div className="info-box" style={{ background: 'var(--orange-clair)' }}>
-            <label>Proteines (25%)</label>
+          <div className="info-box proteines-box">
+            <label>Protéines (25%)</label>
             <span>{recette.proteines}</span>
           </div>
-          <div className="info-box" style={{ background: 'var(--bleu-clair)' }}>
-            <label>Feculents (25%)</label>
+          <div className="info-box feculents-box">
+            <label>Féculents (25%)</label>
             <span>{recette.feculents}</span>
           </div>
         </div>
 
-        <h3>Ingredients</h3>
-        <ul>
+        <h3>Ingrédients</h3>
+        <ul className="ingredients-list">
           {recette.ingredients.map((ing, i) => (
             <li key={i}>{ing}</li>
           ))}
         </ul>
 
-        <h3>Preparation</h3>
+        <h3>Préparation</h3>
         <div className="weekend-legend">
-          <span className="weekend-badge">WE</span> = Peut etre fait le week-end a l'avance
+          <span className="weekend-badge">WE</span> = Peut être fait le week-end à l'avance
         </div>
         <ol className="steps-list">
           {recette.etapes.map((etape, index) => {
@@ -96,21 +108,21 @@ function RecipeDetail({ recette, isSelected, onClose, onToggle }) {
           })}
         </ol>
 
-        <h3>Preparation week-end</h3>
+        <h3>Préparation du week-end</h3>
         <div className="weekend-note">
-          <strong>Ce qui peut etre prepare a l'avance :</strong><br />
+          <strong>Ce qui peut être préparé à l'avance :</strong><br />
           {recette.note_weekend || recette.prep_weekend}
         </div>
 
-        <h3>Variantes</h3>
-        <p>{recette.variantes}</p>
+        <h3>Variantes possibles</h3>
+        <p className="variantes-text">{recette.variantes}</p>
 
-        <div style={{ marginTop: '25px' }}>
+        <div className="detail-actions">
           <button
             className={`btn ${isSelected ? 'btn-orange' : 'btn-primary'}`}
             onClick={handleToggle}
           >
-            {isSelected ? 'Selectionnee' : '+ Ajouter a ma selection'}
+            {isSelected ? '✓ Sélectionnée' : '+ Ajouter à ma sélection'}
           </button>
         </div>
       </div>

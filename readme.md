@@ -250,3 +250,11 @@ Planificateur cree pour accompagner le livre "30 Repas Sante Sans Produits Laiti
 
   /ajouter-recette Tartine scandinave au saumon fumé - Danemark - smørrebrød au saumon fumé sur pain de seigle, avocat, concombre, radis, aneth et câpres, 8 min sans cuisson
   ```
+
+  ```
+  ⎿  Tip: Working with HTML/CSS? Add the frontend-design plugin:
+     /plugin marketplace add anthropics/claude-code
+     /plugin install frontend-design@claude-code-plugins
+  ```
+
+───────────────────────────────────────────────────

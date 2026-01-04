@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react'
 import { RECETTES } from './data/recettes'
 import { REGIONS } from './data/regions'
-import { CATEGORIES_INGREDIENTS } from './data/categories'
+import { CATEGORIES_INGREDIENTS, getBaseIngredient } from './data/categories'
 import RecipeCard from './components/RecipeCard'
 import RecipeDetail from './components/RecipeDetail'
 import WeekPlanner from './components/WeekPlanner'
@@ -125,16 +125,44 @@ function App() {
   const getCategorizedIngredients = useCallback(() => {
     const selected = getSelectedRecipesList()
     const categorized = {}
+    const ingredientsByBase = {}
 
+    // Première passe : regrouper par ingrédient de base
     selected.forEach(recette => {
       recette.ingredients.forEach(ing => {
+        const baseIng = getBaseIngredient(ing)
+
+        // Ignorer l'eau pure
+        if (baseIng === 'eau') return
+
         const category = categorizeIngredient(ing)
-        if (!categorized[category]) {
-          categorized[category] = new Set()
+
+        if (!ingredientsByBase[category]) {
+          ingredientsByBase[category] = {}
         }
-        categorized[category].add(ing)
+        if (!ingredientsByBase[category][baseIng]) {
+          ingredientsByBase[category][baseIng] = []
+        }
+        ingredientsByBase[category][baseIng].push(ing)
       })
     })
+
+    // Deuxième passe : créer l'affichage regroupé
+    for (const [category, ingredients] of Object.entries(ingredientsByBase)) {
+      if (!categorized[category]) {
+        categorized[category] = new Set()
+      }
+      for (const [baseIng, variants] of Object.entries(ingredients)) {
+        if (variants.length === 1) {
+          // Un seul variant, on garde l'original
+          categorized[category].add(variants[0])
+        } else {
+          // Plusieurs variants, on affiche le nom de base avec le compte
+          const displayName = `${baseIng.charAt(0).toUpperCase() + baseIng.slice(1)} (${variants.length} recettes)`
+          categorized[category].add(displayName)
+        }
+      }
+    }
 
     return categorized
   }, [getSelectedRecipesList])
@@ -148,92 +176,71 @@ function App() {
     }
   }, [])
 
+  const regions = [
+    { id: 'all', label: 'Toutes', count: RECETTES.length },
+    { id: 'Québec', label: 'Québec' },
+    { id: 'Asie', label: 'Asie' },
+    { id: 'Méditerranée', label: 'Méditerranée' },
+    { id: 'Amérique', label: 'Amérique Latine' },
+    { id: 'Afrique', label: 'Afrique & Caraïbes' },
+    { id: 'Europe', label: 'Europe' }
+  ]
+
   return (
     <>
       <header>
-        <h1>Planificateur de Repas</h1>
-        <p>60 recettes sante - Sans produits laitiers - 50% legumes / 25% proteines / 25% feculents</p>
+        <h1>Carnet de Recettes</h1>
+        <p>Cuisines du monde sans produits laitiers — équilibre parfait entre légumes, protéines et féculents</p>
       </header>
 
       <div className="container">
-        <div className="tabs">
+        <nav className="tabs">
           <button
             className={`tab-btn ${activeTab === 'selection' ? 'active' : ''}`}
             onClick={() => setActiveTab('selection')}
           >
-            Selection des recettes
+            <span className="tab-icon">◈</span> Sélection
           </button>
           <button
             className={`tab-btn ${activeTab === 'menu' ? 'active' : ''}`}
             onClick={() => setActiveTab('menu')}
           >
-            Planifier la semaine
+            <span className="tab-icon">◇</span> Planifier
           </button>
           <button
             className={`tab-btn ${activeTab === 'taches' ? 'active' : ''}`}
             onClick={() => setActiveTab('taches')}
           >
-            Taches & Epicerie
+            <span className="tab-icon">○</span> Épicerie
           </button>
-        </div>
+        </nav>
 
         {/* Panel Selection */}
         <div className={`panel ${activeTab === 'selection' ? 'active' : ''}`}>
           <div className="selection-count">
-            <span><strong>{selectedRecipes.size}</strong> recette(s) selectionnee(s)</span>
+            <span><strong>{selectedRecipes.size}</strong> recette{selectedRecipes.size > 1 ? 's' : ''} sélectionnée{selectedRecipes.size > 1 ? 's' : ''}</span>
             <div className="selection-buttons">
               <button className="btn btn-secondary" onClick={selectAll}>
-                Tout selectionner
+                Tout sélectionner
               </button>
               <button className="btn btn-gray" onClick={deselectAll}>
-                Tout deselectionner
+                Effacer la sélection
               </button>
             </div>
           </div>
 
           <div className="filters">
-            <button
-              className={`filter-btn ${activeFilter === 'all' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('all')}
-            >
-              Toutes ({RECETTES.length})
-            </button>
-            <button
-              className={`filter-btn ${activeFilter === 'Québec' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('Québec')}
-            >
-              Québec
-            </button>
-            <button
-              className={`filter-btn ${activeFilter === 'Asie' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('Asie')}
-            >
-              Asie
-            </button>
-            <button
-              className={`filter-btn ${activeFilter === 'Méditerranée' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('Méditerranée')}
-            >
-              Méditerranée
-            </button>
-            <button
-              className={`filter-btn ${activeFilter === 'Amérique' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('Amérique')}
-            >
-              Amérique Latine
-            </button>
-            <button
-              className={`filter-btn ${activeFilter === 'Afrique' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('Afrique')}
-            >
-              Afrique / Caraïbes
-            </button>
-            <button
-              className={`filter-btn ${activeFilter === 'Europe' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('Europe')}
-            >
-              Europe
-            </button>
+            {regions.map(region => (
+              <button
+                key={region.id}
+                className={`filter-btn ${activeFilter === region.id ? 'active' : ''}`}
+                data-region={region.id}
+                onClick={() => setActiveFilter(region.id)}
+              >
+                {region.label}
+                {region.count && <span className="filter-count">{region.count}</span>}
+              </button>
+            ))}
           </div>
 
           <div className="recipes-grid">
@@ -251,8 +258,8 @@ function App() {
 
         {/* Panel Menu */}
         <div className={`panel ${activeTab === 'menu' ? 'active' : ''}`}>
-          <h2 className="panel-title">Planifier vos soupers de la semaine</h2>
-          <p className="panel-subtitle">Selectionnez une recette pour chaque jour de la semaine.</p>
+          <h2 className="panel-title">Planifiez vos soupers</h2>
+          <p className="panel-subtitle">Attribuez une recette à chaque jour de la semaine pour créer votre menu personnalisé.</p>
 
           <WeekPlanner
             weekPlan={weekPlan}
@@ -263,13 +270,13 @@ function App() {
 
           <div className="actions">
             <button className="btn btn-primary" onClick={() => setMenuPrintVisible(true)}>
-              Generer le menu
+              Générer le menu
             </button>
             <button className="btn btn-secondary" onClick={autoFillWeek}>
-              Remplir automatiquement
+              Remplissage automatique
             </button>
             <button className="btn btn-gray" onClick={clearWeek}>
-              Effacer
+              Réinitialiser
             </button>
           </div>
 

@@ -13,6 +13,34 @@ function RecipeCard({ recette, isSelected, onToggle, onShowDetail }) {
     }
   }
 
+  const getRegionIcon = (origine) => {
+    const iconMap = {
+      'Thaïlande': '◆',
+      'Corée': '◇',
+      'Japon': '●',
+      'Vietnam': '○',
+      'Indonésie': '■',
+      'Maroc': '▲',
+      'Grèce': '◆',
+      'Liban': '◇',
+      'Israël': '●',
+      'Mexique': '▲',
+      'Brésil': '■',
+      'Venezuela': '◆',
+      'Pérou': '◇',
+      'Inde': '●',
+      'Sénégal': '▲',
+      'Éthiopie': '■',
+      'Jamaïque': '◆',
+      'Antilles': '◇',
+      'Espagne': '●',
+      'Québec': '❖',
+      'France': '◆',
+      'Italie': '■'
+    }
+    return iconMap[origine] || '◈'
+  }
+
   return (
     <div
       className={`recipe-card ${isSelected ? 'selected' : ''}`}
@@ -24,15 +52,19 @@ function RecipeCard({ recette, isSelected, onToggle, onShowDetail }) {
           className="checkbox"
           checked={isSelected}
           onChange={(e) => onToggle(recette.num, e)}
+          aria-label={`Sélectionner ${recette.nom}`}
         />
         <span className="num">{recette.num}</span>
         <span className="nom">{recette.nom}</span>
       </div>
-      <div className="origine">{recette.origine} - {recette.portions} portions</div>
+      <div className="origine">
+        <span className="origine-icon">{getRegionIcon(recette.origine)}</span>
+        {recette.origine} • {recette.portions} portions
+      </div>
       <div className="description">{recette.description}</div>
       <div className="meta">
-        <span>{recette.temps_prep_semaine}</span>
-        <span>{recette.conservation.split('|')[0].trim()}</span>
+        <span title="Temps de préparation">{recette.temps_prep_semaine}</span>
+        <span title="Conservation">{recette.conservation.split('|')[0].trim()}</span>
       </div>
     </div>
   )
