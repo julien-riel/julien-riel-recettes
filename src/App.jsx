@@ -202,6 +202,13 @@ function App() {
     document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light')
   }, [darkMode])
 
+  // Auto-select all recipes for printing when entering cuisiner tab
+  useEffect(() => {
+    if (activeTab === 'cuisiner') {
+      setRecipesToPrint(new Set(selectedRecipes))
+    }
+  }, [activeTab, selectedRecipes])
+
   const toggleRecipe = useCallback((num, event) => {
     if (event) event.stopPropagation()
     setSelectedRecipes(prev => {
