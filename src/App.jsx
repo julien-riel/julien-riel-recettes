@@ -195,10 +195,10 @@ function App() {
               Toutes ({RECETTES.length})
             </button>
             <button
-              className={`filter-btn ${activeFilter === 'Quebec' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('Quebec')}
+              className={`filter-btn ${activeFilter === 'Québec' ? 'active' : ''}`}
+              onClick={() => setActiveFilter('Québec')}
             >
-              Quebec
+              Québec
             </button>
             <button
               className={`filter-btn ${activeFilter === 'Asie' ? 'active' : ''}`}
@@ -207,22 +207,22 @@ function App() {
               Asie
             </button>
             <button
-              className={`filter-btn ${activeFilter === 'Mediterranee' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('Mediterranee')}
+              className={`filter-btn ${activeFilter === 'Méditerranée' ? 'active' : ''}`}
+              onClick={() => setActiveFilter('Méditerranée')}
             >
-              Mediterranee
+              Méditerranée
             </button>
             <button
-              className={`filter-btn ${activeFilter === 'Amerique' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('Amerique')}
+              className={`filter-btn ${activeFilter === 'Amérique' ? 'active' : ''}`}
+              onClick={() => setActiveFilter('Amérique')}
             >
-              Amerique Latine
+              Amérique Latine
             </button>
             <button
               className={`filter-btn ${activeFilter === 'Afrique' ? 'active' : ''}`}
               onClick={() => setActiveFilter('Afrique')}
             >
-              Afrique / Caraibes
+              Afrique / Caraïbes
             </button>
             <button
               className={`filter-btn ${activeFilter === 'Europe' ? 'active' : ''}`}
