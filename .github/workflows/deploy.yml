@@ -1,4 +1,4 @@
-name: Deploy Zombie Hunter
+name: Deploy Recettes
 
 on:
   push:
@@ -13,18 +13,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build site
-        run: npm run build
-
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
@@ -36,5 +24,5 @@ jobs:
         run: |
           rsync -avz --delete \
             -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }}" \
-            dist/ \
-            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/zombie-hunter/
+            index.html \
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/recettes/
