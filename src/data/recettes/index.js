@@ -33,6 +33,8 @@ import { recette32 } from './recette-32-tourtiere-du-lac-saint-jean.js';
 import { recette33 } from './recette-33-soupe-aux-pois-a-l-ancienne.js';
 import { recette34 } from './recette-34-bun-cha-vietnamien.js';
 import { recette35 } from './recette-35-nasi-goreng-indonesien.js';
+import { recette36 } from './recette-36-tacos-camarones-coco.js';
+import { recette37 } from './recette-37-poulet-aux-arachides.js';
 
 export const RECETTES = [
   recette1,
@@ -70,6 +72,8 @@ export const RECETTES = [
   recette33,
   recette34,
   recette35,
+  recette36,
+  recette37,
 ];
 
 // Export individuel pour imports sélectifs
@@ -109,4 +113,6 @@ export {
   recette33,
   recette34,
   recette35,
+  recette36,
+  recette37,
 };

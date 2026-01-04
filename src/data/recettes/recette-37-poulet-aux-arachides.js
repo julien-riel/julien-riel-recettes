@@ -1,0 +1,53 @@
+export const recette37 = {
+  "num": 37,
+  "nom": "Poulet aux arachides",
+  "origine": "Sénégal",
+  "temps_prep_semaine": "25 min",
+  "temps_prep_weekend": "40 min",
+  "prep_weekend": "Préparer la sauce arachide, couper le poulet et les légumes",
+  "conservation": "Frigo 4 jours | Congélateur 2 mois",
+  "rechauffage": "Réchauffer à feu doux en ajoutant un peu d'eau si nécessaire",
+  "proteines": "Poulet (500g)",
+  "legumes": "Patates douces (300g), chou (200g), carottes (2), oignon, tomates (2)",
+  "feculents": "Riz (300g)",
+  "variantes": "Boeuf, poisson, tofu, pois chiches",
+  "ingredients": [
+    "500g de hauts de cuisses de poulet, coupés en morceaux",
+    "300g de riz basmati ou jasmin",
+    "300g de patates douces, en cubes de 2cm",
+    "200g de chou vert, émincé",
+    "2 carottes moyennes, en rondelles",
+    "2 tomates mûres, concassées",
+    "1 gros oignon, haché",
+    "4 gousses d'ail, hachées",
+    "1 morceau de gingembre (3cm), râpé",
+    "4 c. à soupe de beurre d'arachide naturel",
+    "2 c. à soupe de pâte de tomate",
+    "500ml de bouillon de poulet",
+    "1 piment scotch bonnet ou habanero (facultatif)",
+    "2 c. à soupe d'huile végétale",
+    "1 c. à café de cumin moulu",
+    "Sel et poivre au goût",
+    "Coriandre ou persil frais pour garnir",
+    "Arachides concassées pour garnir"
+  ],
+  "etapes": [
+    "Assaisonner le poulet avec sel, poivre et cumin. Faire dorer dans l'huile à feu vif, puis réserver.",
+    "Dans la même casserole, faire revenir l'oignon 3 minutes, puis ajouter l'ail et le gingembre.",
+    "Ajouter la pâte de tomate, les tomates concassées et cuire 2 minutes.",
+    "Incorporer le beurre d'arachide et le bouillon, bien mélanger jusqu'à consistance homogène.",
+    "Remettre le poulet, ajouter les patates douces et les carottes. Couvrir et laisser mijoter 15 minutes.",
+    "Ajouter le chou émincé et le piment entier (si utilisé). Poursuivre la cuisson 10 minutes.",
+    "Pendant ce temps, cuire le riz selon les instructions de l'emballage.",
+    "Rectifier l'assaisonnement. Servir le poulet et sa sauce sur le riz, garnir d'arachides et de coriandre."
+  ],
+  "portions": 4,
+  "description": "Le mafé ou poulet aux arachides est un plat emblématique de l'Afrique de l'Ouest, particulièrement populaire au Sénégal et au Mali. Cette sauce onctueuse à base de pâte d'arachide est un héritage culinaire transmis de génération en génération, symbole de partage et de convivialité.",
+  "etapes_weekend": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "note_weekend": "La sauce arachide complète peut être préparée à l'avance. Le poulet peut être doré et réservé. Les légumes peuvent être coupés."
+};
