@@ -620,7 +620,7 @@ function App() {
   }, [getSelectedRecipesList, weekPlan, weekPortions])
 
   const handlePrint = useCallback((area) => {
-    // Find the print area element and add print-target class
+    // Find the print area element
     const areaMap = {
       'menu': 'menu-print-area',
       'tasks': 'tasks-print-area',
@@ -628,14 +628,19 @@ function App() {
       'recipes': 'recipes-print-area'
     }
     const printElement = document.getElementById(areaMap[area])
-    if (printElement) {
-      printElement.classList.add('print-target')
-    }
+    if (!printElement) return
+
+    // Clone the element and add to body for printing
+    const clone = printElement.cloneNode(true)
+    clone.id = 'print-clone'
+    clone.classList.add('print-target')
+    document.body.appendChild(clone)
 
     // Clean up after print dialog closes
     const cleanup = () => {
-      if (printElement) {
-        printElement.classList.remove('print-target')
+      const cloneEl = document.getElementById('print-clone')
+      if (cloneEl) {
+        cloneEl.remove()
       }
       window.removeEventListener('afterprint', cleanup)
     }
