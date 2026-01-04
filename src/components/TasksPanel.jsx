@@ -20,13 +20,13 @@ function TasksPanel({
 }) {
   const orderedCategories = [
     'Viandes & Poissons',
-    'Legumes frais',
-    'Herbes fraiches',
-    'Feculents',
-    'Legumineuses & Proteines vegetales',
+    'Légumes frais',
+    'Herbes fraîches',
+    'Féculents',
+    'Légumineuses & Protéines végétales',
     'Conserves & Sauces',
-    'Epices & Condiments',
-    'Huiles & Matieres grasses',
+    'Épices & Condiments',
+    'Huiles & Matières grasses',
     'Autres'
   ]
 

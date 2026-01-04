@@ -1,7 +1,7 @@
 export const CATEGORIES_INGREDIENTS = {
     'Viandes & Poissons': [
-        'poulet', 'bœuf', 'porc', 'agneau', 'crevettes', 'poisson', 'saumon', 
-        'merguez', 'viande', 'cuisse', 'poitrine', 'haché', 'émincé'
+        'poulet', 'bœuf', 'porc', 'agneau', 'crevettes', 'poisson', 'saumon',
+        'merguez', 'viande', 'cuisse', 'poitrine'
     ],
     'Légumes frais': [
         'poivron', 'oignon', 'ail', 'carotte', 'courgette', 'tomate', 'concombre',

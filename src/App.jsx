@@ -21,20 +21,24 @@ function getRegion(origine) {
 
 /**
  * Categorizes an ingredient into a shopping category
+ * Prioritizes the keyword that appears earliest in the ingredient string
  * @param {string} ingredient - The ingredient to categorize
  * @returns {string} The category name
  */
 function categorizeIngredient(ingredient) {
   const lower = ingredient.toLowerCase()
+  let bestMatch = { category: 'Autres', position: Infinity }
 
   for (const [category, keywords] of Object.entries(CATEGORIES_INGREDIENTS)) {
     for (const keyword of keywords) {
-      if (lower.includes(keyword)) {
-        return category
+      const position = lower.indexOf(keyword)
+      if (position !== -1 && position < bestMatch.position) {
+        bestMatch = { category, position }
       }
     }
   }
-  return 'Autres'
+
+  return bestMatch.category
 }
 
 function App() {

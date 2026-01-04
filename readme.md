@@ -167,3 +167,86 @@ Le projet inclut des commandes Claude Code pour faciliter la gestion des recette
 ## Licence
 
 Planificateur cree pour accompagner le livre "30 Repas Sante Sans Produits Laitiers"
+
+# Recettes à ajouter
+
+```
+  /ajouter-recette Köfte turques aux aubergines - Turquie - boulettes d'agneau épicées (cumin, sumac, persil) servies sur aubergines fondantes à la tomate, accompagnées de boulgour pilaf
+
+  /ajouter-recette Poisson grillé à la chermoula - Maroc - poisson blanc (bar, dorade ou cabillaud) mariné à la chermoula (coriandre, persil, cumin, paprika, ail, citron confit), servi avec couscous aux herbes et poivrons grillés
+
+  /ajouter-recette Maghmour libanais - Liban - moussaka végétarienne aux aubergines fondantes et pois chiches dans une sauce tomate épicée à la cannelle et piment d'Alep, servie avec pain pita
+
+  /ajouter-recette Calamars farcis à la grecque - Grèce - tubes de calamars farcis au riz, oignons, tomates et aneth, mijotés dans une sauce tomate au vin blanc
+
+  /ajouter-recette Pasta e fagioli - Italie - soupe rustique aux haricots blancs cannellini et pâtes ditalini, avec céleri, carottes, tomates et romarin
+
+# Suggestions
+ /ajouter-recette Köfte turques aux aubergines - Turquie - boulettes d'agneau épicées (cumin, sumac, persil) servies sur aubergines fondantes à la tomate, accompagnées de boulgour pilaf
+
+  /ajouter-recette Mapo Tofu - Chine (Sichuan) - tofu soyeux dans sauce épicée aux haricots fermentés, porc haché, poivre du Sichuan, servi sur riz jasmin
+
+  /ajouter-recette Poulet basquaise - France (Pays Basque) - poulet mijoté aux poivrons rouges et verts, tomates, oignons et piment d'Espelette, servi avec riz ou pommes de terre
+
+  /ajouter-recette Adobo philippin - Philippines - poulet et porc braisés au vinaigre, sauce soja et ail, caramélisés, servis sur riz jasmin
+
+  /ajouter-recette Laksa malaisien - Malaisie - soupe épicée au lait de coco, crevettes, tofu, nouilles de riz, germes de soja et bok choy
+
+  /ajouter-recette Chili sin carne - USA/Tex-Mex - ragoût végétarien aux haricots rouges et noirs, poivrons, maïs, tomates, épicé au chipotle, servi avec riz
+
+  /ajouter-recette Canard laqué simplifié - Chine (Pékin) - magret de canard à la peau croustillante, sauce hoisin, concombre et oignons verts, servi avec crêpes mandarin
+
+  /ajouter-recette Frittata aux légumes méditerranéens - Italie - omelette épaisse aux courgettes, poivrons, tomates séchées et épinards, servie avec pain ciabatta grillé
+
+  /ajouter-recette Bobotie sud-africain - Afrique du Sud - pain de viande épicé aux fruits secs et curry, gratiné aux œufs, servi avec riz au curcuma
+
+  /ajouter-recette Phở gà vietnamien - Vietnam - soupe au poulet avec bouillon parfumé (anis étoilé, cannelle, gingembre), nouilles de riz et herbes fraîches
+
+# Bols
+
+ /ajouter-recette Poké bowl au saumon - Hawaï - saumon cru mariné (soja, sésame), avocat, edamame, concombre, chou rouge et algues wakame sur riz sushi vinaigré
+
+  /ajouter-recette Chirashi bowl - Japon - assortiment de poissons crus (saumon, thon, crevettes) sur riz sushi vinaigré, avec concombre, avocat, omelette fine et nori
+
+  /ajouter-recette Bol shawarma au poulet - Liban - poulet épicé (cumin, curcuma, paprika) grillé, sauce tahini, pickles d'oignons, salade fraîche sur riz aux vermicelles
+
+  /ajouter-recette Bol brésilien au poulet - Brésil - poulet grillé aux épices, haricots noirs, riz, farofa (manioc grillé), chou kale sauté et vinaigrette lime-coriandre
+
+  /ajouter-recette Oyakodon japonais - Japon - poulet et œuf mijotés dans bouillon dashi sucré-salé, oignons, champignons shiitake, servis sur riz japonais
+
+# Salade-repas
+ /ajouter-recette Salade thaï au bœuf grillé (Yam Nuea) - Thaïlande - bœuf grillé tranché sur lit de laitue, concombre, tomates, oignon rouge, menthe et coriandre, vinaigrette lime-piment-sauce poisson
+
+  /ajouter-recette Salade César revisitée - Mexique/USA - poulet grillé sur romaine croquante, croûtons à l'ail, sauce crémeuse au tahini (ail, citron, moutarde, câpres), avocat
+
+  /ajouter-recette Salade niçoise - France (Nice) - thon, œufs durs, haricots verts, pommes de terre nouvelles, tomates, olives niçoises, vinaigrette à l'huile d'olive et ail
+
+  /ajouter-recette Salade de quinoa tex-mex - USA - quinoa, haricots noirs, maïs grillé, poivrons, tomates, avocat, jalapeño, vinaigrette lime-chipotle-coriandre
+
+  /ajouter-recette Salade japonaise au saumon teriyaki - Japon - saumon glacé teriyaki sur edamame, concombre, chou rouge et avocat, vinaigrette sésame-gingembre, servi froid avec riz sushi
+
+# Soupe-repas
+
+ /ajouter-recette Salade thaï au bœuf grillé (Yam Nuea) - Thaïlande - bœuf grillé tranché sur lit de laitue, concombre, tomates, oignon rouge, menthe et coriandre, vinaigrette lime-piment-sauce poisson
+
+  /ajouter-recette Salade César revisitée - Mexique/USA - poulet grillé sur romaine croquante, croûtons à l'ail, sauce crémeuse au tahini (ail, citron, moutarde, câpres), avocat
+
+  /ajouter-recette Salade niçoise - France (Nice) - thon, œufs durs, haricots verts, pommes de terre nouvelles, tomates, olives niçoises, vinaigrette à l'huile d'olive et ail
+
+  /ajouter-recette Salade de quinoa tex-mex - USA - quinoa, haricots noirs, maïs grillé, poivrons, tomates, avocat, jalapeño, vinaigrette lime-chipotle-coriandre
+
+  /ajouter-recette Salade japonaise au saumon teriyaki - Japon - saumon glacé teriyaki sur edamame, concombre, chou rouge et avocat, vinaigrette sésame-gingembre, servi froid avec riz sushi
+
+# Repas très simple et rapide
+
+
+  /ajouter-recette Pâtes aglio e olio aux légumes - Italie - spaghetti à l'ail et huile d'olive, piment, épinards, tomates cerises et pois chiches, 12 min total sans préparation
+
+  /ajouter-recette Riz sauté aux œufs - Chine - riz froid sauté au wok avec œufs brouillés, petits pois, carottes et oignons verts, sauce soja et sésame, 10 min total
+
+  /ajouter-recette Quesadillas aux haricots noirs - Mexique - tortillas grillées farcies de purée de haricots noirs, poivrons, oignons et maïs, servies avec avocat, 12 min total
+
+  /ajouter-recette Omelette aux légumes garnie - France - omelette baveuse aux champignons, épinards et herbes fraîches, servie avec pain grillé, 10 min total
+
+  /ajouter-recette Tartine scandinave au saumon fumé - Danemark - smørrebrød au saumon fumé sur pain de seigle, avocat, concombre, radis, aneth et câpres, 8 min sans cuisson
+  ```
