@@ -1,0 +1,4209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planificateur de repas - 30 Recettes Santé</title>
+    <style>
+        :root {
+            --vert: #2E7D32;
+            --vert-clair: #E8F5E9;
+            --orange: #E65100;
+            --orange-clair: #FFF3E0;
+            --bleu: #1565C0;
+            --bleu-clair: #E3F2FD;
+            --gris: #424242;
+            --gris-clair: #F5F5F5;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--gris-clair);
+            color: var(--gris);
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: var(--vert);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            opacity: 0.9;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            padding: 12px 24px;
+            border: none;
+            background: white;
+            color: var(--gris);
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .tab-btn:hover {
+            background: var(--vert-clair);
+        }
+        
+        .tab-btn.active {
+            background: var(--vert);
+            color: white;
+        }
+        
+        .panel {
+            display: none;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .panel.active {
+            display: block;
+        }
+        
+        /* Sélection des recettes */
+        .recipes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .recipe-card {
+            background: var(--gris-clair);
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        
+        .recipe-card:hover {
+            border-color: var(--vert);
+        }
+        
+        .recipe-card.selected {
+            background: var(--vert-clair);
+            border-color: var(--vert);
+        }
+        
+        .recipe-card .header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        
+        .recipe-card .num {
+            background: var(--vert);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+        
+        .recipe-card .nom {
+            font-weight: 600;
+            flex: 1;
+        }
+        
+        .recipe-card .origine {
+            color: var(--orange);
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+        
+        .recipe-card .description {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .recipe-card .meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.8rem;
+            color: #666;
+            flex-wrap: wrap;
+        }
+        
+        .recipe-card .meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .recipe-card .checkbox {
+            width: 22px;
+            height: 22px;
+            accent-color: var(--vert);
+        }
+        
+        /* Actions */
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: var(--vert);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1B5E20;
+        }
+        
+        .btn-secondary {
+            background: var(--bleu);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #0D47A1;
+        }
+        
+        .btn-orange {
+            background: var(--orange);
+            color: white;
+        }
+        
+        .btn-orange:hover {
+            background: #BF360C;
+        }
+        
+        /* Planificateur de menu - Soupers uniquement */
+        .week-planner {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 900px) {
+            .week-planner {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 500px) {
+            .week-planner {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .day-column {
+            background: var(--gris-clair);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .day-header {
+            background: var(--vert);
+            color: white;
+            padding: 12px 10px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .day-content {
+            padding: 12px;
+        }
+        
+        .meal-slot {
+            background: white;
+            border-radius: 6px;
+            padding: 10px;
+        }
+        
+        .meal-slot label {
+            font-size: 0.75rem;
+            color: #666;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .meal-slot select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        
+        /* Zone d'impression */
+        .print-area {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .print-area.visible {
+            display: block;
+        }
+        
+        .print-area h2 {
+            color: var(--vert);
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--vert);
+            padding-bottom: 10px;
+        }
+        
+        .task-list {
+            list-style: none;
+        }
+        
+        .task-list li {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .task-list .task-check {
+            color: var(--vert);
+            font-size: 1.2rem;
+        }
+        
+        .task-list .recipe-name {
+            font-weight: 600;
+            color: var(--vert);
+        }
+        
+        .menu-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .menu-table th, .menu-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .menu-table th {
+            background: var(--vert);
+            color: white;
+        }
+        
+        .menu-table tr:nth-child(even) {
+            background: var(--vert-clair);
+        }
+        
+        /* Liste d'épicerie */
+        .grocery-section {
+            margin-bottom: 25px;
+        }
+        
+        .grocery-section h3 {
+            color: var(--vert);
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--vert-clair);
+        }
+        
+        .grocery-list {
+            list-style: none;
+            columns: 2;
+            column-gap: 30px;
+        }
+        
+        @media (max-width: 600px) {
+            .grocery-list {
+                columns: 1;
+            }
+        }
+        
+        .grocery-list li {
+            padding: 6px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            break-inside: avoid;
+        }
+        
+        .grocery-list .check-box {
+            color: var(--vert);
+        }
+        
+        /* Boutons d'impression */
+        .print-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        /* Compteur de sélection */
+        .selection-count {
+            background: var(--orange-clair);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .selection-count strong {
+            color: var(--orange);
+        }
+        
+        .selection-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        /* Styles d'impression */
+        @media print {
+            body {
+                background: white;
+            }
+            
+            header, .tabs, .panel:not(.print-target), .actions, .print-buttons, .selection-count {
+                display: none !important;
+            }
+            
+            .print-area {
+                display: block !important;
+                box-shadow: none;
+                padding: 0;
+            }
+            
+            .container {
+                max-width: 100%;
+                padding: 0;
+            }
+            
+            .grocery-list {
+                columns: 2;
+            }
+        }
+        
+        /* Filtres */
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--vert-clair);
+            border-color: var(--vert);
+        }
+        
+        /* Détail recette */
+        .recipe-detail {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .recipe-detail.open {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+        
+        .recipe-detail-content {
+            background: white;
+            max-width: 700px;
+            width: 100%;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 40px 0;
+            position: relative;
+        }
+        
+        .recipe-detail-content h2 {
+            color: var(--vert);
+            margin-bottom: 5px;
+            padding-right: 40px;
+        }
+        
+        .recipe-detail-content .origine {
+            color: var(--orange);
+            margin-bottom: 15px;
+        }
+        
+        .recipe-detail-content .description-box {
+            background: var(--gris-clair);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-style: italic;
+            color: #555;
+            border-left: 4px solid var(--vert);
+        }
+        
+        .recipe-detail-content .info-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 600px) {
+            .recipe-detail-content .info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .recipe-detail-content .info-box {
+            background: var(--bleu-clair);
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .recipe-detail-content .info-box label {
+            font-size: 0.75rem;
+            color: #666;
+            display: block;
+        }
+        
+        .recipe-detail-content h3 {
+            color: var(--vert);
+            margin: 20px 0 10px;
+            font-size: 1rem;
+        }
+        
+        .recipe-detail-content ul {
+            margin-left: 20px;
+        }
+        
+        .recipe-detail-content ol {
+            margin-left: 20px;
+        }
+        
+        .recipe-detail-content li {
+            margin-bottom: 8px;
+        }
+        
+        /* Étapes week-end */
+        .weekend-legend {
+            background: var(--vert-clair);
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .weekend-badge {
+            background: var(--vert);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        
+        .steps-list {
+            margin-left: 20px;
+        }
+        
+        .steps-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .steps-list li.weekend-step {
+            background: var(--vert-clair);
+            margin-left: -10px;
+            padding-left: 10px;
+            margin-right: -10px;
+            padding-right: 10px;
+            border-radius: 4px;
+            border-bottom: none;
+            margin-bottom: 4px;
+        }
+        
+        .steps-list li .weekend-badge {
+            margin-right: 6px;
+        }
+        
+        .weekend-note {
+            background: var(--vert-clair);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--vert);
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--gris-clair);
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gris);
+        }
+        
+        .close-btn:hover {
+            background: #ddd;
+        }
+        
+        .panel-title {
+            margin-bottom: 20px;
+            color: var(--vert);
+        }
+        
+        .panel-subtitle {
+            color: #666;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🥗 Planificateur de Repas</h1>
+        <p>60 recettes santé • Sans produits laitiers • 50% légumes / 25% protéines / 25% féculents</p>
+    </header>
+    
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="selection">📋 Sélection des recettes</button>
+            <button class="tab-btn" data-tab="menu">📅 Planifier la semaine</button>
+            <button class="tab-btn" data-tab="taches">✅ Tâches & Épicerie</button>
+        </div>
+        
+        <!-- Panel Sélection -->
+        <div id="selection" class="panel active">
+            <div class="selection-count">
+                <span><strong id="count">0</strong> recette(s) sélectionnée(s)</span>
+                <div class="selection-buttons">
+                    <button class="btn btn-secondary" onclick="selectAll()">Tout sélectionner</button>
+                    <button class="btn" style="background: #666; color: white;" onclick="deselectAll()">Tout désélectionner</button>
+                </div>
+            </div>
+            
+            <div class="filters">
+                <button class="filter-btn active" data-region="all">Toutes (60)</button>
+                <button class="filter-btn" data-region="Québec">🍁 Québec</button>
+                <button class="filter-btn" data-region="Asie">Asie</button>
+                <button class="filter-btn" data-region="Méditerranée">Méditerranée</button>
+                <button class="filter-btn" data-region="Amérique">Amérique Latine</button>
+                <button class="filter-btn" data-region="Afrique">Afrique / Caraïbes</button>
+                <button class="filter-btn" data-region="Europe">Europe</button>
+            </div>
+            
+            <div class="recipes-grid" id="recipes-grid">
+                <!-- Généré par JS -->
+            </div>
+        </div>
+        
+        <!-- Panel Menu -->
+        <div id="menu" class="panel">
+            <h2 class="panel-title">Planifier vos soupers de la semaine</h2>
+            <p class="panel-subtitle">Sélectionnez une recette pour chaque jour de la semaine.</p>
+            
+            <div class="week-planner" id="week-planner">
+                <!-- Généré par JS -->
+            </div>
+            
+            <div class="actions">
+                <button class="btn btn-primary" onclick="generateMenuPrint()">🖨️ Générer le menu</button>
+                <button class="btn btn-secondary" onclick="autoFillWeek()">🎲 Remplir automatiquement</button>
+                <button class="btn" style="background: #666; color: white;" onclick="clearWeek()">🗑️ Effacer</button>
+            </div>
+            
+            <div class="print-area" id="menu-print-area">
+                <h2>Menu de la semaine</h2>
+                <table class="menu-table" id="menu-table">
+                    <!-- Généré par JS -->
+                </table>
+                <div class="print-buttons">
+                    <button class="btn btn-primary" onclick="printMenu()">🖨️ Imprimer</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Panel Tâches et Épicerie -->
+        <div id="taches" class="panel">
+            <h2 class="panel-title">Liste des tâches et épicerie</h2>
+            <p class="panel-subtitle">Basées sur les recettes sélectionnées</p>
+            
+            <div class="actions" style="margin-bottom: 20px;">
+                <button class="btn btn-primary" onclick="generateTasksPrint()">📝 Générer les tâches</button>
+                <button class="btn btn-orange" onclick="generateGroceryPrint()">🛒 Générer la liste d'épicerie</button>
+            </div>
+            
+            <!-- Zone tâches -->
+            <div class="print-area" id="tasks-print-area">
+                <h2>Préparation du week-end</h2>
+                <p style="margin-bottom: 15px; color: #666;">Tâches à réaliser pour préparer vos repas de la semaine</p>
+                <ul class="task-list" id="task-list">
+                    <!-- Généré par JS -->
+                </ul>
+                <div class="print-buttons">
+                    <button class="btn btn-primary" onclick="printTasks()">🖨️ Imprimer les tâches</button>
+                </div>
+            </div>
+            
+            <!-- Zone épicerie -->
+            <div class="print-area" id="grocery-print-area">
+                <h2>Liste d'épicerie</h2>
+                <p style="margin-bottom: 15px; color: #666;">Ingrédients pour <span id="grocery-recipe-count">0</span> recette(s) sélectionnée(s)</p>
+                <div id="grocery-list-content">
+                    <!-- Généré par JS -->
+                </div>
+                <div class="print-buttons">
+                    <button class="btn btn-primary" onclick="printGrocery()">🖨️ Imprimer la liste</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal détail recette -->
+    <div class="recipe-detail" id="recipe-detail" onclick="closeRecipeDetailOutside(event)">
+        <div class="recipe-detail-content" id="recipe-detail-content">
+            <button class="close-btn" onclick="closeRecipeDetail()">×</button>
+            <!-- Généré par JS -->
+        </div>
+    </div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════════
+// DONNÉES DES 30 RECETTES
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const RECETTES = [
+  {
+    "num": 1,
+    "nom": "Sauté thaï au poulet et basilic",
+    "origine": "Thaïlande",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "25 min",
+    "prep_weekend": "Couper poulet et légumes, préparer sauce",
+    "conservation": "Frigo 3 jours | Congélateur 2 mois",
+    "rechauffage": "Se réchauffe bien à la poêle",
+    "proteines": "Poulet (300g)",
+    "legumes": "Poivrons, haricots verts, oignon, ail, basilic thaï",
+    "feculents": "Riz jasmin (200g)",
+    "variantes": "Tofu ferme, crevettes, bœuf émincé",
+    "ingredients": [
+      "300g de poitrine de poulet, émincée",
+      "200g de riz jasmin",
+      "1 poivron rouge, en lanières",
+      "150g de haricots verts, coupés en tronçons",
+      "1 oignon, émincé",
+      "4 gousses d'ail, hachées",
+      "1 grande poignée de basilic thaï frais",
+      "3 c. à soupe de sauce soja",
+      "2 c. à soupe de sauce d'huître",
+      "1 c. à soupe de sauce poisson",
+      "1 c. à café de sucre de palme ou cassonade",
+      "2 piments rouges (optionnel)",
+      "2 c. à soupe d'huile végétale"
+    ],
+    "etapes": [
+      "Cuire le riz jasmin selon les instructions du paquet. Réserver au chaud.",
+      "Mélanger les sauces soja, d'huître, de poisson et le sucre dans un petit bol.",
+      "Chauffer l'huile à feu vif dans un wok ou grande poêle.",
+      "Saisir le poulet 3-4 minutes jusqu'à coloration. Retirer et réserver.",
+      "Dans le même wok, faire sauter l'oignon et l'ail 1 minute.",
+      "Ajouter les poivrons et haricots verts, cuire 3-4 minutes en remuant.",
+      "Remettre le poulet, verser la sauce et mélanger 2 minutes.",
+      "Hors du feu, incorporer le basilic thaï. Servir sur le riz."
+    ],
+    "portions": 4,
+    "description": "Le Pad Krapao est un plat de rue emblématique de Thaïlande, né dans les échoppes de Bangkok. Le basilic thaï (krapao) lui donne son arôme unique et anisé. Traditionnellement servi avec un œuf au plat, c'est le repas rapide préféré des Thaïlandais pressés.",
+    "etapes_weekend": [
+      1,
+      2
+    ],
+    "note_weekend": "Le riz peut être cuit, la sauce mélangée, le poulet et les légumes coupés."
+  },
+  {
+    "num": 2,
+    "nom": "Bibimbap coréen au bœuf",
+    "origine": "Corée du Sud",
+    "temps_prep_semaine": "20 min",
+    "temps_prep_weekend": "40 min",
+    "prep_weekend": "Mariner bœuf, préparer légumes marinés, cuire riz",
+    "conservation": "Légumes marinés frigo 5 jours | Bœuf mariné 2 jours",
+    "rechauffage": "Meilleur avec riz frais, légumes froids",
+    "proteines": "Bœuf haché (250g)",
+    "legumes": "Carottes, courgettes, épinards, champignons, germes de soja",
+    "feculents": "Riz rond (200g)",
+    "variantes": "Tofu émietté, poulet haché, œuf au plat",
+    "ingredients": [
+      "250g de bœuf haché maigre",
+      "200g de riz rond coréen ou japonais",
+      "1 carotte, en julienne",
+      "1 courgette, en demi-lunes",
+      "100g d'épinards frais",
+      "100g de champignons shiitake, émincés",
+      "100g de germes de soja",
+      "4 c. à soupe de sauce soja",
+      "2 c. à soupe d'huile de sésame",
+      "2 c. à soupe de gochujang (pâte piment coréenne)",
+      "2 gousses d'ail, hachées",
+      "1 c. à café de sucre",
+      "Graines de sésame pour garnir"
+    ],
+    "etapes": [
+      "Cuire le riz et le garder au chaud.",
+      "Mélanger 2 c. à soupe de sauce soja, 1 c. d'huile de sésame, l'ail et le sucre. Mariner le bœuf 10 minutes.",
+      "Blanchir les épinards 30 secondes, égoutter, assaisonner d'un peu de sauce soja et sésame.",
+      "Faire sauter séparément chaque légume 2-3 minutes avec un peu d'huile.",
+      "Cuire le bœuf mariné à feu vif jusqu'à caramélisation.",
+      "Dans un bol, disposer le riz chaud, puis les légumes en sections autour.",
+      "Placer le bœuf au centre, ajouter une cuillère de gochujang.",
+      "Garnir de graines de sésame. Mélanger avant de déguster."
+    ],
+    "portions": 4,
+    "description": "Le bibimbap signifie littéralement « riz mélangé » en coréen. Ce plat ancestral était à l'origine préparé la veille du Nouvel An lunaire pour utiliser tous les restes. Chaque ingrédient disposé représente l'harmonie des cinq couleurs de la cuisine coréenne.",
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "note_weekend": "Le riz, le bœuf mariné et tous les légumes peuvent être préparés à l'avance."
+  },
+  {
+    "num": 3,
+    "nom": "Curry japonais au porc (Kare Raisu)",
+    "origine": "Japon",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "45 min",
+    "prep_weekend": "Préparer curry complet, cuire riz en grande quantité",
+    "conservation": "Frigo 4 jours | Congélateur 3 mois (le curry se bonifie)",
+    "rechauffage": "Se réchauffe très bien, ajouter un peu d'eau",
+    "proteines": "Porc (300g)",
+    "legumes": "Carottes, oignons, pommes de terre",
+    "feculents": "Riz japonais (200g)",
+    "variantes": "Poulet, bœuf, légumes seuls (vegan)",
+    "ingredients": [
+      "300g de porc à mijoter, en cubes",
+      "200g de riz japonais",
+      "2 carottes, en rondelles épaisses",
+      "2 oignons, en quartiers",
+      "2 pommes de terre, en cubes",
+      "1 bloc de roux de curry japonais (ex: Golden Curry, S&B)",
+      "600ml d'eau ou bouillon",
+      "1 c. à soupe d'huile végétale",
+      "Fukujinzuke (condiment) pour servir (optionnel)"
+    ],
+    "etapes": [
+      "Cuire le riz selon les instructions.",
+      "Dans une grande casserole, faire revenir le porc dans l'huile jusqu'à coloration.",
+      "Ajouter les oignons et faire suer 5 minutes.",
+      "Incorporer les carottes et pommes de terre, mélanger 2 minutes.",
+      "Verser l'eau, porter à ébullition, puis réduire le feu.",
+      "Laisser mijoter 20-25 minutes jusqu'à ce que les légumes soient tendres.",
+      "Retirer du feu, casser le bloc de curry et remuer jusqu'à dissolution.",
+      "Remettre sur feu doux 5 minutes pour épaissir. Servir sur le riz."
+    ],
+    "portions": 4,
+    "description": "Introduit au Japon par la marine britannique au 19e siècle, le curry japonais est devenu un plat national. Plus doux et sucré que ses cousins indiens, il est souvent classé parmi les plats réconfortants préférés des Japonais, servi dans les cantines scolaires depuis des générations.",
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "note_weekend": "Ce plat peut être entièrement préparé le week-end, il se bonifie au repos."
+  },
+  {
+    "num": 4,
+    "nom": "Pad See Ew aux crevettes",
+    "origine": "Thaïlande",
+    "temps_prep_semaine": "12 min",
+    "temps_prep_weekend": "20 min",
+    "prep_weekend": "Préparer sauce, décortiquer crevettes",
+    "conservation": "Frigo 2 jours (nouilles ramollissent)",
+    "rechauffage": "Meilleur frais, sinon poêle à feu vif",
+    "proteines": "Crevettes (250g)",
+    "legumes": "Brocoli chinois (gai lan), ail",
+    "feculents": "Nouilles de riz larges (200g)",
+    "variantes": "Poulet, tofu, bœuf",
+    "ingredients": [
+      "250g de crevettes décortiquées",
+      "200g de nouilles de riz larges fraîches",
+      "200g de brocoli chinois, en tronçons",
+      "3 gousses d'ail, hachées",
+      "2 œufs",
+      "3 c. à soupe de sauce soja foncée",
+      "1 c. à soupe de sauce soja claire",
+      "1 c. à soupe de sauce d'huître",
+      "1 c. à café de sucre",
+      "2 c. à soupe d'huile végétale",
+      "Poivre blanc moulu"
+    ],
+    "etapes": [
+      "Si les nouilles sont collées, les séparer délicatement avec un peu d'huile.",
+      "Mélanger les sauces soja, sauce d'huître et sucre.",
+      "Chauffer l'huile à feu très vif dans un wok.",
+      "Saisir les crevettes 1-2 minutes, retirer et réserver.",
+      "Ajouter l'ail, faire sauter 30 secondes.",
+      "Pousser sur le côté, casser les œufs et brouiller rapidement.",
+      "Ajouter les nouilles et le brocoli, verser la sauce.",
+      "Remettre les crevettes, mélanger vigoureusement 2 minutes. Poivrer et servir."
+    ],
+    "portions": 4,
+    "description": "Le Pad See Ew (« sauté à la sauce soja ») est un classique de la street food thaïlandaise. Les larges nouilles de riz sont saisies à très haute température dans un wok bien chaud, créant ce goût fumé caractéristique appelé « wok hei » ou souffle du wok.",
+    "etapes_weekend": [
+      1,
+      2
+    ],
+    "note_weekend": "La sauce peut être mélangée et les crevettes décortiquées."
+  },
+  {
+    "num": 5,
+    "nom": "Bo Bun vietnamien",
+    "origine": "Vietnam",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "30 min",
+    "prep_weekend": "Mariner et griller bœuf, préparer sauce nuoc mam",
+    "conservation": "Bœuf grillé frigo 3 jours | Sauce 2 semaines",
+    "rechauffage": "Meilleur froid ou température ambiante",
+    "proteines": "Bœuf (250g)",
+    "legumes": "Carottes, concombre, laitue, menthe, coriandre, germes de soja",
+    "feculents": "Vermicelles de riz (150g)",
+    "variantes": "Poulet grillé, porc caramélisé, tofu grillé",
+    "ingredients": [
+      "250g de bœuf (bavette ou rumsteck), émincé",
+      "150g de vermicelles de riz",
+      "1 carotte, râpée ou en julienne",
+      "1/2 concombre, en julienne",
+      "4 feuilles de laitue, ciselées",
+      "1 bouquet de menthe fraîche",
+      "1 bouquet de coriandre fraîche",
+      "100g de germes de soja",
+      "3 c. à soupe de cacahuètes concassées",
+      "Marinade: 2 c. à soupe sauce soja, 1 c. à soupe huile, 1 gousse d'ail",
+      "Sauce nuoc mam: 3 c. à soupe sauce poisson, 2 c. à soupe sucre, 4 c. à soupe eau tiède, jus 1 citron vert, 1 piment émincé, 1 gousse d'ail"
+    ],
+    "etapes": [
+      "Mariner le bœuf au moins 15 minutes (ou la veille).",
+      "Préparer la sauce nuoc mam en mélangeant tous les ingrédients jusqu'à dissolution du sucre.",
+      "Cuire les vermicelles selon le paquet, rincer à l'eau froide, égoutter.",
+      "Griller le bœuf à feu vif 2-3 minutes de chaque côté.",
+      "Dans chaque bol, disposer les vermicelles froids.",
+      "Ajouter la laitue, carotte, concombre et germes de soja.",
+      "Déposer le bœuf chaud par-dessus.",
+      "Garnir d'herbes fraîches et cacahuètes. Arroser de sauce au moment de servir."
+    ],
+    "portions": 4,
+    "description": "Le Bò Bún est né dans le sud du Vietnam avant de conquérir le monde. Ce bol frais et parfumé combine les influences chinoises (vermicelles) et locales (herbes fraîches). À Saigon, on le déguste à toute heure, accompagné de nems croustillants.",
+    "etapes_weekend": [
+      1,
+      2,
+      3
+    ],
+    "note_weekend": "Le bœuf peut être mariné/grillé et la sauce préparée à l'avance."
+  },
+  {
+    "num": 6,
+    "nom": "Shakshuka aux poivrons",
+    "origine": "Israël / Maghreb",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "25 min",
+    "prep_weekend": "Préparer sauce tomate complète",
+    "conservation": "Sauce frigo 5 jours | Congélateur 2 mois",
+    "rechauffage": "Réchauffer sauce, ajouter œufs frais",
+    "proteines": "Œufs (4)",
+    "legumes": "Tomates, poivrons, oignons, ail",
+    "feculents": "Pain pita complet (2)",
+    "variantes": "Ajouter merguez, feta (si toléré), pois chiches",
+    "ingredients": [
+      "4 œufs",
+      "400g de tomates concassées en conserve",
+      "2 poivrons (rouge et jaune), en dés",
+      "1 oignon, émincé",
+      "3 gousses d'ail, hachées",
+      "1 c. à café de cumin moulu",
+      "1 c. à café de paprika fumé",
+      "1/2 c. à café de piment de Cayenne",
+      "2 c. à soupe d'huile d'olive",
+      "Sel, poivre",
+      "Persil frais pour garnir",
+      "2 pains pita complets"
+    ],
+    "etapes": [
+      "Chauffer l'huile dans une poêle profonde à feu moyen.",
+      "Faire revenir l'oignon 5 minutes jusqu'à translucidité.",
+      "Ajouter les poivrons, cuire 5 minutes.",
+      "Incorporer l'ail, cumin, paprika et cayenne, mélanger 1 minute.",
+      "Verser les tomates, assaisonner, laisser mijoter 10 minutes.",
+      "Créer 4 puits dans la sauce, casser un œuf dans chacun.",
+      "Couvrir et cuire 5-7 minutes jusqu'à ce que les blancs soient pris.",
+      "Garnir de persil. Servir directement avec le pain pita chaud."
+    ],
+    "portions": 4,
+    "description": "La shakshuka (« tout mélangé » en arabe) serait née au Maghreb avant d'être adoptée par Israël où elle est devenue un plat national. Servie directement dans la poêle, elle réunit les communautés autour d'un petit-déjeuner convivial, chacun trempant son pain dans la sauce.",
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "note_weekend": "La base tomate aux épices peut être préparée entièrement, les œufs seront pochés au moment de servir."
+  },
+  {
+    "num": 7,
+    "nom": "Poulet grillé à la grecque",
+    "origine": "Grèce",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "30 min + marinade",
+    "prep_weekend": "Mariner poulet, préparer salade et sauce tzatziki sans lait",
+    "conservation": "Poulet frigo 4 jours | Congélateur 2 mois",
+    "rechauffage": "Se réchauffe bien au four ou poêle",
+    "proteines": "Poulet (350g)",
+    "legumes": "Tomates, concombre, oignon rouge, olives",
+    "feculents": "Orzo (200g)",
+    "variantes": "Agneau, crevettes, pois chiches grillés",
+    "ingredients": [
+      "350g de hauts de cuisse de poulet désossés",
+      "200g d'orzo (pâtes en forme de riz)",
+      "2 tomates, en quartiers",
+      "1 concombre, en dés",
+      "1/2 oignon rouge, émincé finement",
+      "80g d'olives Kalamata",
+      "Marinade: 4 c. à soupe huile olive, jus 1 citron, 2 gousses ail, 1 c. à café origan séché, sel, poivre",
+      "Vinaigrette: 3 c. à soupe huile olive, 1 c. à soupe vinaigre vin rouge, 1 c. à café origan"
+    ],
+    "etapes": [
+      "Mélanger les ingrédients de la marinade, enrober le poulet. Mariner minimum 30 min (idéal 4h).",
+      "Cuire l'orzo selon les instructions, égoutter et refroidir.",
+      "Griller le poulet à feu moyen-vif, 6-7 minutes par côté.",
+      "Pendant ce temps, combiner tomates, concombre, oignon et olives.",
+      "Préparer la vinaigrette et l'incorporer à la salade.",
+      "Mélanger l'orzo avec une partie de la vinaigrette.",
+      "Trancher le poulet et disposer sur l'orzo.",
+      "Accompagner de la salade grecque. Servir tiède ou froid."
+    ],
+    "portions": 4,
+    "description": "Le poulet grillé aux herbes méditerranéennes incarne l'essence de la cuisine grecque : simple, ensoleillée et généreuse. L'origan sauvage des montagnes grecques et le citron omniprésent en font un plat qui évoque instantanément les tavernes des îles de la mer Égée.",
+    "etapes_weekend": [
+      1,
+      2
+    ],
+    "note_weekend": "Le poulet peut mariner et l'orzo peut être cuit à l'avance."
+  },
+  {
+    "num": 8,
+    "nom": "Kefta marocaine aux légumes",
+    "origine": "Maroc",
+    "temps_prep_semaine": "20 min",
+    "temps_prep_weekend": "35 min",
+    "prep_weekend": "Former les keftas, préparer sauce tomate épicée",
+    "conservation": "Keftas crues frigo 2 jours | Congélateur 3 mois",
+    "rechauffage": "Se réchauffe très bien dans la sauce",
+    "proteines": "Bœuf/agneau haché (300g)",
+    "legumes": "Tomates, oignons, poivrons, courgettes",
+    "feculents": "Semoule de couscous (200g)",
+    "variantes": "Poulet haché, agneau seul, version végé aux lentilles",
+    "ingredients": [
+      "300g de bœuf haché (ou mélange bœuf-agneau)",
+      "200g de semoule de couscous",
+      "1 oignon, haché finement (pour keftas)",
+      "1 oignon, émincé (pour sauce)",
+      "400g de tomates concassées",
+      "1 poivron vert, en dés",
+      "1 courgette, en rondelles",
+      "2 gousses d'ail",
+      "1 c. à café de cumin",
+      "1 c. à café de paprika",
+      "1/2 c. à café de cannelle",
+      "Persil et coriandre frais, hachés",
+      "2 c. à soupe d'huile d'olive"
+    ],
+    "etapes": [
+      "Mélanger la viande hachée avec l'oignon haché, la moitié des herbes, cumin, cannelle, sel et poivre. Former des boulettes ovales.",
+      "Chauffer l'huile et faire dorer les keftas de tous côtés. Réserver.",
+      "Dans la même poêle, faire revenir l'oignon émincé 5 minutes.",
+      "Ajouter l'ail, paprika, puis les tomates. Cuire 5 minutes.",
+      "Incorporer le poivron et la courgette.",
+      "Remettre les keftas, couvrir et mijoter 15-20 minutes.",
+      "Préparer le couscous selon les instructions (eau bouillante, repos couvert).",
+      "Servir les keftas sur le couscous, napper de sauce et garnir d'herbes."
+    ],
+    "portions": 4,
+    "description": "Les keftas sont ancrées dans la tradition culinaire du Maghreb depuis des siècles. Épicées de cumin et de cannelle, ces boulettes allongées étaient préparées lors des grandes occasions familiales. Chaque famille garde jalousement sa recette transmise de génération en génération.",
+    "etapes_weekend": [
+      1,
+      3,
+      4
+    ],
+    "note_weekend": "Les keftas peuvent être formées et la sauce tomate préparée."
+  },
+  {
+    "num": 9,
+    "nom": "Falafel maison et taboulé",
+    "origine": "Liban",
+    "temps_prep_semaine": "20 min",
+    "temps_prep_weekend": "45 min + trempage",
+    "prep_weekend": "Tremper et mixer pois chiches, former falafels",
+    "conservation": "Falafels crus congélateur 2 mois | Cuits frigo 4 jours",
+    "rechauffage": "Four 180°C 10 min pour recroquanter",
+    "proteines": "Pois chiches secs (200g)",
+    "legumes": "Persil, menthe, tomates, concombre, oignon",
+    "feculents": "Boulgour (150g)",
+    "variantes": "Falafels aux fèves, version sans friture (au four)",
+    "ingredients": [
+      "200g de pois chiches secs (trempés 24h)",
+      "150g de boulgour fin",
+      "1 gros bouquet de persil plat",
+      "1/2 bouquet de menthe",
+      "1 oignon, en quartiers",
+      "4 gousses d'ail",
+      "1 c. à café de cumin",
+      "1 c. à café de coriandre moulue",
+      "1/2 c. à café de bicarbonate",
+      "2 tomates, en dés",
+      "1/2 concombre, en dés",
+      "Jus de 2 citrons",
+      "4 c. à soupe d'huile d'olive",
+      "Huile pour friture"
+    ],
+    "etapes": [
+      "Égoutter les pois chiches trempés (ne pas les cuire).",
+      "Mixer avec oignon, ail, persil (garder 1/2 pour taboulé), cumin, coriandre jusqu'à obtenir une pâte granuleuse.",
+      "Ajouter le bicarbonate, assaisonner. Réfrigérer 30 min.",
+      "Pour le taboulé: réhydrater le boulgour 20 min dans l'eau tiède.",
+      "Mélanger boulgour, tomates, concombre, persil et menthe hachés.",
+      "Assaisonner de citron, huile d'olive, sel et poivre.",
+      "Former des galettes de falafel, frire dans l'huile chaude 3-4 min par côté.",
+      "Égoutter sur papier absorbant. Servir avec le taboulé."
+    ],
+    "portions": 4,
+    "description": "Les falafels seraient nés en Égypte copte comme alternative végétarienne pendant le Carême, avant de se répandre au Levant. Au Liban, ils sont indissociables du taboulé, cette salade de persil originaire des montagnes libanaises où le boulgour joue un rôle secondaire.",
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "note_weekend": "Les falafels peuvent être formés (non frits) et le taboulé préparé entièrement."
+  },
+  {
+    "num": 10,
+    "nom": "Tajine de poulet aux olives et citron",
+    "origine": "Maroc",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "1h (mijoté)",
+    "prep_weekend": "Préparer le tajine complet, il se bonifie",
+    "conservation": "Frigo 4 jours | Congélateur 3 mois",
+    "rechauffage": "Se réchauffe parfaitement à feu doux",
+    "proteines": "Poulet (400g)",
+    "legumes": "Oignons, olives vertes, citron confit",
+    "feculents": "Semoule de couscous (200g)",
+    "variantes": "Agneau, poulet aux abricots, version légumes",
+    "ingredients": [
+      "400g de cuisses de poulet",
+      "200g de semoule de couscous",
+      "2 oignons, émincés",
+      "100g d'olives vertes dénoyautées",
+      "2 citrons confits, en quartiers (ou 1 citron frais en tranches)",
+      "4 gousses d'ail, hachées",
+      "1 c. à café de gingembre moulu",
+      "1 c. à café de curcuma",
+      "1/2 c. à café de safran (ou curcuma)",
+      "1 bouquet de coriandre",
+      "300ml de bouillon de poulet",
+      "3 c. à soupe d'huile d'olive"
+    ],
+    "etapes": [
+      "Mélanger gingembre, curcuma et safran avec un peu d'huile. Enrober le poulet.",
+      "Chauffer l'huile dans un tajine ou cocotte, dorer le poulet. Réserver.",
+      "Faire fondre les oignons 10 minutes à feu doux.",
+      "Ajouter l'ail, remettre le poulet, verser le bouillon.",
+      "Couvrir et laisser mijoter 30 minutes à feu doux.",
+      "Ajouter les olives et citron confit, poursuivre 15 minutes.",
+      "Préparer le couscous selon les instructions.",
+      "Servir le tajine sur le couscous, garnir de coriandre fraîche."
+    ],
+    "portions": 4,
+    "description": "Le tajine de poulet aux olives et citron confit est un joyau de la cuisine marocaine, cuit lentement dans le plat conique en terre cuite qui lui donne son nom. Les citrons confits au sel, spécialité de Marrakech, apportent cette saveur unique impossible à reproduire autrement.",
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "note_weekend": "Le tajine peut être préparé entièrement, il se bonifie au repos."
+  },
+  {
+    "num": 11,
+    "nom": "Tacos al pastor",
+    "origine": "Mexique",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "30 min + marinade",
+    "prep_weekend": "Mariner le porc, préparer salsa et garnitures",
+    "conservation": "Porc mariné frigo 3 jours | Cuit 4 jours",
+    "rechauffage": "Se réchauffe bien à la poêle",
+    "proteines": "Porc (300g)",
+    "legumes": "Ananas, oignon, coriandre, tomates, piments",
+    "feculents": "Tortillas de maïs (8)",
+    "variantes": "Poulet, bœuf, carnitas, champignons",
+    "ingredients": [
+      "300g d'épaule de porc, émincée finement",
+      "8 tortillas de maïs",
+      "150g d'ananas frais, en petits dés",
+      "1 oignon blanc, haché",
+      "1 bouquet de coriandre fraîche",
+      "Marinade: 3 piments guajillo séchés (réhydratés), 2 gousses ail, 1 c. à café cumin, 1 c. à café origan, 2 c. à soupe vinaigre, 1 c. à café achiote/paprika, jus d'orange",
+      "Salsa: 2 tomates, 1/4 oignon, 1 piment jalapeño, jus 1 lime, sel"
+    ],
+    "etapes": [
+      "Mixer les ingrédients de la marinade jusqu'à consistance lisse.",
+      "Enrober le porc de marinade, réfrigérer minimum 2h (idéal une nuit).",
+      "Préparer la salsa en mixant grossièrement tous les ingrédients.",
+      "Cuire le porc mariné à la poêle à feu vif jusqu'à caramélisation.",
+      "Ajouter l'ananas en fin de cuisson, faire griller légèrement.",
+      "Chauffer les tortillas à sec dans une poêle.",
+      "Garnir chaque tortilla de porc, ananas, oignon et coriandre.",
+      "Servir avec la salsa fraîche et des quartiers de lime."
+    ],
+    "portions": 4,
+    "description": "Les tacos al pastor sont nés à Mexico dans les années 1930, créés par des immigrants libanais qui ont adapté leur shawarma avec du porc mariné à l'achiote et à l'ananas. Ce métissage culinaire est devenu le taco le plus populaire de tout le Mexique.",
+    "etapes_weekend": [
+      1,
+      2
+    ],
+    "note_weekend": "Le porc peut mariner et les garnitures (oignon, coriandre, ananas) être préparées."
+  },
+  {
+    "num": 12,
+    "nom": "Bowl burrito au poulet",
+    "origine": "Mexique / USA",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "35 min",
+    "prep_weekend": "Cuire riz, haricots, préparer poulet épicé",
+    "conservation": "Composants séparés frigo 5 jours",
+    "rechauffage": "Se réchauffe bien, ajouter garnitures fraîches",
+    "proteines": "Poulet (300g)",
+    "legumes": "Poivrons, maïs, laitue, tomates, avocat",
+    "feculents": "Riz et haricots noirs (200g total)",
+    "variantes": "Bœuf épicé, crevettes, sofritas (tofu)",
+    "ingredients": [
+      "300g de poitrine de poulet",
+      "150g de riz long",
+      "200g de haricots noirs en conserve, égouttés",
+      "1 poivron, en lanières",
+      "100g de maïs en grains",
+      "1 cœur de laitue, ciselé",
+      "1 avocat, en tranches",
+      "Épices poulet: 1 c. à café cumin, 1 c. à café paprika, 1/2 c. café piment, 1/2 c. café ail en poudre",
+      "Jus de 2 limes",
+      "Coriandre fraîche"
+    ],
+    "etapes": [
+      "Cuire le riz selon les instructions. Incorporer un peu de jus de lime et coriandre.",
+      "Assaisonner le poulet avec les épices, griller 6-7 min par côté.",
+      "Réchauffer les haricots noirs avec un peu de cumin.",
+      "Faire sauter le poivron et le maïs 3-4 minutes.",
+      "Trancher le poulet en lanières.",
+      "Assembler les bols: riz, haricots, poulet, légumes sautés.",
+      "Garnir de laitue, avocat et coriandre.",
+      "Arroser de jus de lime. Servir avec salsa si désiré."
+    ],
+    "portions": 4,
+    "description": "Le burrito bowl est une invention californienne des années 1990, inspiré des burritos mexicains mais servi sans tortilla. Ce format « bol » a conquis le monde entier comme option santé et personnalisable, tout en conservant les saveurs vibrantes de la cuisine tex-mex.",
+    "etapes_weekend": [
+      1,
+      2,
+      3
+    ],
+    "note_weekend": "Le riz, les haricots noirs et le poulet peuvent être préparés à l'avance."
+  },
+  {
+    "num": 13,
+    "nom": "Ceviche de crevettes",
+    "origine": "Pérou",
+    "temps_prep_semaine": "15 min + marinade",
+    "temps_prep_weekend": "20 min",
+    "prep_weekend": "Préparer la leche de tigre, cuire patates douces",
+    "conservation": "Frigo 24h maximum (consommer le jour même idéal)",
+    "rechauffage": "Meilleur froid (ne pas réchauffer)",
+    "proteines": "Crevettes (300g)",
+    "legumes": "Oignon rouge, tomates, coriandre, piment",
+    "feculents": "Patate douce et maïs (200g)",
+    "variantes": "Poisson blanc, poulpe, ceviche mixte",
+    "ingredients": [
+      "300g de crevettes crues, décortiquées",
+      "200g de patate douce",
+      "1 épi de maïs ou 100g de maïs cuit",
+      "1 oignon rouge, émincé très finement",
+      "2 tomates, en dés",
+      "1 piment rocoto ou jalapeño, émincé",
+      "1 gros bouquet de coriandre",
+      "6-8 limes (environ 200ml de jus)",
+      "2 gousses d'ail, râpées",
+      "1 c. à café de gingembre râpé",
+      "Sel, poivre"
+    ],
+    "etapes": [
+      "Cuire la patate douce à l'eau ou à la vapeur 20 min. Couper en rondelles.",
+      "Cuire l'épi de maïs 10 min, égrener.",
+      "Rincer l'oignon rouge à l'eau froide pour atténuer le piquant.",
+      "Dans un bol, mélanger le jus de lime, l'ail, le gingembre, sel et poivre.",
+      "Ajouter les crevettes crues, bien enrober. Mariner 15-20 minutes.",
+      "Les crevettes deviendront roses et opaques (cuites par l'acidité).",
+      "Incorporer l'oignon, tomates, piment et coriandre ciselée.",
+      "Servir immédiatement avec les rondelles de patate douce et le maïs."
+    ],
+    "portions": 4,
+    "description": "Le ceviche péruvien est un trésor culinaire préhispanique. Les pêcheurs de la côte Pacifique « cuisaient » déjà leur poisson dans le jus de tumbo, un fruit acide local. Aujourd'hui, le citron vert et le piment ají amarillo en font un plat rafraîchissant emblématique de Lima.",
+    "etapes_weekend": [
+      1,
+      2
+    ],
+    "note_weekend": "Les légumes peuvent être coupés et la leche de tigre préparée. Le poisson sera mariné le jour même."
+  },
+  {
+    "num": 14,
+    "nom": "Moqueca brésilienne",
+    "origine": "Brésil",
+    "temps_prep_semaine": "20 min",
+    "temps_prep_weekend": "40 min",
+    "prep_weekend": "Préparer base tomate/lait de coco, couper poisson",
+    "conservation": "Frigo 2 jours (poisson)",
+    "rechauffage": "Se réchauffe doucement, ne pas faire bouillir",
+    "proteines": "Poisson blanc (350g)",
+    "legumes": "Poivrons, tomates, oignons, coriandre",
+    "feculents": "Riz (200g)",
+    "variantes": "Crevettes, mélange fruits de mer, poisson + crevettes",
+    "ingredients": [
+      "350g de filet de poisson blanc (cabillaud, lotte)",
+      "200g de riz",
+      "400ml de lait de coco",
+      "400g de tomates concassées",
+      "2 poivrons (rouge et vert), en lanières",
+      "1 oignon, émincé",
+      "4 gousses d'ail, hachées",
+      "Jus de 2 limes",
+      "2 c. à soupe d'huile de palme (ou huile d'olive + paprika)",
+      "1 bouquet de coriandre",
+      "Sel, poivre, piment"
+    ],
+    "etapes": [
+      "Couper le poisson en gros morceaux, mariner dans le jus de lime 15 min.",
+      "Cuire le riz selon les instructions.",
+      "Chauffer l'huile, faire revenir l'oignon et l'ail 5 min.",
+      "Ajouter les poivrons, cuire 5 minutes.",
+      "Verser les tomates, assaisonner, laisser mijoter 10 min.",
+      "Incorporer le lait de coco, porter à frémissement.",
+      "Déposer délicatement les morceaux de poisson.",
+      "Couvrir et cuire 8-10 min à feu doux. Garnir de coriandre, servir sur le riz."
+    ],
+    "portions": 4,
+    "description": "La moqueca est un ragoût de poisson originaire de Bahia, au Brésil, où se mêlent influences africaines, indigènes et portugaises. Le lait de coco et l'huile de palme (dendê) lui donnent sa couleur dorée et sa saveur unique, témoin de l'histoire métissée du Brésil.",
+    "etapes_weekend": [
+      1,
+      2,
+      3
+    ],
+    "note_weekend": "La base aux légumes peut être préparée, le poisson sera ajouté au dernier moment."
+  },
+  {
+    "num": 15,
+    "nom": "Arepas garnies (Venezuela)",
+    "origine": "Venezuela",
+    "temps_prep_semaine": "20 min",
+    "temps_prep_weekend": "40 min",
+    "prep_weekend": "Préparer garniture haricots noirs et poulet effiloché",
+    "conservation": "Garnitures frigo 4 jours | Arepas cuites 3 jours",
+    "rechauffage": "Arepas: grille-pain ou poêle sèche",
+    "proteines": "Poulet effiloché (250g)",
+    "legumes": "Haricots noirs, avocat, tomates, oignon",
+    "feculents": "Farine de maïs précuite (200g)",
+    "variantes": "Bœuf effiloché, haricots seuls (végé), porc",
+    "ingredients": [
+      "200g de farine de maïs précuite (PAN)",
+      "250g de poitrine de poulet",
+      "200g de haricots noirs en conserve",
+      "1 avocat",
+      "1 tomate, en dés",
+      "1/2 oignon, émincé",
+      "2 gousses d'ail",
+      "1 c. à café de cumin",
+      "400ml d'eau tiède",
+      "Sel",
+      "Huile pour cuisson"
+    ],
+    "etapes": [
+      "Pocher le poulet dans l'eau avec ail et sel 20 min. Effilocher à la fourchette.",
+      "Réchauffer les haricots noirs avec cumin, écraser légèrement.",
+      "Pour les arepas: mélanger farine, sel et eau tiède. Pétrir 3 min.",
+      "Former 8 galettes de 1.5 cm d'épaisseur.",
+      "Cuire à la poêle huilée 5 min par côté, puis au four 180°C 10 min.",
+      "Les arepas doivent sonner creux quand on tape dessus.",
+      "Ouvrir en deux horizontalement, garnir de haricots, poulet, avocat et tomate.",
+      "Servir immédiatement."
+    ],
+    "portions": 4,
+    "description": "Les arepas sont le pain quotidien du Venezuela et de la Colombie depuis l'époque précolombienne. Ces galettes de maïs peuvent être grillées, frites ou cuites au four, puis garnies de mille façons. À Caracas, les « areperas » sont ouvertes 24h/24.",
+    "etapes_weekend": [
+      1,
+      2,
+      3
+    ],
+    "note_weekend": "La garniture (viande effilochée, haricots) peut être entièrement préparée."
+  },
+  {
+    "num": 16,
+    "nom": "Dal tadka aux lentilles",
+    "origine": "Inde",
+    "temps_prep_semaine": "10 min",
+    "temps_prep_weekend": "40 min",
+    "prep_weekend": "Cuire les lentilles, préparer le tadka",
+    "conservation": "Frigo 5 jours | Congélateur 3 mois",
+    "rechauffage": "Se réchauffe parfaitement, ajouter eau si épais",
+    "proteines": "Lentilles corail (200g)",
+    "legumes": "Tomates, épinards, oignons, ail, gingembre",
+    "feculents": "Riz basmati (200g)",
+    "variantes": "Lentilles vertes, ajout de poulet, pois chiches",
+    "ingredients": [
+      "200g de lentilles corail",
+      "200g de riz basmati",
+      "100g d'épinards frais",
+      "2 tomates, en dés",
+      "1 oignon, haché",
+      "4 gousses d'ail, hachées",
+      "2 cm de gingembre, râpé",
+      "1 c. à café de curcuma",
+      "1 c. à café de cumin (graines)",
+      "1 c. à café de garam masala",
+      "1/2 c. à café de piment",
+      "2 c. à soupe de ghee ou huile",
+      "Coriandre fraîche"
+    ],
+    "etapes": [
+      "Rincer les lentilles, cuire dans 600ml d'eau avec curcuma 20-25 min.",
+      "Cuire le riz basmati selon les instructions.",
+      "Pour le tadka: chauffer le ghee, faire crépiter les graines de cumin.",
+      "Ajouter oignon, faire dorer 5 min. Incorporer ail et gingembre.",
+      "Ajouter les tomates, cuire 5 min jusqu'à ce qu'elles fondent.",
+      "Verser cette préparation dans les lentilles, mélanger.",
+      "Ajouter les épinards, garam masala et piment. Cuire 5 min.",
+      "Servir sur le riz, garnir de coriandre."
+    ],
+    "portions": 4,
+    "description": "Le dal est l'âme de la cuisine indienne, préparé quotidiennement dans des millions de foyers. Cette soupe de lentilles épicée existe en centaines de variations régionales. Le tadka, ces épices grésillantes versées au dernier moment, lui donne sa signature aromatique.",
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "note_weekend": "Le dal peut être entièrement préparé, le tadka sera refait au moment de servir pour plus de fraîcheur."
+  },
+  {
+    "num": 17,
+    "nom": "Poulet tikka masala",
+    "origine": "Inde / Royaume-Uni",
+    "temps_prep_semaine": "20 min",
+    "temps_prep_weekend": "45 min + marinade",
+    "prep_weekend": "Mariner poulet, préparer sauce masala",
+    "conservation": "Frigo 4 jours | Congélateur 3 mois",
+    "rechauffage": "Se réchauffe très bien",
+    "proteines": "Poulet (350g)",
+    "legumes": "Tomates, oignons, poivrons, gingembre",
+    "feculents": "Riz basmati (200g)",
+    "variantes": "Tofu, paneer (si toléré), pois chiches",
+    "ingredients": [
+      "350g de poitrine de poulet, en cubes",
+      "200g de riz basmati",
+      "Marinade: 150ml lait de coco, 2 c. à soupe pâte tandoori ou garam masala, 1 c. à café curcuma, jus 1 citron",
+      "400g de tomates concassées",
+      "200ml de lait de coco",
+      "1 oignon, haché",
+      "1 poivron rouge, en dés",
+      "3 gousses d'ail",
+      "2 cm de gingembre",
+      "2 c. à café de garam masala",
+      "1 c. à café de cumin",
+      "Coriandre fraîche"
+    ],
+    "etapes": [
+      "Mélanger les ingrédients de la marinade, enrober le poulet. Réfrigérer 2h minimum.",
+      "Cuire le riz basmati.",
+      "Griller le poulet mariné à feu vif jusqu'à coloration. Réserver.",
+      "Faire revenir l'oignon, l'ail et le gingembre 5 min.",
+      "Ajouter le poivron, cuire 3 min.",
+      "Incorporer tomates, épices, laisser mijoter 10 min.",
+      "Verser le lait de coco, ajouter le poulet, mijoter 10 min.",
+      "Garnir de coriandre. Servir avec le riz basmati."
+    ],
+    "portions": 4,
+    "description": "Le tikka masala aurait été inventé à Glasgow dans les années 1970 par un chef bangladais qui aurait ajouté de la sauce tomate épicée à un poulet tikka jugé trop sec. Ce plat est aujourd'hui considéré comme le plat national britannique, symbole du multiculturalisme.",
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "note_weekend": "Le poulet peut être mariné et grillé, la sauce préparée séparément."
+  },
+  {
+    "num": 18,
+    "nom": "Curry de pois chiches (Chana Masala)",
+    "origine": "Inde",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "35 min",
+    "prep_weekend": "Préparer le curry complet",
+    "conservation": "Frigo 5 jours | Congélateur 3 mois",
+    "rechauffage": "Se réchauffe parfaitement",
+    "proteines": "Pois chiches (400g)",
+    "legumes": "Tomates, oignons, épinards, gingembre",
+    "feculents": "Pain naan ou riz (150g)",
+    "variantes": "Ajouter pommes de terre, paneer, poulet",
+    "ingredients": [
+      "400g de pois chiches en conserve (ou 200g secs, cuits)",
+      "150g de riz basmati ou 2 naans",
+      "100g d'épinards",
+      "400g de tomates concassées",
+      "2 oignons, hachés",
+      "4 gousses d'ail",
+      "3 cm de gingembre, râpé",
+      "2 c. à café de garam masala",
+      "1 c. à café de cumin moulu",
+      "1 c. à café de coriandre moulue",
+      "1/2 c. à café de curcuma",
+      "1 c. à café de piment (ajuster)",
+      "2 c. à soupe d'huile",
+      "Coriandre fraîche"
+    ],
+    "etapes": [
+      "Chauffer l'huile, faire revenir les oignons 8 min jusqu'à dorés.",
+      "Ajouter ail et gingembre, cuire 2 min.",
+      "Incorporer toutes les épices, mélanger 1 min.",
+      "Verser les tomates, laisser mijoter 10 min.",
+      "Ajouter les pois chiches égouttés et 100ml d'eau.",
+      "Cuire 15 min, écraser quelques pois chiches pour épaissir.",
+      "Incorporer les épinards en fin de cuisson.",
+      "Servir avec riz ou naan, garnir de coriandre."
+    ],
+    "portions": 4,
+    "description": "Le chana masala est un pilier de la cuisine punjabi, région à cheval entre l'Inde et le Pakistan. Les pois chiches mijotés dans cette sauce tomate aux épices complexes sont un plat végétarien nourrissant, souvent servi avec des bhaturas, pains frits gonflés.",
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "note_weekend": "Ce plat peut être entièrement préparé et se bonifie au repos."
+  },
+  {
+    "num": 19,
+    "nom": "Biryani aux légumes",
+    "origine": "Inde",
+    "temps_prep_semaine": "25 min",
+    "temps_prep_weekend": "1h",
+    "prep_weekend": "Préparer biryani complet (se bonifie)",
+    "conservation": "Frigo 4 jours | Congélateur 2 mois",
+    "rechauffage": "Four couvert 180°C 15 min ou micro-ondes",
+    "proteines": "Tofu ou paneer (200g) + noix de cajou",
+    "legumes": "Carottes, haricots verts, petits pois, oignons frits",
+    "feculents": "Riz basmati (250g)",
+    "variantes": "Poulet, agneau, crevettes, œufs durs",
+    "ingredients": [
+      "250g de riz basmati",
+      "200g de tofu ferme, en cubes (ou légumes variés)",
+      "100g de petits pois",
+      "1 carotte, en dés",
+      "100g de haricots verts, en tronçons",
+      "2 oignons, émincés finement",
+      "4 gousses d'ail, hachées",
+      "2 cm de gingembre, râpé",
+      "1 c. à café de garam masala",
+      "1/2 c. à café de curcuma",
+      "4 gousses de cardamome",
+      "1 bâton de cannelle",
+      "Quelques brins de safran dans 3 c. à soupe de lait de coco chaud",
+      "50g de noix de cajou",
+      "Menthe et coriandre fraîches",
+      "3 c. à soupe de ghee ou huile"
+    ],
+    "etapes": [
+      "Faire tremper le riz 30 min, égoutter.",
+      "Frire la moitié des oignons jusqu'à dorés et croustillants. Réserver.",
+      "Faire revenir l'autre moitié avec ail, gingembre et épices entières.",
+      "Ajouter les légumes et tofu, cuire 5 min.",
+      "Dans une autre casserole, cuire le riz à 70% dans l'eau salée.",
+      "Dans un plat à four, alterner couches de légumes et riz.",
+      "Verser le lait de coco safrané, parsemer de cajou et oignons frits.",
+      "Couvrir hermétiquement, cuire au four 180°C 25 min. Garnir d'herbes."
+    ],
+    "portions": 4,
+    "description": "Le biryani est un festin royal d'origine persane, perfectionné dans les cuisines des empereurs moghols. Ce riz parfumé au safran, cuit en couches avec viande et épices, était préparé pour les grandes célébrations. Chaque ville indienne revendique sa version authentique.",
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "note_weekend": "Le riz et les légumes peuvent être préparés séparément, l'assemblage final se fait au réchauffage."
+  },
+  {
+    "num": 20,
+    "nom": "Curry vert thaï au tofu",
+    "origine": "Thaïlande",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "25 min",
+    "prep_weekend": "Préparer curry complet, cuire riz",
+    "conservation": "Frigo 4 jours | Congélateur 2 mois",
+    "rechauffage": "Se réchauffe bien à feu doux",
+    "proteines": "Tofu ferme (300g)",
+    "legumes": "Aubergines thaï, poivrons, bambou, basilic thaï",
+    "feculents": "Riz jasmin (200g)",
+    "variantes": "Poulet, crevettes, canard",
+    "ingredients": [
+      "300g de tofu ferme, en cubes",
+      "200g de riz jasmin",
+      "400ml de lait de coco",
+      "3 c. à soupe de pâte de curry vert",
+      "1 aubergine thaï ou 1 petite aubergine, en morceaux",
+      "1 poivron rouge, en lanières",
+      "100g de pousses de bambou",
+      "1 c. à soupe de sauce soja",
+      "1 c. à café de sucre de palme ou cassonade",
+      "Feuilles de lime kaffir",
+      "Basilic thaï frais",
+      "2 c. à soupe d'huile végétale"
+    ],
+    "etapes": [
+      "Cuire le riz jasmin selon les instructions.",
+      "Faire dorer le tofu dans l'huile chaude de tous côtés. Réserver.",
+      "Dans la même poêle, faire revenir la pâte de curry 1 min.",
+      "Verser la moitié du lait de coco, laisser réduire 3 min.",
+      "Ajouter l'aubergine, cuire 5 min.",
+      "Incorporer le reste du lait de coco, le poivron et le bambou.",
+      "Remettre le tofu, assaisonner de sauce soja et sucre.",
+      "Ajouter les feuilles de lime et basilic. Servir sur le riz."
+    ],
+    "portions": 4,
+    "description": "Le curry vert thaïlandais tire sa couleur vive des piments verts frais et des herbes pilées au mortier. Moins connu que le curry rouge, il est pourtant le favori des Thaïlandais du centre. Le lait de coco et le basilic thaï équilibrent sa chaleur vibrante.",
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "note_weekend": "Le curry peut être entièrement préparé, le basilic sera ajouté au réchauffage."
+  },
+  {
+    "num": 21,
+    "nom": "Poulet yassa sénégalais",
+    "origine": "Sénégal",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "1h + marinade",
+    "prep_weekend": "Mariner poulet avec oignons, cuire complet",
+    "conservation": "Frigo 4 jours | Congélateur 3 mois",
+    "rechauffage": "Se réchauffe très bien",
+    "proteines": "Poulet (400g)",
+    "legumes": "Oignons (beaucoup!), citrons, olives",
+    "feculents": "Riz brisé (200g)",
+    "variantes": "Poisson yassa, agneau, tofu",
+    "ingredients": [
+      "400g de cuisses de poulet",
+      "200g de riz brisé ou long",
+      "4 gros oignons, émincés finement",
+      "Jus de 4 citrons",
+      "100g d'olives vertes",
+      "4 gousses d'ail, hachées",
+      "2 c. à soupe de moutarde de Dijon",
+      "2 piments (ajuster selon goût)",
+      "3 c. à soupe d'huile d'arachide",
+      "1 cube de bouillon",
+      "Sel, poivre"
+    ],
+    "etapes": [
+      "Mélanger jus de citron, moutarde, ail, piment, sel et poivre.",
+      "Mariner le poulet et les oignons dans ce mélange au moins 4h (idéal une nuit).",
+      "Retirer le poulet, le faire griller à la poêle ou au four jusqu'à doré.",
+      "Récupérer les oignons marinés, les faire fondre à feu doux 20 min.",
+      "Ajouter un peu d'eau et le cube de bouillon.",
+      "Remettre le poulet, ajouter les olives, mijoter 20-30 min couvert.",
+      "Cuire le riz brisé selon les instructions.",
+      "Servir le poulet nappé de sauce aux oignons sur le riz."
+    ],
+    "portions": 4,
+    "description": "Le poulet yassa est le plat national du Sénégal, originaire de Casamance. Les oignons caramélisés longuement avec le citron et la moutarde créent une sauce onctueuse et acidulée unique. Traditionnellement préparé pour les grandes fêtes et célébrations familiales.",
+    "etapes_weekend": [
+      1,
+      2,
+      3
+    ],
+    "note_weekend": "Le poulet peut mariner longuement (idéalement 24h) pour plus de saveur."
+  },
+  {
+    "num": 22,
+    "nom": "Jerk chicken jamaïcain",
+    "origine": "Jamaïque",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "35 min + marinade",
+    "prep_weekend": "Préparer marinade jerk, mariner poulet",
+    "conservation": "Frigo 4 jours | Congélateur 3 mois",
+    "rechauffage": "Se réchauffe bien au four",
+    "proteines": "Poulet (400g)",
+    "legumes": "Oignons verts, thym, piments, ail",
+    "feculents": "Riz et pois (rice and peas) (250g)",
+    "variantes": "Porc, poisson, crevettes, tofu",
+    "ingredients": [
+      "400g de hauts de cuisse de poulet",
+      "200g de riz long",
+      "200ml de lait de coco",
+      "150g de haricots rouges en conserve",
+      "Marinade jerk: 4 oignons verts, 4 gousses ail, 2-3 piments scotch bonnet (ou habanero), 2 c. à soupe thym frais, 1 c. à café piment de Jamaïque, 1/2 c. café cannelle, 1/2 c. café muscade, 3 c. à soupe sauce soja, 2 c. à soupe vinaigre, 2 c. à soupe huile, jus 1 lime",
+      "1 feuille de laurier"
+    ],
+    "etapes": [
+      "Mixer tous les ingrédients de la marinade jerk.",
+      "Enrober le poulet, mariner au moins 4h (idéal une nuit).",
+      "Pour le riz: cuire le riz avec lait de coco, eau, laurier et haricots.",
+      "Griller le poulet au BBQ ou au four à 200°C, 25-30 min.",
+      "Badigeonner régulièrement de marinade pendant la cuisson.",
+      "La peau doit être légèrement noircie et caramélisée.",
+      "Aérer le riz à la fourchette, retirer le laurier.",
+      "Servir le poulet sur le riz aux haricots."
+    ],
+    "portions": 4,
+    "description": "Le jerk chicken est né dans les montagnes de la Jamaïque, créé par les Marrons, esclaves africains en fuite. Cette technique de marinade épicée et de cuisson au bois de pimento est devenue l'emblème culinaire de l'île, célébrée chaque été lors des festivals.",
+    "etapes_weekend": [
+      1,
+      2
+    ],
+    "note_weekend": "Le poulet doit mariner au moins 4h, idéalement toute la nuit."
+  },
+  {
+    "num": 23,
+    "nom": "Doro wat éthiopien",
+    "origine": "Éthiopie",
+    "temps_prep_semaine": "25 min",
+    "temps_prep_weekend": "1h30",
+    "prep_weekend": "Préparer le wat complet (se bonifie)",
+    "conservation": "Frigo 5 jours | Congélateur 3 mois",
+    "rechauffage": "Se réchauffe parfaitement",
+    "proteines": "Poulet (400g) + œufs durs (4)",
+    "legumes": "Oignons (beaucoup), tomates, gingembre",
+    "feculents": "Injera ou riz (200g)",
+    "variantes": "Bœuf (key wat), lentilles (misir wat)",
+    "ingredients": [
+      "400g de cuisses de poulet",
+      "4 œufs durs",
+      "4 gros oignons, hachés très finement",
+      "3 c. à soupe de berbere (mélange d'épices éthiopien)",
+      "3 c. à soupe de tomate concentrée",
+      "4 gousses d'ail, hachées",
+      "3 cm de gingembre, râpé",
+      "100ml d'huile végétale ou niter kibbeh (beurre clarifié épicé)",
+      "200ml d'eau ou bouillon",
+      "Injera ou riz pour servir"
+    ],
+    "etapes": [
+      "Faire revenir les oignons à sec dans une grande casserole 15-20 min, en remuant.",
+      "Ajouter l'huile, l'ail et le gingembre, cuire 5 min.",
+      "Incorporer le berbere et la tomate concentrée, mélanger 2 min.",
+      "Verser l'eau, porter à ébullition.",
+      "Ajouter le poulet, couvrir et mijoter 45 min à feu doux.",
+      "Pendant ce temps, cuire les œufs durs, les écaler.",
+      "Faire de petites incisions dans les œufs, les ajouter au wat.",
+      "Poursuivre la cuisson 10 min. Servir sur l'injera ou le riz."
+    ],
+    "portions": 4,
+    "description": "Le doro wat est le plat de fête par excellence en Éthiopie, traditionnellement servi lors des grandes occasions et fêtes religieuses. Ce ragoût de poulet mijoté dans le berbéré, mélange d'épices complexe, se déguste avec l'injera, cette crêpe spongieuse qui sert d'assiette et de couverts.",
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "note_weekend": "Ce plat mijoté peut être entièrement préparé et se bonifie au repos."
+  },
+  {
+    "num": 24,
+    "nom": "Thiéboudienne sénégalais",
+    "origine": "Sénégal",
+    "temps_prep_semaine": "30 min",
+    "temps_prep_weekend": "1h30",
+    "prep_weekend": "Préparer plat complet (se conserve bien)",
+    "conservation": "Frigo 3 jours",
+    "rechauffage": "Se réchauffe bien, ajouter un peu d'eau",
+    "proteines": "Poisson (thiof ou autre poisson blanc) (350g)",
+    "legumes": "Tomates, carottes, chou, aubergine, manioc",
+    "feculents": "Riz brisé (250g)",
+    "variantes": "Poulet, viande, version végétarienne",
+    "ingredients": [
+      "350g de poisson blanc en darnes",
+      "250g de riz brisé",
+      "2 carottes, en gros morceaux",
+      "1/4 de chou, en quartiers",
+      "1 aubergine, en morceaux",
+      "100g de manioc (ou pomme de terre)",
+      "2 c. à soupe de concentré de tomate",
+      "1 oignon, haché",
+      "4 gousses d'ail",
+      "1 bouquet de persil",
+      "1 piment",
+      "2 c. à soupe d'huile d'arachide",
+      "1 cube de bouillon"
+    ],
+    "etapes": [
+      "Préparer le rof: mixer ail, persil et piment. Farcir les poissons avec des incisions.",
+      "Faire dorer le poisson dans l'huile. Réserver.",
+      "Faire revenir l'oignon, ajouter le concentré de tomate, cuire 5 min.",
+      "Verser 1L d'eau, le cube de bouillon, porter à ébullition.",
+      "Ajouter les légumes par ordre de temps de cuisson (manioc d'abord, puis chou, etc.).",
+      "Quand les légumes sont cuits, les retirer avec le poisson. Réserver au chaud.",
+      "Dans le bouillon, cuire le riz jusqu'à absorption complète.",
+      "Disposer le riz en dôme, entourer des légumes et poisson."
+    ],
+    "portions": 4,
+    "description": "Le thiéboudienne (« riz au poisson » en wolof) est le plat national du Sénégal, inscrit au patrimoine immatériel de l'UNESCO. Originaire de Saint-Louis, ce riz rouge cuit dans le bouillon de poisson farci aux herbes est un chef-d'œuvre de la cuisine ouest-africaine.",
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "note_weekend": "La farce aux herbes et le bouillon peuvent être préparés à l'avance."
+  },
+  {
+    "num": 25,
+    "nom": "Colombo de porc antillais",
+    "origine": "Martinique / Antilles",
+    "temps_prep_semaine": "20 min",
+    "temps_prep_weekend": "1h",
+    "prep_weekend": "Préparer colombo complet (se bonifie)",
+    "conservation": "Frigo 5 jours | Congélateur 3 mois",
+    "rechauffage": "Se réchauffe parfaitement",
+    "proteines": "Porc (350g)",
+    "legumes": "Aubergine, christophine, tomates, oignons",
+    "feculents": "Riz créole (200g)",
+    "variantes": "Poulet, cabri, poisson, légumes seuls",
+    "ingredients": [
+      "350g d'épaule de porc, en cubes",
+      "200g de riz",
+      "3 c. à soupe de poudre à colombo",
+      "1 aubergine, en cubes",
+      "1 christophine (chayotte), en cubes",
+      "2 tomates, en dés",
+      "2 oignons, émincés",
+      "4 gousses d'ail, hachées",
+      "1 bouquet garni (thym, laurier, persil, oignon vert)",
+      "1 piment antillais",
+      "Jus de 2 citrons verts",
+      "3 c. à soupe d'huile",
+      "400ml d'eau"
+    ],
+    "etapes": [
+      "Mariner le porc avec le jus de citron, l'ail et 1 c. à soupe de colombo 1h.",
+      "Faire dorer le porc dans l'huile chaude. Réserver.",
+      "Faire revenir les oignons, ajouter le reste du colombo, cuire 2 min.",
+      "Ajouter les tomates, cuire 5 min.",
+      "Remettre le porc, verser l'eau, ajouter le bouquet garni et piment entier.",
+      "Couvrir et mijoter 30 min.",
+      "Ajouter l'aubergine et la christophine, poursuivre 20 min.",
+      "Cuire le riz. Servir le colombo sur le riz créole."
+    ],
+    "portions": 4,
+    "description": "Le colombo est l'héritage des travailleurs indiens arrivés aux Antilles au 19e siècle. Cette poudre d'épices, adaptation locale du curry, porte le nom de la capitale du Sri Lanka d'où partaient les bateaux. Le colombo de porc est devenu emblématique de la Martinique.",
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "note_weekend": "Ce plat mijoté peut être entièrement préparé et se bonifie au repos."
+  },
+  {
+    "num": 26,
+    "nom": "Ramen au miso et porc",
+    "origine": "Japon",
+    "temps_prep_semaine": "20 min",
+    "temps_prep_weekend": "1h (avec bouillon maison)",
+    "prep_weekend": "Préparer bouillon, mariner œufs, cuire porc",
+    "conservation": "Bouillon frigo 5 jours | Congélateur 3 mois",
+    "rechauffage": "Réchauffer bouillon, assembler avec nouilles fraîches",
+    "proteines": "Porc (chashu) (200g) + œuf mollet",
+    "legumes": "Maïs, oignons verts, algues nori, champignons",
+    "feculents": "Nouilles ramen (200g)",
+    "variantes": "Poulet, tofu, version végétarienne",
+    "ingredients": [
+      "200g de poitrine de porc (pour chashu)",
+      "200g de nouilles ramen fraîches ou sèches",
+      "2 œufs (pour œufs mollets marinés)",
+      "1L de bouillon de poulet",
+      "3 c. à soupe de miso blanc",
+      "2 c. à soupe de sauce soja",
+      "1 c. à soupe d'huile de sésame",
+      "100g de maïs en grains",
+      "100g de champignons shiitake, émincés",
+      "4 oignons verts, émincés",
+      "Feuilles de nori",
+      "Marinade porc: 3 c. à soupe sauce soja, 2 c. à soupe saké, 1 c. à soupe sucre"
+    ],
+    "etapes": [
+      "Cuire le porc dans la marinade à feu doux 45 min (ou utiliser une cocotte).",
+      "Cuire les œufs 6 min 30 pour des mollets, les mariner dans sauce soja diluée.",
+      "Faire sauter les champignons, réserver.",
+      "Porter le bouillon à frémissement, incorporer le miso en fouettant.",
+      "Ajouter sauce soja et huile de sésame.",
+      "Cuire les nouilles selon les instructions, égoutter.",
+      "Répartir les nouilles dans les bols, verser le bouillon chaud.",
+      "Garnir de tranches de porc, œuf coupé en deux, maïs, champignons, oignons et nori."
+    ],
+    "portions": 4,
+    "description": "Le ramen est devenu une obsession nationale au Japon, avec des restaurants spécialisés dans chaque style régional. Ce plat d'origine chinoise a été transformé par les Japonais en un art culinaire, où le bouillon mijote parfois 24 heures pour atteindre la perfection.",
+    "etapes_weekend": [
+      1,
+      2,
+      3
+    ],
+    "note_weekend": "Le bouillon et le porc peuvent être préparés, les œufs marinés 24h à l'avance."
+  },
+  {
+    "num": 27,
+    "nom": "Paella aux fruits de mer",
+    "origine": "Espagne",
+    "temps_prep_semaine": "25 min",
+    "temps_prep_weekend": "50 min",
+    "prep_weekend": "Préparer fumet, nettoyer fruits de mer",
+    "conservation": "Frigo 2 jours (fruits de mer)",
+    "rechauffage": "Meilleur frais, sinon four doux couvert",
+    "proteines": "Fruits de mer variés (400g)",
+    "legumes": "Poivrons, tomates, petits pois, haricots verts",
+    "feculents": "Riz bomba ou arborio (250g)",
+    "variantes": "Poulet et lapin, mixte, végétarienne",
+    "ingredients": [
+      "400g de fruits de mer (moules, crevettes, calamars)",
+      "250g de riz bomba ou arborio",
+      "1 poivron rouge, en lanières",
+      "2 tomates, râpées",
+      "100g de petits pois",
+      "100g de haricots verts plats, en tronçons",
+      "4 gousses d'ail, hachées",
+      "1 dose de safran (ou colorant paella)",
+      "1 c. à café de paprika fumé",
+      "700ml de fumet de poisson ou bouillon",
+      "4 c. à soupe d'huile d'olive",
+      "Citron pour servir"
+    ],
+    "etapes": [
+      "Infuser le safran dans le bouillon chaud.",
+      "Dans une paellera ou grande poêle, chauffer l'huile à feu vif.",
+      "Saisir les fruits de mer 2 min, réserver.",
+      "Faire revenir le poivron et les haricots 5 min.",
+      "Ajouter l'ail, les tomates et le paprika, cuire 3 min.",
+      "Verser le riz, mélanger pour l'enrober, étaler uniformément.",
+      "Verser le bouillon safrané, NE PLUS REMUER.",
+      "Cuire 15 min à feu moyen, ajouter fruits de mer et petits pois, poursuivre 5 min. Laisser reposer 5 min avant de servir avec citron."
+    ],
+    "portions": 4,
+    "description": "La paella est née à Valence au 19e siècle, cuisinée par les paysans sur feu de bois avec ce qu'ils avaient : riz, haricots, escargots, lapin. La version aux fruits de mer est une adaptation côtière. Le socarrat, cette croûte de riz caramélisée au fond, est le trésor du plat.",
+    "etapes_weekend": [
+      1,
+      2
+    ],
+    "note_weekend": "Le bouillon au safran peut être préparé et les fruits de mer nettoyés."
+  },
+  {
+    "num": 28,
+    "nom": "Poulet au citron et olives à la méditerranéenne",
+    "origine": "Italie / Méditerranée",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "45 min",
+    "prep_weekend": "Mariner poulet, préparer légumes",
+    "conservation": "Frigo 4 jours | Congélateur 2 mois",
+    "rechauffage": "Se réchauffe bien au four",
+    "proteines": "Poulet (400g)",
+    "legumes": "Tomates cerises, olives, artichauts, oignons",
+    "feculents": "Polenta crémeuse (200g)",
+    "variantes": "Poisson, crevettes, tofu",
+    "ingredients": [
+      "400g de hauts de cuisse de poulet",
+      "200g de polenta instantanée",
+      "200g de tomates cerises",
+      "100g d'olives variées",
+      "200g de cœurs d'artichauts (en conserve), égouttés",
+      "1 oignon rouge, en quartiers",
+      "4 gousses d'ail, en chemise",
+      "2 citrons (1 en tranches, 1 pour jus)",
+      "2 c. à soupe d'huile d'olive",
+      "1 c. à café d'herbes de Provence",
+      "Câpres (optionnel)",
+      "Basilic frais"
+    ],
+    "etapes": [
+      "Préchauffer le four à 200°C.",
+      "Assaisonner le poulet d'herbes de Provence, sel et poivre.",
+      "Dans un plat à four, disposer le poulet, oignon, tomates, olives, artichauts et ail.",
+      "Arroser d'huile d'olive et du jus d'un citron, ajouter les tranches de citron.",
+      "Enfourner 35-40 min jusqu'à ce que le poulet soit doré.",
+      "Pendant ce temps, préparer la polenta selon les instructions.",
+      "Ajouter un filet d'huile d'olive à la polenta pour la rendre crémeuse.",
+      "Servir le poulet et légumes sur la polenta, garnir de basilic."
+    ],
+    "portions": 4,
+    "description": "Le poulet aux citrons confits et olives évoque les riads de Fès et les souks parfumés de Marrakech. Cette combinaison aigre-douce-salée est typique de la cuisine marocaine raffinée, héritière des influences berbères, arabes, andalouses et juives séfarades.",
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "note_weekend": "Ce tajine peut être entièrement préparé et se bonifie au repos."
+  },
+  {
+    "num": 29,
+    "nom": "Saumon teriyaki et légumes sautés",
+    "origine": "Japon",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "25 min",
+    "prep_weekend": "Préparer sauce teriyaki, couper légumes",
+    "conservation": "Saumon frigo 2 jours | Sauce 2 semaines",
+    "rechauffage": "Meilleur frais, sinon four doux",
+    "proteines": "Saumon (350g)",
+    "legumes": "Brocoli, carottes, edamame, oignons verts",
+    "feculents": "Riz sushi (200g)",
+    "variantes": "Tofu, poulet, crevettes",
+    "ingredients": [
+      "350g de filet de saumon, en 2 portions",
+      "200g de riz à sushi",
+      "200g de brocoli, en fleurettes",
+      "1 carotte, en julienne",
+      "100g d'edamame décortiqués",
+      "2 oignons verts, émincés",
+      "Sauce teriyaki: 4 c. à soupe sauce soja, 2 c. à soupe mirin, 2 c. à soupe saké (ou vin blanc), 1 c. à soupe sucre, 1 c. à café gingembre râpé",
+      "Graines de sésame",
+      "1 c. à soupe d'huile végétale"
+    ],
+    "etapes": [
+      "Cuire le riz à sushi selon les instructions.",
+      "Mélanger tous les ingrédients de la sauce teriyaki dans une petite casserole.",
+      "Faire réduire la sauce à feu moyen jusqu'à épaississement, 5-7 min.",
+      "Badigeonner le saumon de sauce, faire cuire à la poêle 4 min par côté.",
+      "Blanchir le brocoli 2 min, faire sauter avec carotte et edamame.",
+      "Assaisonner les légumes d'un peu de sauce soja.",
+      "Servir le saumon sur le riz, napper du reste de sauce teriyaki.",
+      "Garnir de légumes, oignons verts et graines de sésame."
+    ],
+    "portions": 4,
+    "description": "Le saumon teriyaki illustre la rencontre entre tradition japonaise et influences occidentales. La sauce teriyaki (« éclat brillant ») glacée sur le poisson est une technique d'Edo (ancien Tokyo). Ce plat est devenu un classique de la cuisine japonaise moderne et internationale.",
+    "etapes_weekend": [
+      1,
+      2
+    ],
+    "note_weekend": "La sauce peut être préparée et les légumes coupés. Le saumon sera cuit au dernier moment."
+  },
+  {
+    "num": 30,
+    "nom": "Buddha bowl méditerranéen",
+    "origine": "Fusion",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "40 min",
+    "prep_weekend": "Cuire quinoa, rôtir légumes, préparer houmous",
+    "conservation": "Composants séparés frigo 5 jours",
+    "rechauffage": "Meilleur froid ou température ambiante",
+    "proteines": "Pois chiches rôtis (200g) + houmous",
+    "legumes": "Courgettes, poivrons, tomates, concombre, épinards",
+    "feculents": "Quinoa (150g)",
+    "variantes": "Ajouter falafel, poulet grillé, halloumi grillé (si toléré)",
+    "ingredients": [
+      "200g de pois chiches en conserve, égouttés",
+      "150g de quinoa",
+      "100g d'épinards frais",
+      "1 courgette, en demi-lunes",
+      "1 poivron rouge, en lanières",
+      "10 tomates cerises, coupées en deux",
+      "1/2 concombre, en dés",
+      "4 c. à soupe de houmous",
+      "2 c. à soupe d'huile d'olive",
+      "1 c. à café de cumin",
+      "1 c. à café de paprika",
+      "Jus d'un citron",
+      "Tahini pour arroser",
+      "Persil frais"
+    ],
+    "etapes": [
+      "Préchauffer le four à 200°C.",
+      "Mélanger les pois chiches avec 1 c. à soupe d'huile, cumin, paprika. Étaler sur une plaque.",
+      "Ajouter courgette et poivron sur la plaque, huiler légèrement.",
+      "Rôtir 25-30 min jusqu'à ce que les pois chiches soient croustillants.",
+      "Cuire le quinoa selon les instructions, laisser refroidir légèrement.",
+      "Dans chaque bol, disposer le quinoa comme base.",
+      "Ajouter épinards, légumes rôtis, tomates, concombre et pois chiches.",
+      "Servir avec une cuillère de houmous, arroser de tahini et jus de citron."
+    ],
+    "portions": 4,
+    "description": "Le Buddha bowl est né dans les cercles végétariens californiens des années 2010, inspiré des bols zen des moines bouddhistes. Son nom viendrait de la forme bombée du bol rempli, évoquant le ventre de Bouddha. Il incarne la tendance du « manger sain et coloré ».",
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "note_weekend": "Les légumes rôtis, pois chiches et sauce peuvent être préparés à l'avance."
+  },
+  {
+    "num": 31,
+    "nom": "Pâté chinois revisité",
+    "origine": "Québec",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "45 min",
+    "prep_weekend": "Cuire viande assaisonnée, préparer purée de pommes de terre",
+    "conservation": "Frigo 4 jours | Congélateur 3 mois",
+    "rechauffage": "Se réchauffe parfaitement au four",
+    "proteines": "Bœuf haché (400g)",
+    "legumes": "Maïs en grains, oignons, céleri, carottes",
+    "feculents": "Pommes de terre (500g)",
+    "variantes": "Dinde hachée, lentilles, patates douces en purée",
+    "portions": 6,
+    "description": "Le pâté chinois est un pilier de la cuisine familiale québécoise, hérité des ouvriers chinois du chemin de fer au 19e siècle. Ce plat réconfortant en trois étages — viande, maïs, purée — est le comfort food par excellence des soupers de semaine au Québec.",
+    "ingredients": [
+      "400g de bœuf haché maigre",
+      "500g de pommes de terre Yukon Gold",
+      "350g de maïs en grains (frais ou surgelé)",
+      "1 oignon, haché finement",
+      "2 branches de céleri, en dés",
+      "1 carotte, râpée",
+      "2 gousses d'ail, hachées",
+      "1 c. à café de paprika",
+      "1/2 c. à café de thym séché",
+      "60ml de lait d'avoine ou bouillon",
+      "2 c. à soupe d'huile d'olive",
+      "Sel, poivre",
+      "Paprika pour gratiner"
+    ],
+    "etapes": [
+      "Éplucher et couper les pommes de terre en cubes. Cuire à l'eau salée jusqu'à tendreté.",
+      "Pendant ce temps, chauffer l'huile et faire revenir l'oignon, le céleri et la carotte 5 minutes.",
+      "Ajouter le bœuf haché, l'ail, le paprika et le thym. Cuire en émiettant jusqu'à coloration.",
+      "Assaisonner généreusement. La viande doit être bien goûteuse.",
+      "Égoutter les pommes de terre et réduire en purée avec le lait d'avoine. Assaisonner.",
+      "Dans un plat allant au four, étaler la viande en première couche.",
+      "Couvrir uniformément de maïs en grains.",
+      "Étaler la purée sur le dessus, créer des stries à la fourchette, saupoudrer de paprika.",
+      "Gratiner au four à 200°C (400°F) pendant 20 minutes jusqu'à doré."
+    ],
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "note_weekend": "La viande assaisonnée et la purée peuvent être préparées séparément. Assembler et gratiner le jour même."
+  },
+  {
+    "num": 32,
+    "nom": "Tourtière du Lac-Saint-Jean",
+    "origine": "Québec",
+    "temps_prep_semaine": "20 min",
+    "temps_prep_weekend": "3h (avec cuisson)",
+    "prep_weekend": "Préparer et cuire la tourtière complète",
+    "conservation": "Frigo 5 jours | Congélateur 3 mois",
+    "rechauffage": "Four 180°C 25-30 min, couvrir de papier d'alu",
+    "proteines": "Porc, bœuf, poulet (500g total)",
+    "legumes": "Oignons, céleri, carottes",
+    "feculents": "Pommes de terre en cubes (300g), pâte à tarte",
+    "variantes": "Gibier (chevreuil, orignal), version au poulet seul",
+    "portions": 8,
+    "description": "La tourtière du Lac-Saint-Jean, appelée aussi « cipaille » ou « cipâte », est un monument de la cuisine québécoise traditionnelle. Contrairement à la tourtière du Sud plus fine, celle du Lac est un imposant pâté à plusieurs étages de viandes et pommes de terre, mijoté des heures.",
+    "ingredients": [
+      "200g de porc en cubes",
+      "200g de bœuf en cubes",
+      "100g de poulet en cubes",
+      "300g de pommes de terre, en cubes",
+      "2 oignons, hachés",
+      "2 branches de céleri, en dés",
+      "1 carotte, en dés",
+      "500ml de bouillon de bœuf",
+      "1 c. à café de sarriette",
+      "1/2 c. à café de clou de girofle moulu",
+      "1/2 c. à café de cannelle",
+      "2 pâtes à tarte (sans beurre, à l'huile)",
+      "Sel, poivre"
+    ],
+    "etapes": [
+      "Mélanger toutes les viandes avec les oignons, céleri, épices, sel et poivre. Laisser mariner 2h ou toute la nuit.",
+      "Préchauffer le four à 150°C (300°F).",
+      "Foncer un grand plat creux (ou cocotte) avec une pâte à tarte.",
+      "Disposer une couche de viande marinée, puis une couche de pommes de terre et carottes.",
+      "Répéter les couches jusqu'à épuisement des ingrédients.",
+      "Verser le bouillon doucement sur le côté.",
+      "Couvrir avec la seconde pâte, sceller les bords, faire des incisions pour la vapeur.",
+      "Cuire au four 2h30 à 3h, jusqu'à ce que les pommes de terre soient tendres.",
+      "Laisser reposer 15 minutes avant de servir."
+    ],
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "note_weekend": "Ce plat traditionnel se prépare entièrement le week-end et se bonifie au repos. Idéal pour les grandes tablées."
+  },
+  {
+    "num": 33,
+    "nom": "Soupe aux pois à l'ancienne",
+    "origine": "Québec",
+    "temps_prep_semaine": "10 min",
+    "temps_prep_weekend": "2h (avec trempage)",
+    "prep_weekend": "Préparer la soupe complète",
+    "conservation": "Frigo 5 jours | Congélateur 3 mois",
+    "rechauffage": "Se réchauffe parfaitement, ajouter du bouillon si trop épaisse",
+    "proteines": "Jambon fumé ou lardons (200g)",
+    "legumes": "Carottes, céleri, oignons, poireaux",
+    "feculents": "Pois jaunes secs (300g)",
+    "variantes": "Version végétarienne aux herbes salées, avec saucisses fumées",
+    "portions": 8,
+    "description": "La soupe aux pois est l'âme de l'hiver québécois, héritée des colons français. Nourrissante et économique, elle mijotait sur le poêle à bois des familles canadiennes-françaises. Le jambon fumé ou les herbes salées du Bas-du-Fleuve lui donnent sa signature.",
+    "ingredients": [
+      "300g de pois jaunes secs, trempés",
+      "200g de jambon fumé, en cubes (ou jarret)",
+      "2 carottes, en rondelles",
+      "2 branches de céleri, en dés",
+      "1 oignon, haché",
+      "1 poireau, émincé",
+      "2 gousses d'ail, hachées",
+      "1 feuille de laurier",
+      "1 c. à café de sarriette",
+      "2L d'eau ou bouillon",
+      "Sel, poivre",
+      "Herbes salées du Bas-du-Fleuve (optionnel)"
+    ],
+    "etapes": [
+      "Tremper les pois jaunes dans l'eau froide toute la nuit (ou minimum 4h). Égoutter.",
+      "Dans une grande marmite, déposer les pois, le jambon, les légumes et les aromates.",
+      "Couvrir d'eau ou de bouillon.",
+      "Porter à ébullition, écumer si nécessaire.",
+      "Réduire le feu et laisser mijoter 1h30 à 2h, jusqu'à ce que les pois soient fondants.",
+      "Retirer le laurier. Écraser légèrement une partie des pois pour épaissir.",
+      "Ajuster l'assaisonnement. Ajouter les herbes salées si désiré.",
+      "Servir très chaud avec du pain croûté."
+    ],
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "note_weekend": "Cette soupe se prépare entièrement le week-end et est encore meilleure réchauffée le lendemain."
+  },
+  {
+    "num": 34,
+    "nom": "Bún chả vietnamien",
+    "origine": "Vietnam",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "35 min",
+    "prep_weekend": "Préparer boulettes, mariner porc, faire sauce",
+    "conservation": "Viande frigo 3 jours | Sauce 2 semaines",
+    "rechauffage": "Griller la viande au dernier moment, servir tiède",
+    "proteines": "Porc haché et tranché (350g)",
+    "legumes": "Laitue, herbes fraîches, carottes marinées, concombre",
+    "feculents": "Vermicelles de riz (200g)",
+    "variantes": "Poulet grillé, tofu mariné, crevettes",
+    "portions": 4,
+    "description": "Le bún chả est le plat signature de Hanoi, rendu célèbre mondialement quand Barack Obama l'a dégusté avec Anthony Bourdain en 2016. Ces boulettes et tranches de porc grillées au charbon, servies avec vermicelles et herbes, incarnent l'équilibre parfait de la cuisine vietnamienne.",
+    "ingredients": [
+      "200g de porc haché",
+      "150g de poitrine de porc, tranchée finement",
+      "200g de vermicelles de riz",
+      "1 laitue, feuilles séparées",
+      "1 bouquet de menthe fraîche",
+      "1 bouquet de coriandre",
+      "1 carotte, en julienne marinée",
+      "1/2 concombre, en tranches",
+      "4 c. à soupe de sauce poisson",
+      "3 c. à soupe de sucre",
+      "2 c. à soupe de vinaigre de riz",
+      "2 gousses d'ail, hachées",
+      "1 piment rouge, émincé",
+      "100ml d'eau tiède"
+    ],
+    "etapes": [
+      "Mélanger sauce poisson, sucre, vinaigre, eau, ail et piment pour la sauce. Réserver.",
+      "Assaisonner le porc haché avec 1 c. à soupe de sauce, former des petites boulettes aplaties.",
+      "Mariner les tranches de poitrine dans 2 c. à soupe de sauce pendant 30 min.",
+      "Cuire les vermicelles selon les instructions, rincer à l'eau froide.",
+      "Griller les boulettes et tranches de porc au BBQ ou à la poêle jusqu'à caramélisation.",
+      "Disposer la laitue, les herbes, la carotte et le concombre dans les bols.",
+      "Ajouter les vermicelles et la viande grillée.",
+      "Servir avec la sauce à côté pour tremper."
+    ],
+    "etapes_weekend": [
+      1,
+      2,
+      3
+    ],
+    "note_weekend": "La sauce et les boulettes peuvent être préparées à l'avance. Griller la viande juste avant de servir pour le côté croustillant."
+  },
+  {
+    "num": 35,
+    "nom": "Nasi Goreng indonésien",
+    "origine": "Indonésie",
+    "temps_prep_semaine": "12 min",
+    "temps_prep_weekend": "25 min",
+    "prep_weekend": "Cuire riz (doit être froid), préparer garnitures",
+    "conservation": "Frigo 2 jours",
+    "rechauffage": "Poêle à feu vif uniquement",
+    "proteines": "Crevettes et poulet (250g), œuf",
+    "legumes": "Chou, carottes, oignons verts, échalotes",
+    "feculents": "Riz jasmin froid (300g cuit)",
+    "variantes": "Tofu, tempeh, végétarien",
+    "portions": 4,
+    "description": "Le Nasi Goreng est le plat national de l'Indonésie, né de la nécessité de ne pas gaspiller le riz de la veille. La kecap manis (sauce soja sucrée) lui donne sa couleur caramel distinctive. Traditionnellement servi au petit-déjeuner avec un œuf au plat.",
+    "ingredients": [
+      "300g de riz jasmin cuit et refroidi (idéalement de la veille)",
+      "150g de crevettes décortiquées",
+      "100g de poulet, en petits morceaux",
+      "2 œufs",
+      "100g de chou, émincé",
+      "1 carotte, râpée",
+      "4 oignons verts, émincés",
+      "3 échalotes, émincées finement",
+      "3 gousses d'ail, hachées",
+      "3 c. à soupe de kecap manis (sauce soja sucrée)",
+      "1 c. à soupe de sauce soja",
+      "1 c. à café de pâte de crevettes (optionnel)",
+      "1 c. à café de sambal oelek",
+      "2 c. à soupe d'huile végétale"
+    ],
+    "etapes": [
+      "S'assurer que le riz est bien froid et les grains séparés.",
+      "Battre les œufs, faire une omelette fine, rouler et émincer. Réserver.",
+      "Chauffer l'huile à feu vif dans un wok. Saisir le poulet 3 minutes, réserver.",
+      "Faire sauter les crevettes 2 minutes, réserver avec le poulet.",
+      "Dans le wok, faire revenir échalotes et ail 1 minute.",
+      "Ajouter le chou et la carotte, sauter 2 minutes.",
+      "Incorporer le riz froid, remuer vigoureusement pour séparer les grains.",
+      "Verser kecap manis, sauce soja et sambal. Bien mélanger.",
+      "Remettre poulet et crevettes, ajouter les oignons verts et l'omelette émincée.",
+      "Servir garni d'oignons frits et de tranches de concombre."
+    ],
+    "etapes_weekend": [
+      1,
+      2
+    ],
+    "note_weekend": "Le riz DOIT être cuit la veille et réfrigéré. L'omelette peut être préparée à l'avance."
+  },
+  {
+    "num": 36,
+    "nom": "Khao Pad thaïlandais",
+    "origine": "Thaïlande",
+    "temps_prep_semaine": "10 min",
+    "temps_prep_weekend": "20 min",
+    "prep_weekend": "Cuire riz la veille, préparer sauce et légumes",
+    "conservation": "Frigo 2 jours",
+    "rechauffage": "Wok à feu vif uniquement",
+    "proteines": "Poulet ou crevettes (250g), œuf",
+    "legumes": "Oignons, tomates, oignons verts, lime",
+    "feculents": "Riz jasmin froid (300g cuit)",
+    "variantes": "Crabe, porc, ananas (Khao Pad Sapparod)",
+    "portions": 4,
+    "description": "Le Khao Pad est la version thaïlandaise du riz sauté, omniprésent dans les rues de Bangkok. Plus léger que son cousin indonésien, il se distingue par sa fraîcheur avec la lime, le concombre et les herbes servies à côté. Un classique de la street food thaï.",
+    "ingredients": [
+      "300g de riz jasmin cuit et refroidi",
+      "250g de poulet ou crevettes",
+      "2 œufs",
+      "1 oignon, haché",
+      "1 tomate, en quartiers",
+      "3 oignons verts, émincés",
+      "3 gousses d'ail, hachées",
+      "2 c. à soupe de sauce soja claire",
+      "1 c. à soupe de sauce soja foncée",
+      "1 c. à soupe de sauce poisson",
+      "1 c. à café de sucre",
+      "2 c. à soupe d'huile végétale",
+      "Quartiers de lime pour servir",
+      "Concombre en tranches"
+    ],
+    "etapes": [
+      "Chauffer l'huile à feu très vif dans un wok.",
+      "Saisir le poulet ou les crevettes jusqu'à cuisson. Réserver.",
+      "Faire revenir l'ail et l'oignon 1 minute.",
+      "Pousser sur le côté, casser les œufs, brouiller rapidement.",
+      "Ajouter le riz froid, sauter vigoureusement 2-3 minutes.",
+      "Verser les sauces et le sucre, bien mélanger.",
+      "Remettre la protéine, ajouter la tomate et les oignons verts.",
+      "Servir immédiatement avec lime et concombre à côté."
+    ],
+    "etapes_weekend": [
+      1
+    ],
+    "note_weekend": "Le riz doit impérativement être froid (cuit la veille). Ce plat se prépare en quelques minutes le jour même."
+  },
+  {
+    "num": 37,
+    "nom": "Larb Gai salade thaïe",
+    "origine": "Thaïlande",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "25 min",
+    "prep_weekend": "Cuire poulet, préparer sauce, torréfier riz",
+    "conservation": "Frigo 2 jours (sans les herbes)",
+    "rechauffage": "Meilleur à température ambiante",
+    "proteines": "Poulet haché (400g)",
+    "legumes": "Échalotes, oignons verts, menthe, coriandre, laitue",
+    "feculents": "Riz gluant (200g)",
+    "variantes": "Porc haché, canard, tofu émietté, bœuf",
+    "portions": 4,
+    "description": "Le Larb est la salade nationale du Laos, adoptée par le nord-est de la Thaïlande (Isaan). Cette explosion de saveurs — acide, piquante, fraîche — doit sa texture unique au khao khua, riz torréfié et pilé. Se mange traditionnellement avec du riz gluant à la main.",
+    "ingredients": [
+      "400g de poulet haché",
+      "200g de riz gluant",
+      "3 c. à soupe de riz cru (pour khao khua)",
+      "4 échalotes, émincées finement",
+      "4 oignons verts, émincés",
+      "1 bouquet de menthe fraîche",
+      "1 bouquet de coriandre",
+      "4 c. à soupe de jus de lime",
+      "3 c. à soupe de sauce poisson",
+      "1 c. à café de piment séché broyé",
+      "1 c. à café de sucre",
+      "Feuilles de laitue pour servir"
+    ],
+    "etapes": [
+      "Torréfier le riz cru dans une poêle sèche jusqu'à doré. Piler grossièrement au mortier. C'est le khao khua.",
+      "Cuire le riz gluant à la vapeur selon les instructions.",
+      "Dans une poêle, cuire le poulet haché à sec, en émiettant, jusqu'à cuisson complète.",
+      "Retirer du feu et laisser tiédir légèrement.",
+      "Ajouter le jus de lime, la sauce poisson, le sucre et le piment. Mélanger.",
+      "Incorporer les échalotes, oignons verts et le khao khua.",
+      "Ajouter les herbes fraîches au dernier moment.",
+      "Servir dans des feuilles de laitue avec le riz gluant à côté."
+    ],
+    "etapes_weekend": [
+      1,
+      2,
+      3
+    ],
+    "note_weekend": "Le khao khua et le poulet peuvent être préparés à l'avance. Assembler avec les herbes fraîches au moment de servir."
+  },
+  {
+    "num": 38,
+    "nom": "Poulet Kung Pao",
+    "origine": "Chine",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "25 min",
+    "prep_weekend": "Mariner poulet, préparer sauce, mesurer ingrédients",
+    "conservation": "Frigo 3 jours",
+    "rechauffage": "Se réchauffe bien au wok",
+    "proteines": "Poulet (350g)",
+    "legumes": "Poivrons, courgettes, oignons verts, ail, gingembre",
+    "feculents": "Riz jasmin (200g)",
+    "variantes": "Crevettes, tofu, porc",
+    "portions": 4,
+    "description": "Le Kung Pao (Gong Bao) tire son nom d'un gouverneur de la dynastie Qing qui adorait ce plat. Originaire du Sichuan, il marie le piquant des piments séchés, le croquant des arachides et la tendreté du poulet. La sauce légèrement sucrée-salée est addictive.",
+    "ingredients": [
+      "350g de poitrine de poulet, en cubes",
+      "200g de riz jasmin",
+      "1 poivron rouge, en cubes",
+      "1 courgette, en demi-lunes",
+      "4 oignons verts, en tronçons",
+      "3 gousses d'ail, hachées",
+      "1 c. à soupe de gingembre, râpé",
+      "60g d'arachides grillées",
+      "8-10 piments séchés entiers",
+      "2 c. à soupe de sauce soja",
+      "1 c. à soupe de vinaigre de riz",
+      "1 c. à soupe de sauce hoisin",
+      "1 c. à café de fécule de maïs",
+      "1 c. à café de sucre",
+      "2 c. à soupe d'huile végétale"
+    ],
+    "etapes": [
+      "Mariner le poulet avec 1 c. à soupe de sauce soja et la fécule pendant 15 min.",
+      "Mélanger le reste de sauce soja, vinaigre, sauce hoisin et sucre pour la sauce.",
+      "Cuire le riz jasmin selon les instructions.",
+      "Chauffer l'huile dans un wok à feu vif. Saisir le poulet jusqu'à doré. Réserver.",
+      "Dans le wok, faire sauter les piments séchés 30 secondes (attention aux fumées!).",
+      "Ajouter ail, gingembre, puis les légumes. Sauter 3 minutes.",
+      "Remettre le poulet, verser la sauce, ajouter les arachides.",
+      "Garnir d'oignons verts et servir sur le riz."
+    ],
+    "etapes_weekend": [
+      1,
+      2
+    ],
+    "note_weekend": "Le poulet peut mariner et la sauce être préparée à l'avance. La cuisson rapide au wok se fait le jour même."
+  },
+  {
+    "num": 39,
+    "nom": "Donburi au saumon (Sake Don)",
+    "origine": "Japon",
+    "temps_prep_semaine": "12 min",
+    "temps_prep_weekend": "20 min",
+    "prep_weekend": "Cuire riz, préparer sauce et garnitures",
+    "conservation": "Consommer le jour même (poisson cru)",
+    "rechauffage": "Ne se réchauffe pas",
+    "proteines": "Saumon frais qualité sashimi (300g)",
+    "legumes": "Avocat, concombre, edamames, algues, oignons verts",
+    "feculents": "Riz à sushi (250g)",
+    "variantes": "Thon, pétoncles, version tataki (saumon saisi)",
+    "portions": 4,
+    "description": "Le Donburi (bol de riz garni) est le fast-food traditionnel japonais. Le Sake Don met en vedette le saumon cru sur un lit de riz vinaigré. Simple et pur, il célèbre la fraîcheur du poisson à la japonaise. Une option santé et rapide pour les soirs pressés.",
+    "ingredients": [
+      "300g de saumon frais qualité sashimi",
+      "250g de riz à sushi",
+      "2 c. à soupe de vinaigre de riz",
+      "1 c. à soupe de sucre",
+      "1 avocat mûr, en tranches",
+      "1/2 concombre, en tranches fines",
+      "100g d'edamames décortiquées",
+      "2 feuilles de nori, en lanières",
+      "2 oignons verts, émincés",
+      "Graines de sésame",
+      "Sauce soja pour servir",
+      "Wasabi (optionnel)"
+    ],
+    "etapes": [
+      "Cuire le riz à sushi selon les instructions. Assaisonner avec vinaigre et sucre tiède.",
+      "Éventer le riz en mélangeant pour le faire briller. Laisser tiédir.",
+      "Trancher le saumon en tranches de 5mm d'épaisseur.",
+      "Cuire les edamames si surgelées, rafraîchir à l'eau froide.",
+      "Répartir le riz dans 4 bols.",
+      "Disposer harmonieusement le saumon, l'avocat, le concombre et les edamames.",
+      "Garnir de nori, oignons verts et sésame.",
+      "Servir avec sauce soja et wasabi à côté."
+    ],
+    "etapes_weekend": [
+      1,
+      2,
+      4
+    ],
+    "note_weekend": "Le riz vinaigré peut être préparé à l'avance. Le saumon doit être tranché le jour même pour la fraîcheur."
+  },
+  {
+    "num": 40,
+    "nom": "Moussaka grecque (sans béchamel)",
+    "origine": "Grèce",
+    "temps_prep_semaine": "20 min",
+    "temps_prep_weekend": "1h15",
+    "prep_weekend": "Préparer la moussaka complète",
+    "conservation": "Frigo 4 jours | Congélateur 2 mois",
+    "rechauffage": "Four 180°C 25 min couvert",
+    "proteines": "Agneau ou bœuf haché (400g)",
+    "legumes": "Aubergines, tomates, oignons, ail",
+    "feculents": "Pommes de terre (300g)",
+    "variantes": "Version végétarienne aux lentilles, avec courgettes",
+    "portions": 6,
+    "description": "La moussaka est le gratin emblématique de la Grèce, hérité de l'Empire ottoman. Cette version sans béchamel laisse briller les aubergines grillées et la viande épicée à la cannelle. Un plat généreux qui nourrit les grandes tablées familiales depuis des générations.",
+    "ingredients": [
+      "400g d'agneau ou bœuf haché",
+      "3 aubergines moyennes, en tranches",
+      "300g de pommes de terre, en tranches fines",
+      "400g de tomates concassées",
+      "2 oignons, hachés",
+      "4 gousses d'ail, hachées",
+      "1 c. à café de cannelle",
+      "1 c. à café d'origan séché",
+      "1/2 c. à café de piment de la Jamaïque",
+      "100ml de vin rouge",
+      "4 c. à soupe d'huile d'olive",
+      "Sel, poivre",
+      "Persil frais pour garnir"
+    ],
+    "etapes": [
+      "Saler les tranches d'aubergine, laisser dégorger 30 min, rincer et sécher.",
+      "Badigeonner d'huile et griller les aubergines au four ou à la poêle.",
+      "Cuire les pommes de terre à l'eau salée jusqu'à mi-cuisson. Égoutter.",
+      "Faire revenir les oignons dans l'huile 5 minutes.",
+      "Ajouter la viande, l'ail, les épices. Cuire en émiettant jusqu'à coloration.",
+      "Verser le vin et les tomates. Mijoter 15 minutes. Assaisonner.",
+      "Dans un plat à gratin, alterner pommes de terre, viande et aubergines.",
+      "Terminer par une couche d'aubergines.",
+      "Cuire au four à 180°C pendant 35-40 minutes."
+    ],
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "note_weekend": "La moussaka peut être entièrement assemblée et cuite le week-end. Elle est encore meilleure réchauffée."
+  },
+  {
+    "num": 41,
+    "nom": "Fatteh libanais aux pois chiches",
+    "origine": "Liban",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "30 min",
+    "prep_weekend": "Cuire pois chiches, préparer sauce tahini",
+    "conservation": "Pois chiches frigo 4 jours | Assembler au dernier moment",
+    "rechauffage": "Réchauffer pois chiches, assembler frais",
+    "proteines": "Pois chiches (300g secs), pignons",
+    "legumes": "Tomates, persil, ail",
+    "feculents": "Pain pita croustillant",
+    "variantes": "Avec poulet effiloché, agneau, aubergines",
+    "portions": 4,
+    "description": "Le Fatteh est un plat de fête levantine, superposition de textures : pain croustillant, pois chiches fondants, sauce tahini onctueuse et pignons dorés. Originaire de la cuisine populaire de Beyrouth, il transforme du pain rassis en festin.",
+    "ingredients": [
+      "300g de pois chiches secs (ou 2 boîtes égouttées)",
+      "3 pains pita",
+      "200g de tahini (purée de sésame)",
+      "3 gousses d'ail, écrasées",
+      "Le jus de 2 citrons",
+      "150ml d'eau froide",
+      "50g de pignons de pin",
+      "1 c. à café de cumin moulu",
+      "1 c. à café de paprika",
+      "2 c. à soupe d'huile d'olive",
+      "Persil frais haché",
+      "Sel"
+    ],
+    "etapes": [
+      "Si pois chiches secs: tremper la nuit, cuire 1h jusqu'à tendreté. Garder l'eau de cuisson.",
+      "Préparer la sauce tahini: mixer tahini, ail, citron, eau et sel jusqu'à consistance crémeuse.",
+      "Ouvrir les pitas, les déchirer en morceaux et les faire griller au four jusqu'à croustillant.",
+      "Faire dorer les pignons dans un peu d'huile. Réserver.",
+      "Réchauffer les pois chiches dans un peu de leur eau de cuisson avec le cumin.",
+      "Dans un plat de service, déposer les pitas croustillants en première couche.",
+      "Verser un peu d'eau de cuisson tiède pour les humidifier légèrement.",
+      "Ajouter les pois chiches chauds, napper généreusement de sauce tahini.",
+      "Garnir de pignons dorés, paprika et persil. Servir immédiatement."
+    ],
+    "etapes_weekend": [
+      1,
+      2
+    ],
+    "note_weekend": "Les pois chiches et la sauce tahini se préparent à l'avance. L'assemblage final se fait au moment de servir pour garder le croustillant."
+  },
+  {
+    "num": 42,
+    "nom": "Köfte turques aux épices",
+    "origine": "Turquie",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "30 min",
+    "prep_weekend": "Former les köfte, préparer salade et sauce",
+    "conservation": "Köfte crues frigo 2 jours | Congélateur 3 mois",
+    "rechauffage": "Se réchauffent bien à la poêle",
+    "proteines": "Agneau ou bœuf haché (400g)",
+    "legumes": "Tomates, oignons, persil, sumac",
+    "feculents": "Boulgour (200g)",
+    "variantes": "Poulet haché, version grillée au BBQ",
+    "portions": 4,
+    "description": "Les Köfte sont les boulettes emblématiques de la Turquie, parfumées au cumin et à la menthe. Chaque région a sa recette, des İnegöl köfte aux Adana kebab. Servies avec boulgour et salade de tomates au sumac, elles évoquent les grillades des rues d'Istanbul.",
+    "ingredients": [
+      "400g d'agneau ou bœuf haché",
+      "200g de boulgour",
+      "1 oignon, râpé finement",
+      "2 gousses d'ail, écrasées",
+      "1 c. à café de cumin moulu",
+      "1 c. à café de paprika doux",
+      "1/2 c. à café de piment d'Alep",
+      "3 c. à soupe de persil frais, haché",
+      "2 c. à soupe de menthe fraîche, hachée",
+      "3 tomates, en dés",
+      "1 oignon rouge, émincé",
+      "1 c. à café de sumac",
+      "2 c. à soupe d'huile d'olive"
+    ],
+    "etapes": [
+      "Préparer le boulgour selon les instructions. Réserver.",
+      "Mélanger viande, oignon râpé, ail, épices et herbes. Pétrir 3-4 minutes.",
+      "Former des köfte ovales ou en petites saucisses.",
+      "Réfrigérer 30 min pour qu'elles tiennent mieux.",
+      "Préparer la salade: mélanger tomates, oignon rouge, sumac et huile d'olive.",
+      "Chauffer une poêle ou griller au BBQ. Cuire les köfte 4-5 min par côté.",
+      "Servir les köfte sur le boulgour avec la salade à côté.",
+      "Accompagner d'un filet de jus de citron."
+    ],
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "note_weekend": "Les köfte formées peuvent être réfrigérées ou congelées. Le boulgour et la salade se préparent aussi à l'avance."
+  },
+  {
+    "num": 43,
+    "nom": "Chermoula de poisson marocaine",
+    "origine": "Maroc",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "25 min",
+    "prep_weekend": "Préparer chermoula, mariner poisson",
+    "conservation": "Chermoula frigo 1 semaine | Poisson mariné 24h max",
+    "rechauffage": "Meilleur frais, sinon four doux",
+    "proteines": "Poisson blanc (400g) - bar, dorade, cabillaud",
+    "legumes": "Tomates, poivrons, oignons, coriandre, persil",
+    "feculents": "Semoule de couscous (200g)",
+    "variantes": "Crevettes, sardines, poulet",
+    "portions": 4,
+    "description": "La chermoula est la marinade magique du Maroc, mélange envoûtant de coriandre, cumin, paprika et citron confit. À Essaouira, les pêcheurs l'utilisent pour parfumer leur prise du jour. Cette sauce verte transforme n'importe quel poisson en festin marocain.",
+    "ingredients": [
+      "400g de filets de poisson blanc",
+      "200g de semoule de couscous",
+      "1 gros bouquet de coriandre",
+      "1/2 bouquet de persil",
+      "4 gousses d'ail",
+      "2 c. à café de cumin moulu",
+      "2 c. à café de paprika",
+      "1 c. à café de piment doux",
+      "1 citron confit, haché (ou zeste d'1 citron)",
+      "Le jus d'1 citron",
+      "100ml d'huile d'olive",
+      "2 tomates, en rondelles",
+      "1 poivron, en lanières",
+      "1 oignon, émincé"
+    ],
+    "etapes": [
+      "Mixer coriandre, persil, ail, épices, citron confit, jus et huile pour la chermoula.",
+      "Enrober généreusement le poisson de chermoula. Mariner minimum 1h (idéal 4h).",
+      "Préparer le couscous selon les instructions.",
+      "Dans un plat allant au four, disposer oignon, tomates et poivron.",
+      "Déposer le poisson mariné sur les légumes.",
+      "Verser le reste de chermoula sur le dessus.",
+      "Cuire au four à 200°C pendant 15-20 minutes selon l'épaisseur du poisson.",
+      "Servir sur le couscous, nappé du jus de cuisson."
+    ],
+    "etapes_weekend": [
+      1,
+      2
+    ],
+    "note_weekend": "La chermoula peut se préparer plusieurs jours à l'avance. Le poisson peut mariner jusqu'à 24h avant cuisson."
+  },
+  {
+    "num": 44,
+    "nom": "Dolmas (feuilles de vigne farcies)",
+    "origine": "Turquie",
+    "temps_prep_semaine": "20 min",
+    "temps_prep_weekend": "1h",
+    "prep_weekend": "Préparer et cuire les dolmas complètement",
+    "conservation": "Frigo 5 jours | Congélateur 2 mois",
+    "rechauffage": "Se dégustent froids ou tièdes",
+    "proteines": "Agneau haché (200g) ou version végé aux pignons",
+    "legumes": "Feuilles de vigne, oignons, tomates, herbes",
+    "feculents": "Riz (150g)",
+    "variantes": "Version végétarienne (sans viande), avec raisins secs",
+    "portions": 4,
+    "description": "Les Dolmas voyagent de la Grèce à l'Iran, chaque pays revendiquant leur origine. En Turquie, les dolmas à la viande (sarma) côtoient les versions végétariennes servies froides. Le secret: un roulage serré et une cuisson lente qui fait fondre les saveurs.",
+    "ingredients": [
+      "40 feuilles de vigne en saumure",
+      "200g d'agneau haché (ou omettre pour version végé)",
+      "150g de riz à grain long, rincé",
+      "2 oignons, hachés finement",
+      "3 c. à soupe de pignons de pin",
+      "3 c. à soupe de raisins secs (optionnel)",
+      "1 bouquet d'aneth, haché",
+      "1 bouquet de menthe, hachée",
+      "1 c. à café de cannelle",
+      "1 c. à café de piment de la Jamaïque",
+      "Le jus de 2 citrons",
+      "100ml d'huile d'olive",
+      "400ml de bouillon"
+    ],
+    "etapes": [
+      "Rincer les feuilles de vigne, les blanchir 2 minutes, égoutter.",
+      "Faire revenir les oignons dans l'huile 5 minutes.",
+      "Ajouter la viande (si utilisée), cuire en émiettant.",
+      "Incorporer riz, pignons, raisins, herbes et épices. Mélanger hors du feu.",
+      "Déposer une feuille de vigne à plat, côté nervures vers le haut.",
+      "Mettre 1 c. à soupe de farce près de la tige, replier les côtés, rouler serré.",
+      "Tapisser le fond d'une casserole de feuilles de vigne (protection).",
+      "Ranger les dolmas serrés en couches. Verser bouillon, citron et un filet d'huile.",
+      "Couvrir d'une assiette pour maintenir, cuire à feu doux 45 min."
+    ],
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "note_weekend": "Les dolmas se préparent entièrement le week-end. Ils sont encore meilleurs après 1-2 jours au frigo."
+  },
+  {
+    "num": 45,
+    "nom": "Sabich israélien",
+    "origine": "Israël",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "40 min",
+    "prep_weekend": "Frire aubergines, cuire œufs, préparer sauces",
+    "conservation": "Composants séparés frigo 3 jours",
+    "rechauffage": "Réchauffer aubergines au four, assembler frais",
+    "proteines": "Œufs durs (4), houmous",
+    "legumes": "Aubergines, tomates, concombre, chou rouge",
+    "feculents": "Pain pita",
+    "variantes": "Ajouter falafel, avec tahini ou amba (mangue)",
+    "portions": 4,
+    "description": "Le Sabich est le sandwich du samedi matin en Israël, apporté par les Juifs irakiens. Aubergines frites, œufs durs et sauce amba (mangue marinée) s'empilent dans un pita moelleux. C'est le rival du falafel dans les rues de Tel-Aviv.",
+    "ingredients": [
+      "2 grosses aubergines, en tranches",
+      "4 œufs",
+      "4 pains pita",
+      "200g de houmous",
+      "150g de tahini",
+      "2 tomates, en dés",
+      "1/2 concombre, en tranches",
+      "100g de chou rouge, émincé",
+      "Sauce amba ou mangue marinée (optionnel)",
+      "Persil frais",
+      "Huile pour friture",
+      "Sel"
+    ],
+    "etapes": [
+      "Cuire les œufs durs (10 min), refroidir et écaler.",
+      "Saler les tranches d'aubergine, laisser dégorger 20 min, sécher.",
+      "Frire les aubergines dans l'huile chaude jusqu'à dorées. Égoutter sur papier absorbant.",
+      "Préparer le tahini: délayer avec eau et citron jusqu'à consistance fluide.",
+      "Réchauffer légèrement les pitas.",
+      "Ouvrir chaque pita, tartiner généreusement de houmous.",
+      "Garnir d'aubergines, œuf tranché, tomates, concombre et chou.",
+      "Arroser de tahini et de sauce amba si disponible.",
+      "Parsemer de persil et servir immédiatement."
+    ],
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "note_weekend": "Les aubergines frites, œufs et sauces se préparent à l'avance. L'assemblage final prend 5 minutes."
+  },
+  {
+    "num": 46,
+    "nom": "Gallo Pinto costaricain",
+    "origine": "Costa Rica",
+    "temps_prep_semaine": "12 min",
+    "temps_prep_weekend": "25 min",
+    "prep_weekend": "Cuire riz et haricots séparément",
+    "conservation": "Frigo 3 jours",
+    "rechauffage": "Poêle à feu vif avec un peu d'huile",
+    "proteines": "Haricots noirs (200g secs), œufs",
+    "legumes": "Poivrons, oignons, coriandre",
+    "feculents": "Riz (200g)",
+    "variantes": "Avec chorizo, poulet effiloché, plantain frit",
+    "portions": 4,
+    "description": "Le Gallo Pinto (« coq tacheté ») est le petit-déjeuner national du Costa Rica et du Nicaragua. Ce riz sauté aux haricots noirs, parfumé à la sauce Lizano, donne l'énergie nécessaire pour affronter la journée. Servi avec œufs, crème et plantain.",
+    "ingredients": [
+      "200g de riz cuit (de la veille idéalement)",
+      "200g de haricots noirs cuits (ou 1 boîte)",
+      "2 œufs par personne",
+      "1 poivron rouge, en dés",
+      "1 oignon, haché",
+      "3 gousses d'ail, hachées",
+      "1 bouquet de coriandre, hachée",
+      "3 c. à soupe de sauce Lizano (ou Worcestershire)",
+      "2 c. à soupe d'huile végétale",
+      "Sel, poivre",
+      "Plantain mûr pour accompagner (optionnel)"
+    ],
+    "etapes": [
+      "Cuire le riz la veille et réfrigérer (essentiel pour la texture).",
+      "Égoutter les haricots en gardant un peu de liquide.",
+      "Chauffer l'huile dans une grande poêle. Faire revenir oignon et poivron 3 minutes.",
+      "Ajouter l'ail, cuire 1 minute.",
+      "Incorporer les haricots avec un peu de leur liquide. Écraser légèrement.",
+      "Ajouter le riz froid, mélanger vigoureusement à feu vif.",
+      "Verser la sauce Lizano, assaisonner. La couleur doit être tachetée.",
+      "Pendant ce temps, cuire les œufs au plat.",
+      "Servir garni de coriandre fraîche, avec les œufs sur le dessus."
+    ],
+    "etapes_weekend": [
+      1,
+      2
+    ],
+    "note_weekend": "Le riz et les haricots DOIVENT être préparés la veille pour la bonne texture. Le sauté final est très rapide."
+  },
+  {
+    "num": 47,
+    "nom": "Ají de Gallina péruvien",
+    "origine": "Pérou",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "45 min",
+    "prep_weekend": "Cuire et effilocher poulet, préparer sauce",
+    "conservation": "Frigo 4 jours | Congélateur 2 mois",
+    "rechauffage": "Se réchauffe très bien à feu doux",
+    "proteines": "Poulet (400g)",
+    "legumes": "Oignons, ail, piments ají amarillo",
+    "feculents": "Riz, pommes de terre (200g chaque)",
+    "variantes": "Dinde effilochée, version végétarienne aux champignons",
+    "portions": 4,
+    "description": "L'Ají de Gallina est un trésor de Lima, hérité de l'époque coloniale. Le poulet effiloché nage dans une sauce crémeuse aux noix et au piment ají amarillo, d'un jaune solaire caractéristique. Les olives noires et œufs durs complètent ce plat réconfortant.",
+    "ingredients": [
+      "400g de poitrine de poulet",
+      "200g de riz",
+      "200g de pommes de terre, cuites",
+      "3 tranches de pain de mie (sans croûte)",
+      "150ml de lait d'amande",
+      "100g de noix de Grenoble",
+      "3 c. à soupe de pâte d'ají amarillo",
+      "2 oignons, hachés",
+      "4 gousses d'ail, hachées",
+      "1 c. à café de cumin",
+      "100g d'olives noires",
+      "2 œufs durs",
+      "2 c. à soupe d'huile végétale"
+    ],
+    "etapes": [
+      "Pocher le poulet dans l'eau salée 20-25 minutes. Effilocher finement. Garder le bouillon.",
+      "Tremper le pain dans le lait d'amande.",
+      "Mixer les noix avec un peu de bouillon de poulet.",
+      "Faire revenir oignons et ail dans l'huile jusqu'à translucides.",
+      "Ajouter la pâte d'ají amarillo et le cumin, cuire 2 minutes.",
+      "Incorporer le pain trempé mixé et les noix mixées.",
+      "Ajouter du bouillon pour obtenir une sauce crémeuse.",
+      "Incorporer le poulet effiloché, mijoter 10 minutes.",
+      "Servir sur riz et pommes de terre, garnir d'olives et œufs durs tranchés."
+    ],
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "note_weekend": "Tout le plat peut être préparé le week-end. La sauce s'épaissit au repos, ajouter du bouillon au réchauffage."
+  },
+  {
+    "num": 48,
+    "nom": "Ropa Vieja cubaine",
+    "origine": "Cuba",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "2h30",
+    "prep_weekend": "Cuire et effilocher la viande complètement",
+    "conservation": "Frigo 5 jours | Congélateur 3 mois",
+    "rechauffage": "Se réchauffe parfaitement, encore meilleur le lendemain",
+    "proteines": "Bœuf à braiser - paleron (500g)",
+    "legumes": "Poivrons, oignons, tomates, ail",
+    "feculents": "Riz blanc (200g), haricots noirs",
+    "variantes": "Porc effiloché, version végé aux cœurs de palmier",
+    "portions": 6,
+    "description": "La Ropa Vieja (« vieux vêtements ») tire son nom de l'aspect effiloché de la viande, évoquant des tissus en lambeaux. Ce plat national cubain raconte l'histoire d'un père pauvre qui cuisina ses vêtements par amour — ils se transformèrent miraculeusement en viande savoureuse.",
+    "ingredients": [
+      "500g de paleron de bœuf",
+      "200g de riz blanc",
+      "200g de haricots noirs cuits",
+      "2 poivrons (rouge et vert), en lanières",
+      "2 oignons, émincés",
+      "4 tomates, concassées",
+      "6 gousses d'ail, hachées",
+      "200ml de vin blanc sec",
+      "1 c. à café de cumin",
+      "1 c. à café d'origan",
+      "2 feuilles de laurier",
+      "3 c. à soupe d'huile d'olive",
+      "Olives vertes pour garnir"
+    ],
+    "etapes": [
+      "Saisir le bœuf dans l'huile sur toutes les faces jusqu'à bien doré.",
+      "Couvrir d'eau, ajouter laurier, la moitié de l'ail et de l'oignon.",
+      "Porter à ébullition puis mijoter 2h jusqu'à ce que la viande se défasse.",
+      "Retirer la viande, effilocher finement à la fourchette. Garder le bouillon.",
+      "Dans une grande poêle, faire revenir le reste d'oignon et les poivrons 5 minutes.",
+      "Ajouter l'ail, cumin, origan, puis les tomates. Cuire 10 minutes.",
+      "Verser le vin et 250ml de bouillon. Laisser réduire.",
+      "Incorporer la viande effilochée, mijoter 15 minutes.",
+      "Servir sur riz avec haricots noirs et olives vertes."
+    ],
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "note_weekend": "Ce plat mijoté est idéal pour le batch cooking. Il est encore meilleur après 1-2 jours de repos."
+  },
+  {
+    "num": 49,
+    "nom": "Pupusas salvadoriennes",
+    "origine": "El Salvador",
+    "temps_prep_semaine": "20 min",
+    "temps_prep_weekend": "45 min",
+    "prep_weekend": "Préparer garnitures et pâte, former les pupusas",
+    "conservation": "Crues congélateur 2 mois | Cuites frigo 3 jours",
+    "rechauffage": "Poêle sèche pour retrouver le croustillant",
+    "proteines": "Haricots rouges (chicharrón végé), porc (optionnel)",
+    "legumes": "Chou mariné (curtido), tomates, oignons",
+    "feculents": "Masa harina (farine de maïs) 300g",
+    "variantes": "Fromage végétal, loroco (fleur), courgettes",
+    "portions": 4,
+    "description": "Les Pupusas sont l'âme culinaire du Salvador, galettes de maïs farcies héritées des Mayas. Chaque dimanche, les Salvadoriens se réunissent autour de ces disques dorés, accompagnés du curtido (chou fermenté) et de sauce tomate. Un plat qui raconte 2000 ans d'histoire.",
+    "ingredients": [
+      "300g de masa harina (farine de maïs nixtamalisée)",
+      "350ml d'eau tiède",
+      "200g de haricots rouges frits et écrasés",
+      "Pour le curtido:",
+      "1/4 de chou blanc, émincé finement",
+      "1 carotte, râpée",
+      "1 oignon, émincé",
+      "1 c. à café d'origan",
+      "100ml de vinaigre de cidre",
+      "Sel",
+      "Sauce tomate pour servir"
+    ],
+    "etapes": [
+      "Préparer le curtido: mélanger chou, carotte, oignon, origan, vinaigre et sel. Laisser mariner minimum 30 min.",
+      "Mélanger masa harina et eau jusqu'à obtenir une pâte souple (comme pâte à modeler).",
+      "Diviser en 8 boules égales.",
+      "Aplatir une boule dans la paume, créer un creux, ajouter 1 c. à soupe de haricots.",
+      "Refermer la pâte sur la farce, aplatir délicatement en galette de 1cm d'épaisseur.",
+      "Chauffer une poêle ou plancha sans huile à feu moyen-vif.",
+      "Cuire chaque pupusa 3-4 minutes par côté jusqu'à dorée avec des taches brunes.",
+      "Servir chaud avec curtido et sauce tomate."
+    ],
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "note_weekend": "Le curtido se bonifie en marinant plusieurs jours. Les pupusas formées (non cuites) se congèlent parfaitement."
+  },
+  {
+    "num": 50,
+    "nom": "Bandeja Paisa colombienne",
+    "origine": "Colombie",
+    "temps_prep_semaine": "20 min",
+    "temps_prep_weekend": "1h",
+    "prep_weekend": "Cuire haricots, préparer viande hachée, chicharrón",
+    "conservation": "Composants séparés frigo 4 jours",
+    "rechauffage": "Réchauffer chaque composant séparément",
+    "proteines": "Bœuf haché (200g), chorizo, œuf",
+    "legumes": "Tomates, oignons, avocat",
+    "feculents": "Riz (200g), haricots rouges, plantain, arepa",
+    "variantes": "Version allégée sans friture, avec poulet",
+    "portions": 4,
+    "description": "La Bandeja Paisa est le plat le plus généreux de Colombie, né dans la région montagneuse d'Antioquia. Ce plateau gargantuesque nourrissait les arrieros (muletiers) pour leurs longues journées. C'est aujourd'hui le symbole de l'hospitalité colombienne.",
+    "ingredients": [
+      "200g de bœuf haché, assaisonné",
+      "4 chorizos",
+      "4 œufs",
+      "200g de riz blanc cuit",
+      "200g de haricots rouges cuits",
+      "2 plantains mûrs",
+      "4 mini arepas",
+      "1 avocat",
+      "2 tomates, en tranches",
+      "Hogao: 2 tomates + 1 oignon + ail (sauce créole)",
+      "Huile pour friture",
+      "Sel, cumin"
+    ],
+    "etapes": [
+      "Préparer le hogao: faire revenir oignon et tomates avec ail jusqu'à fondant.",
+      "Cuire le riz blanc. Réchauffer les haricots avec un peu de hogao.",
+      "Assaisonner le bœuf haché de cumin et sel, former en galette, cuire à la poêle.",
+      "Griller les chorizos.",
+      "Trancher les plantains en diagonale, frire jusqu'à dorés.",
+      "Griller les arepas jusqu'à croustillantes.",
+      "Cuire les œufs au plat.",
+      "Assembler le plateau: riz d'un côté, haricots de l'autre.",
+      "Disposer viande, chorizo, œuf, plantain, arepa et avocat. Servir avec hogao."
+    ],
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "note_weekend": "Le hogao, les haricots, le riz et la viande peuvent être préparés à l'avance. Les fritures et œufs se font au moment de servir."
+  },
+  {
+    "num": 51,
+    "nom": "Jollof Rice nigérian",
+    "origine": "Nigeria",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "50 min",
+    "prep_weekend": "Préparer le riz complet",
+    "conservation": "Frigo 4 jours | Congélateur 2 mois",
+    "rechauffage": "Four ou micro-ondes avec un peu d'eau",
+    "proteines": "Poulet (400g)",
+    "legumes": "Tomates, poivrons, oignons, piments",
+    "feculents": "Riz long grain (300g)",
+    "variantes": "Bœuf, poisson, végétarien",
+    "portions": 6,
+    "description": "Le Jollof Rice déclenche des « guerres » amicales entre le Nigeria, le Ghana et le Sénégal, chacun revendiquant la meilleure version. Ce riz rouge aux tomates est le plat de fête de l'Afrique de l'Ouest, présent à chaque mariage, baptême et célébration.",
+    "ingredients": [
+      "300g de riz long grain, rincé",
+      "400g de cuisses de poulet",
+      "6 tomates fraîches + 100g de concentré",
+      "2 poivrons rouges",
+      "2 oignons",
+      "3 gousses d'ail",
+      "2 piments scotch bonnet (ou habanero)",
+      "500ml de bouillon de poulet",
+      "2 c. à café de curry",
+      "1 c. à café de thym",
+      "2 feuilles de laurier",
+      "4 c. à soupe d'huile végétale",
+      "Sel"
+    ],
+    "etapes": [
+      "Mixer tomates, poivrons, 1 oignon, ail et piment en purée lisse.",
+      "Assaisonner le poulet de curry, thym et sel. Faire dorer dans l'huile. Réserver.",
+      "Dans la même marmite, faire revenir l'oignon restant haché.",
+      "Ajouter la purée de tomates et le concentré. Cuire 20 minutes en remuant (réduire l'acidité).",
+      "Verser le bouillon, ajouter laurier, remettre le poulet. Porter à ébullition.",
+      "Incorporer le riz rincé, mélanger une seule fois.",
+      "Couvrir hermétiquement, cuire à feu très doux 30 minutes sans ouvrir.",
+      "Laisser reposer 10 minutes. Le fond doit être légèrement caramélisé (party jollof)."
+    ],
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "note_weekend": "Le Jollof se prépare entièrement le week-end et se bonifie au repos. Le secret: ne pas soulever le couvercle pendant la cuisson!"
+  },
+  {
+    "num": 52,
+    "nom": "Tagine d'agneau aux pruneaux",
+    "origine": "Maroc",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "2h",
+    "prep_weekend": "Préparer le tajine complet",
+    "conservation": "Frigo 4 jours | Congélateur 3 mois",
+    "rechauffage": "Se réchauffe parfaitement à feu doux",
+    "proteines": "Agneau à braiser (500g)",
+    "legumes": "Oignons, amandes, pruneaux",
+    "feculents": "Semoule de couscous (200g)",
+    "variantes": "Bœuf, poulet, version végétarienne aux courges",
+    "portions": 6,
+    "description": "Ce tajine sucré-salé incarne la sophistication de la cuisine des fêtes marocaines. L'alliance de l'agneau fondant, des pruneaux moelleux et des amandes grillées remonte à l'âge d'or de l'Andalousie mauresque. Un plat qui parfume toute la maison.",
+    "ingredients": [
+      "500g d'épaule d'agneau, en morceaux",
+      "200g de pruneaux dénoyautés",
+      "100g d'amandes entières",
+      "3 oignons, émincés",
+      "2 gousses d'ail, hachées",
+      "1 c. à café de gingembre moulu",
+      "1 c. à café de cannelle",
+      "1/2 c. à café de safran",
+      "2 c. à soupe de miel",
+      "200g de semoule de couscous",
+      "3 c. à soupe d'huile d'olive",
+      "Sel, poivre",
+      "Graines de sésame pour garnir"
+    ],
+    "etapes": [
+      "Faire dorer l'agneau dans l'huile sur toutes les faces. Réserver.",
+      "Dans le même tajine, faire fondre les oignons 10 minutes.",
+      "Ajouter ail, gingembre, cannelle et safran. Mélanger.",
+      "Remettre l'agneau, couvrir d'eau à hauteur. Saler.",
+      "Couvrir et laisser mijoter 1h30 à feu doux.",
+      "Ajouter les pruneaux et le miel. Poursuivre 20 minutes.",
+      "Pendant ce temps, faire griller les amandes à sec.",
+      "Préparer le couscous selon les instructions.",
+      "Servir le tajine sur le couscous, garnir d'amandes et sésame."
+    ],
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "note_weekend": "Ce tajine mijoté est idéal pour le week-end et se bonifie considérablement au repos."
+  },
+  {
+    "num": 53,
+    "nom": "Keema Matar (viande hachée aux petits pois)",
+    "origine": "Inde",
+    "temps_prep_semaine": "12 min",
+    "temps_prep_weekend": "35 min",
+    "prep_weekend": "Préparer le curry complet",
+    "conservation": "Frigo 4 jours | Congélateur 3 mois",
+    "rechauffage": "Se réchauffe parfaitement à feu doux",
+    "proteines": "Agneau ou bœuf haché (400g)",
+    "legumes": "Petits pois, tomates, oignons, gingembre",
+    "feculents": "Riz basmati (200g) ou naan",
+    "variantes": "Poulet haché, version végétarienne au soja",
+    "portions": 4,
+    "description": "Le Keema Matar est le curry de viande hachée adoré de l'Inde du Nord, particulièrement au Punjab. Simple et parfumé, il cuisait traditionnellement sur les fourneaux des familles mogholes. Les petits pois apportent douceur et couleur à ce plat réconfortant.",
+    "ingredients": [
+      "400g d'agneau ou bœuf haché",
+      "200g de petits pois (frais ou surgelés)",
+      "200g de riz basmati",
+      "2 oignons, hachés finement",
+      "3 tomates, concassées",
+      "4 gousses d'ail, hachées",
+      "2 c. à soupe de gingembre, râpé",
+      "2 c. à café de garam masala",
+      "1 c. à café de curcuma",
+      "1 c. à café de cumin",
+      "1 c. à café de coriandre moulue",
+      "1 piment vert, haché",
+      "3 c. à soupe d'huile végétale",
+      "Coriandre fraîche pour garnir"
+    ],
+    "etapes": [
+      "Chauffer l'huile et faire dorer les oignons 8-10 minutes.",
+      "Ajouter ail, gingembre et piment. Cuire 2 minutes.",
+      "Incorporer les épices sèches (curcuma, cumin, coriandre). Mélanger.",
+      "Ajouter la viande hachée, cuire en émiettant jusqu'à colorée.",
+      "Ajouter les tomates, 150ml d'eau, saler. Couvrir et mijoter 15 minutes.",
+      "Incorporer les petits pois et le garam masala. Cuire 5 minutes de plus.",
+      "Pendant ce temps, cuire le riz basmati.",
+      "Servir le keema sur le riz, garnir de coriandre fraîche."
+    ],
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "note_weekend": "Ce curry rapide peut être entièrement préparé le week-end. Il se congèle parfaitement bien."
+  },
+  {
+    "num": 54,
+    "nom": "Saag Aloo (épinards aux pommes de terre)",
+    "origine": "Inde",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "30 min",
+    "prep_weekend": "Préparer le curry complet",
+    "conservation": "Frigo 4 jours | Congélateur 2 mois",
+    "rechauffage": "Se réchauffe bien, ajouter un peu d'eau",
+    "proteines": "Pois chiches (200g) ou paneer végétal",
+    "legumes": "Épinards (500g), pommes de terre, oignons",
+    "feculents": "Riz basmati (200g) ou chapati",
+    "variantes": "Avec poulet (Saag Chicken), avec fromage (Saag Paneer)",
+    "portions": 4,
+    "description": "Le Saag est la base crémeuse d'épinards de la cuisine punjabi. Combiné aux pommes de terre dorées et aux pois chiches, il devient un repas complet et nutritif. Ce plat végétarien est un pilier des dhabas, restaurants routiers de l'Inde.",
+    "ingredients": [
+      "500g d'épinards frais (ou 300g surgelés)",
+      "300g de pommes de terre, en cubes",
+      "200g de pois chiches cuits",
+      "200g de riz basmati",
+      "2 oignons, hachés",
+      "4 gousses d'ail, hachées",
+      "2 c. à soupe de gingembre, râpé",
+      "2 tomates, concassées",
+      "1 c. à café de cumin en graines",
+      "1 c. à café de garam masala",
+      "1 c. à café de curcuma",
+      "1 piment vert",
+      "3 c. à soupe d'huile végétale"
+    ],
+    "etapes": [
+      "Blanchir les épinards 2 minutes, égoutter et mixer grossièrement.",
+      "Faire dorer les cubes de pommes de terre dans l'huile. Réserver.",
+      "Dans la même poêle, faire revenir les graines de cumin 30 secondes.",
+      "Ajouter oignons, cuire 5 minutes. Ajouter ail, gingembre, piment.",
+      "Incorporer curcuma et tomates. Cuire 5 minutes.",
+      "Ajouter les épinards mixés et les pommes de terre. Mélanger.",
+      "Incorporer les pois chiches et le garam masala. Mijoter 10 minutes.",
+      "Cuire le riz basmati selon les instructions.",
+      "Servir le saag sur le riz."
+    ],
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "note_weekend": "Ce curry végétarien se prépare entièrement le week-end et se conserve très bien."
+  },
+  {
+    "num": 55,
+    "nom": "Mafé sénégalais",
+    "origine": "Sénégal",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "1h",
+    "prep_weekend": "Préparer le mafé complet",
+    "conservation": "Frigo 4 jours | Congélateur 3 mois",
+    "rechauffage": "Se réchauffe parfaitement à feu doux",
+    "proteines": "Bœuf ou poulet (400g)",
+    "legumes": "Tomates, oignons, carottes, chou",
+    "feculents": "Riz (200g)",
+    "variantes": "Poisson, agneau, version végétarienne",
+    "portions": 6,
+    "description": "Le Mafé est le ragoût à la pâte d'arachide emblématique de l'Afrique de l'Ouest. Originaire du Mali, il a conquis tout le Sénégal où il est devenu un plat du quotidien. La sauce onctueuse aux arachides enrobe la viande et les légumes d'une saveur unique.",
+    "ingredients": [
+      "400g de bœuf à braiser, en cubes",
+      "200g de riz",
+      "200g de pâte d'arachide naturelle",
+      "400g de tomates concassées",
+      "2 oignons, hachés",
+      "2 carottes, en tronçons",
+      "200g de chou, en quartiers",
+      "2 c. à soupe de concentré de tomate",
+      "3 gousses d'ail, hachées",
+      "1 cube de bouillon",
+      "1 piment entier (optionnel)",
+      "3 c. à soupe d'huile d'arachide",
+      "Sel, poivre"
+    ],
+    "etapes": [
+      "Faire dorer les morceaux de bœuf dans l'huile. Réserver.",
+      "Faire revenir les oignons 5 minutes dans la même marmite.",
+      "Ajouter l'ail, les tomates et le concentré. Cuire 5 minutes.",
+      "Diluer la pâte d'arachide dans 500ml d'eau tiède.",
+      "Verser dans la marmite, ajouter le cube de bouillon et le piment.",
+      "Remettre le bœuf, porter à ébullition puis réduire le feu.",
+      "Laisser mijoter 30 minutes.",
+      "Ajouter carottes et chou. Poursuivre 20-25 minutes.",
+      "Cuire le riz. Servir le mafé généreusement sur le riz."
+    ],
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "note_weekend": "Ce plat mijoté est idéal pour le batch cooking. Il est encore meilleur réchauffé le lendemain."
+  },
+  {
+    "num": 56,
+    "nom": "Bigos polonais (choucroute chasseur)",
+    "origine": "Pologne",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "2h",
+    "prep_weekend": "Préparer le bigos complet (se bonifie)",
+    "conservation": "Frigo 1 semaine | Congélateur 3 mois",
+    "rechauffage": "Se réchauffe parfaitement, meilleur après plusieurs jours",
+    "proteines": "Saucisse, porc, bœuf (400g total)",
+    "legumes": "Choucroute, chou frais, champignons, oignons",
+    "feculents": "Pommes de terre ou pain de seigle",
+    "variantes": "Version gibier, végétarienne aux champignons",
+    "portions": 8,
+    "description": "Le Bigos est le plat national polonais, mijoté pendant des jours par les chasseurs dans les forêts. Ce ragoût de choucroute aux viandes variées se bonifie à chaque réchauffage — les Polonais disent qu'il faut le réchauffer au moins 7 fois pour atteindre la perfection.",
+    "ingredients": [
+      "300g de choucroute",
+      "200g de chou blanc, émincé",
+      "200g de porc fumé ou lardons",
+      "150g de saucisse polonaise (kielbasa)",
+      "100g de bœuf à braiser, en cubes",
+      "100g de champignons séchés, réhydratés",
+      "2 oignons, hachés",
+      "2 pommes, pelées et râpées",
+      "200ml de vin rouge",
+      "2 c. à soupe de concentré de tomate",
+      "1 c. à café de carvi",
+      "2 feuilles de laurier",
+      "Pruneaux (optionnel)",
+      "Pommes de terre pour servir"
+    ],
+    "etapes": [
+      "Réhydrater les champignons séchés dans l'eau tiède 30 minutes. Garder l'eau.",
+      "Rincer la choucroute si trop acide.",
+      "Faire dorer les viandes (bœuf et porc) dans une grande cocotte. Réserver.",
+      "Faire revenir les oignons 5 minutes, ajouter la saucisse en rondelles.",
+      "Ajouter choucroute, chou frais, champignons et leur eau, pommes râpées.",
+      "Remettre les viandes, verser le vin et le concentré de tomate.",
+      "Ajouter laurier, carvi, pruneaux si utilisés. Saler peu (la choucroute est salée).",
+      "Couvrir et mijoter à feu très doux 2h minimum.",
+      "Servir avec des pommes de terre vapeur ou du pain de seigle."
+    ],
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "note_weekend": "Le bigos DOIT être préparé à l'avance. Traditionnellement, on le réchauffe plusieurs fois — il s'améliore à chaque fois!"
+  },
+  {
+    "num": 57,
+    "nom": "Moules marinières",
+    "origine": "France",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "10 min (préparation)",
+    "prep_weekend": "Préparer base aromatique, nettoyer moules la veille",
+    "conservation": "Ne se conserve pas (fruits de mer)",
+    "rechauffage": "Ne se réchauffe pas",
+    "proteines": "Moules (1.5kg)",
+    "legumes": "Échalotes, céleri, persil, ail",
+    "feculents": "Frites maison ou pain",
+    "variantes": "À la crème de coco, au curry, à la provençale",
+    "portions": 4,
+    "description": "Les moules marinières incarnent la convivialité des brasseries belges et du nord de la France. Ce classique simple — moules, vin blanc, échalotes — se déguste avec les doigts, la coquille vide servant de pince. Les frites sont obligatoires!",
+    "ingredients": [
+      "1.5kg de moules fraîches",
+      "200ml de vin blanc sec",
+      "4 échalotes, émincées finement",
+      "4 gousses d'ail, hachées",
+      "1 branche de céleri, émincée",
+      "1 gros bouquet de persil, haché",
+      "2 c. à soupe d'huile d'olive",
+      "Poivre noir",
+      "Pour les frites:",
+      "800g de pommes de terre",
+      "Huile pour friture"
+    ],
+    "etapes": [
+      "Nettoyer les moules: gratter, ébarber, jeter celles ouvertes qui ne se referment pas.",
+      "Préparer les frites: couper les pommes de terre, faire deux bains de friture.",
+      "Dans une grande marmite, faire suer échalotes, ail et céleri dans l'huile.",
+      "Verser le vin blanc, porter à ébullition.",
+      "Ajouter les moules, couvrir, cuire à feu vif 4-5 minutes en secouant.",
+      "Les moules sont prêtes quand elles sont toutes ouvertes. Jeter celles restées fermées.",
+      "Parsemer généreusement de persil et de poivre.",
+      "Servir immédiatement dans la marmite avec les frites à côté."
+    ],
+    "etapes_weekend": [
+      1,
+      3
+    ],
+    "note_weekend": "Les moules peuvent être nettoyées la veille (garder au frigo couvertes d'un linge humide). La base aromatique peut être préparée. Cuisson le jour même uniquement."
+  },
+  {
+    "num": 58,
+    "nom": "Shakshuka verte aux herbes",
+    "origine": "Israël",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "25 min",
+    "prep_weekend": "Préparer base verte complète",
+    "conservation": "Base verte frigo 4 jours",
+    "rechauffage": "Réchauffer la base, pocher les œufs au moment",
+    "proteines": "Œufs (6), feta végétale (optionnel)",
+    "legumes": "Épinards, blettes, poireaux, oignons verts, herbes",
+    "feculents": "Pain pita ou challah",
+    "variantes": "Ajouter pois chiches, avec labneh végétal",
+    "portions": 4,
+    "description": "Cette version verte de la shakshuka est devenue tendance à Tel-Aviv, célébrant les herbes fraîches des marchés israéliens. Le vert éclatant des épinards remplace le rouge des tomates, les œufs flottant comme des îles dans une mer d'herbes.",
+    "ingredients": [
+      "6 œufs",
+      "300g d'épinards frais",
+      "200g de blettes, émincées",
+      "2 poireaux, émincés",
+      "4 oignons verts, émincés",
+      "4 gousses d'ail, hachées",
+      "1 bouquet de coriandre",
+      "1 bouquet d'aneth",
+      "1 c. à café de cumin",
+      "1 piment vert, haché",
+      "3 c. à soupe d'huile d'olive",
+      "Sel, poivre",
+      "Pain pita pour servir"
+    ],
+    "etapes": [
+      "Chauffer l'huile dans une grande poêle. Faire suer les poireaux 5 minutes.",
+      "Ajouter l'ail, le piment et le cumin. Cuire 1 minute.",
+      "Incorporer les blettes, cuire 3 minutes.",
+      "Ajouter les épinards par poignées, laisser tomber.",
+      "Ajouter les oignons verts et la moitié des herbes hachées. Saler, poivrer.",
+      "Créer 6 puits dans la préparation verte.",
+      "Casser un œuf dans chaque puits. Saler légèrement les jaunes.",
+      "Couvrir et cuire 5-7 minutes selon la cuisson désirée des œufs.",
+      "Garnir du reste d'herbes fraîches. Servir avec le pain pita chaud."
+    ],
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "note_weekend": "La base verte peut être préparée et réfrigérée. Réchauffer et pocher les œufs au dernier moment."
+  },
+  {
+    "num": 59,
+    "nom": "Poke bowl hawaïen",
+    "origine": "Hawaï",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "25 min",
+    "prep_weekend": "Cuire riz, préparer sauce et garnitures",
+    "conservation": "Consommer le jour même (poisson cru)",
+    "rechauffage": "Ne se réchauffe pas",
+    "proteines": "Thon ou saumon cru qualité sashimi (300g)",
+    "legumes": "Avocat, edamames, algues, concombre, oignons verts",
+    "feculents": "Riz à sushi (250g)",
+    "variantes": "Tofu mariné, crevettes cuites, poulpe",
+    "portions": 4,
+    "description": "Le Poke (prononcé « po-ké ») est l'âme culinaire d'Hawaï, préparé par les pêcheurs avec leur prise du jour depuis des siècles. Ce bol de poisson cru mariné à la sauce soja et huile de sésame a conquis le monde comme alternative healthy et délicieuse.",
+    "ingredients": [
+      "300g de thon ou saumon qualité sashimi",
+      "250g de riz à sushi",
+      "3 c. à soupe de sauce soja",
+      "1 c. à soupe d'huile de sésame",
+      "1 c. à café de graines de sésame",
+      "1 avocat mûr",
+      "100g d'edamames décortiquées",
+      "1/2 concombre, en dés",
+      "2 oignons verts, émincés",
+      "1 feuille de nori, en lanières",
+      "Gingembre mariné",
+      "Sriracha ou mayo épicée (optionnel)"
+    ],
+    "etapes": [
+      "Cuire le riz à sushi, assaisonner de vinaigre de riz si désiré. Laisser tiédir.",
+      "Couper le poisson en cubes de 2cm.",
+      "Mélanger sauce soja et huile de sésame. Mariner le poisson 10 minutes.",
+      "Cuire les edamames si surgelées.",
+      "Couper l'avocat et le concombre.",
+      "Répartir le riz dans 4 bols.",
+      "Disposer le poisson mariné, l'avocat, le concombre et les edamames en sections.",
+      "Garnir de nori, oignons verts, sésame et gingembre.",
+      "Arroser de sauce restante et de sriracha si désiré."
+    ],
+    "etapes_weekend": [
+      1,
+      4
+    ],
+    "note_weekend": "Le riz et les edamames peuvent être préparés à l'avance. Le poisson doit être coupé et mariné le jour même."
+  },
+  {
+    "num": 60,
+    "nom": "Bo Kho vietnamien (bœuf mijoté)",
+    "origine": "Vietnam",
+    "temps_prep_semaine": "15 min",
+    "temps_prep_weekend": "2h",
+    "prep_weekend": "Préparer le ragoût complet",
+    "conservation": "Frigo 5 jours | Congélateur 3 mois",
+    "rechauffage": "Se réchauffe parfaitement, meilleur le lendemain",
+    "proteines": "Bœuf à braiser (500g)",
+    "legumes": "Carottes, oignons, tomates, citronnelle",
+    "feculents": "Baguette ou nouilles de riz",
+    "variantes": "Avec tendon de bœuf, version poulet",
+    "portions": 6,
+    "description": "Le Bo Kho est le ragoût réconfortant du sud du Vietnam, parfumé à la citronnelle et à l'anis étoilé. Héritage de la colonisation française, il se déguste avec une baguette croustillante pour saucer, comme un pot-au-feu tropical épicé.",
+    "ingredients": [
+      "500g de bœuf à braiser (jarret, joue ou paleron)",
+      "3 carottes, en gros tronçons",
+      "2 oignons, en quartiers",
+      "3 tomates, concassées",
+      "2 tiges de citronnelle, écrasées",
+      "3 anis étoilés",
+      "1 bâton de cannelle",
+      "3 c. à soupe de sauce poisson",
+      "2 c. à soupe de concentré de tomate",
+      "1 c. à café de cinq-épices",
+      "4 gousses d'ail, hachées",
+      "2 c. à soupe d'huile végétale",
+      "Baguette ou nouilles pour servir",
+      "Coriandre et basilic thaï frais"
+    ],
+    "etapes": [
+      "Couper le bœuf en gros cubes de 4cm. Mariner avec sauce poisson et cinq-épices 30 min.",
+      "Faire dorer la viande dans l'huile chaude. Réserver.",
+      "Faire revenir l'ail et les oignons 3 minutes.",
+      "Ajouter le concentré de tomate et les tomates. Cuire 5 minutes.",
+      "Remettre le bœuf, ajouter citronnelle, anis et cannelle.",
+      "Couvrir d'eau, porter à ébullition puis réduire à frémissement.",
+      "Mijoter 1h30, ajouter les carottes et poursuivre 30 minutes.",
+      "La viande doit être très tendre. Ajuster l'assaisonnement.",
+      "Servir dans des bols avec baguette ou nouilles, garni d'herbes fraîches."
+    ],
+    "etapes_weekend": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "note_weekend": "Ce ragoût parfumé est idéal pour le batch cooking. Il est encore meilleur réchauffé le lendemain."
+  }
+];
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CATÉGORIES D'INGRÉDIENTS POUR L'ÉPICERIE
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const CATEGORIES_INGREDIENTS = {
+    'Viandes & Poissons': [
+        'poulet', 'bœuf', 'porc', 'agneau', 'crevettes', 'poisson', 'saumon', 
+        'merguez', 'viande', 'cuisse', 'poitrine', 'haché', 'émincé'
+    ],
+    'Légumes frais': [
+        'poivron', 'oignon', 'ail', 'carotte', 'courgette', 'tomate', 'concombre',
+        'épinard', 'champignon', 'brocoli', 'chou', 'laitue', 'salade', 'pomme de terre',
+        'patate', 'haricot', 'germe', 'avocat', 'citron', 'lime', 'gingembre',
+        'échalote', 'céleri', 'aubergine', 'courge', 'piment', 'olive'
+    ],
+    'Herbes fraîches': [
+        'basilic', 'coriandre', 'persil', 'menthe', 'citronnelle', 'thym', 
+        'romarin', 'origan', 'aneth', 'ciboulette'
+    ],
+    'Féculents': [
+        'riz', 'pâte', 'nouille', 'semoule', 'couscous', 'boulgour', 'quinoa',
+        'vermicelle', 'orzo', 'pain', 'pita', 'tortilla', 'arepa', 'maïs'
+    ],
+    'Légumineuses & Protéines végétales': [
+        'pois chiche', 'lentille', 'haricot rouge', 'haricot noir', 'tofu',
+        'fève', 'edamame'
+    ],
+    'Conserves & Sauces': [
+        'sauce soja', 'sauce poisson', 'sauce huître', 'concentré', 'tomates concassées',
+        'lait de coco', 'bouillon', 'pâte', 'gochujang', 'miso', 'tahini',
+        'vinaigre', 'moutarde', 'harissa', 'sambal'
+    ],
+    'Épices & Condiments': [
+        'cumin', 'paprika', 'curcuma', 'curry', 'cannelle', 'safran', 'coriandre moulue',
+        'cayenne', 'berbéré', 'garam masala', 'cinq épices', 'sésame', 'achiote',
+        'poivre', 'sel', 'sucre'
+    ],
+    'Huiles & Matières grasses': [
+        'huile', 'olive', 'sésame', 'végétale', 'arachide', 'coco'
+    ],
+    'Autres': []
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ÉTAT DE L'APPLICATION
+// ═══════════════════════════════════════════════════════════════════════════════
+
+let selectedRecipes = new Set();
+let weekPlan = {
+    Lundi: null,
+    Mardi: null,
+    Mercredi: null,
+    Jeudi: null,
+    Vendredi: null,
+    Samedi: null,
+    Dimanche: null
+};
+
+// Régions pour les filtres
+const REGIONS = {
+    'Québec': ['Québec'],
+    'Asie': ['Thaïlande', 'Corée du Sud', 'Japon', 'Vietnam', 'Inde', 'Indonésie', 'Chine', 'Hawaï'],
+    'Méditerranée': ['Israël', 'Grèce', 'Maroc', 'Liban', 'Espagne', 'Italie', 'Turquie'],
+    'Amérique': ['Mexique', 'Pérou', 'Brésil', 'Venezuela', 'Costa Rica', 'Cuba', 'El Salvador', 'Colombie'],
+    'Afrique': ['Sénégal', 'Jamaïque', 'Éthiopie', 'Martinique', 'Nigeria'],
+    'Europe': ['France', 'Pologne', 'Fusion']
+};
+
+function getRegion(origine) {
+    for (const [region, pays] of Object.entries(REGIONS)) {
+        if (pays.includes(origine)) return region;
+    }
+    return 'Autre';
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// INITIALISATION
+// ═══════════════════════════════════════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', () => {
+    renderRecipes();
+    renderWeekPlanner();
+    setupTabs();
+    setupFilters();
+});
+
+function setupTabs() {
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(btn.dataset.tab).classList.add('active');
+        });
+    });
+}
+
+function setupFilters() {
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            filterRecipes(btn.dataset.region);
+        });
+    });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// RENDU DES RECETTES
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function renderRecipes(filter = 'all') {
+    const grid = document.getElementById('recipes-grid');
+    grid.innerHTML = '';
+    
+    RECETTES.forEach(recette => {
+        if (filter !== 'all') {
+            const region = getRegion(recette.origine);
+            if (region !== filter) return;
+        }
+        
+        const card = document.createElement('div');
+        card.className = `recipe-card ${selectedRecipes.has(recette.num) ? 'selected' : ''}`;
+        card.innerHTML = `
+            <div class="header">
+                <input type="checkbox" class="checkbox" ${selectedRecipes.has(recette.num) ? 'checked' : ''} 
+                    onchange="toggleRecipe(${recette.num}, event)">
+                <span class="num">${recette.num}</span>
+                <span class="nom">${recette.nom}</span>
+            </div>
+            <div class="origine">${recette.origine} • ${recette.portions} portions</div>
+            <div class="description">${recette.description}</div>
+            <div class="meta">
+                <span>⏱️ ${recette.temps_prep_semaine}</span>
+                <span>📦 ${recette.conservation.split('|')[0].trim()}</span>
+            </div>
+        `;
+        card.addEventListener('click', (e) => {
+            if (e.target.tagName !== 'INPUT') {
+                showRecipeDetail(recette.num);
+            }
+        });
+        grid.appendChild(card);
+    });
+    
+    updateCount();
+}
+
+function filterRecipes(region) {
+    renderRecipes(region);
+}
+
+function toggleRecipe(num, event) {
+    if (event) event.stopPropagation();
+    
+    if (selectedRecipes.has(num)) {
+        selectedRecipes.delete(num);
+    } else {
+        selectedRecipes.add(num);
+    }
+    
+    const card = event?.target?.closest('.recipe-card');
+    if (card) {
+        card.classList.toggle('selected');
+    }
+    
+    updateCount();
+    updateWeekPlannerOptions();
+}
+
+function selectAll() {
+    RECETTES.forEach(r => selectedRecipes.add(r.num));
+    renderRecipes();
+    updateWeekPlannerOptions();
+}
+
+function deselectAll() {
+    selectedRecipes.clear();
+    renderRecipes();
+    updateWeekPlannerOptions();
+}
+
+function updateCount() {
+    document.getElementById('count').textContent = selectedRecipes.size;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// DÉTAIL D'UNE RECETTE
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function showRecipeDetail(num) {
+    const recette = RECETTES.find(r => r.num === num);
+    if (!recette) return;
+    
+    const content = document.getElementById('recipe-detail-content');
+    content.innerHTML = `
+        <button class="close-btn" onclick="closeRecipeDetail()">×</button>
+        <h2>#${recette.num} – ${recette.nom}</h2>
+        <div class="origine">${recette.origine} • ${recette.portions} portions</div>
+        
+        <div class="description-box">
+            ${recette.description}
+        </div>
+        
+        <div class="info-grid">
+            <div class="info-box">
+                <label>Semaine</label>
+                <strong>${recette.temps_prep_semaine}</strong>
+            </div>
+            <div class="info-box">
+                <label>Week-end</label>
+                <strong>${recette.temps_prep_weekend}</strong>
+            </div>
+            <div class="info-box">
+                <label>Portions</label>
+                <strong>${recette.portions}</strong>
+            </div>
+            <div class="info-box">
+                <label>Conservation</label>
+                <strong>${recette.conservation.split('|')[0].trim()}</strong>
+            </div>
+        </div>
+        
+        <div class="info-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="info-box" style="background: var(--vert-clair);">
+                <label>Légumes (50%)</label>
+                <span>${recette.legumes}</span>
+            </div>
+            <div class="info-box" style="background: var(--orange-clair);">
+                <label>Protéines (25%)</label>
+                <span>${recette.proteines}</span>
+            </div>
+            <div class="info-box" style="background: var(--bleu-clair);">
+                <label>Féculents (25%)</label>
+                <span>${recette.feculents}</span>
+            </div>
+        </div>
+        
+        <h3>🛒 Ingrédients</h3>
+        <ul>
+            ${recette.ingredients.map(ing => `<li>${ing}</li>`).join('')}
+        </ul>
+        
+        <h3>👨‍🍳 Préparation</h3>
+        <div class="weekend-legend">
+            <span class="weekend-badge">WE</span> = Peut être fait le week-end à l'avance
+        </div>
+        <ol class="steps-list">
+            ${recette.etapes.map((etape, index) => {
+                const isWeekend = recette.etapes_weekend && recette.etapes_weekend.includes(index + 1);
+                return `<li class="${isWeekend ? 'weekend-step' : ''}">${isWeekend ? '<span class="weekend-badge">WE</span> ' : ''}${etape}</li>`;
+            }).join('')}
+        </ol>
+        
+        <h3>📦 Préparation week-end</h3>
+        <div class="weekend-note">
+            <strong>Ce qui peut être préparé à l'avance :</strong><br>
+            ${recette.note_weekend || recette.prep_weekend}
+        </div>
+        
+        <h3>🔄 Variantes</h3>
+        <p>${recette.variantes}</p>
+        
+        <div style="margin-top: 25px;">
+            <button class="btn ${selectedRecipes.has(num) ? 'btn-orange' : 'btn-primary'}" 
+                onclick="toggleRecipeFromDetail(${num})">
+                ${selectedRecipes.has(num) ? '✓ Sélectionnée' : '+ Ajouter à ma sélection'}
+            </button>
+        </div>
+    `;
+    
+    document.getElementById('recipe-detail').classList.add('open');
+}
+
+function closeRecipeDetail() {
+    document.getElementById('recipe-detail').classList.remove('open');
+}
+
+function closeRecipeDetailOutside(event) {
+    if (event.target.id === 'recipe-detail') {
+        closeRecipeDetail();
+    }
+}
+
+function toggleRecipeFromDetail(num) {
+    if (selectedRecipes.has(num)) {
+        selectedRecipes.delete(num);
+    } else {
+        selectedRecipes.add(num);
+    }
+    renderRecipes();
+    showRecipeDetail(num);
+    updateWeekPlannerOptions();
+}
+
+// Fermer avec Escape
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeRecipeDetail();
+});
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PLANIFICATEUR DE SEMAINE (SOUPERS UNIQUEMENT)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function renderWeekPlanner() {
+    const planner = document.getElementById('week-planner');
+    planner.innerHTML = '';
+    
+    const jours = Object.keys(weekPlan);
+    
+    jours.forEach(jour => {
+        const col = document.createElement('div');
+        col.className = 'day-column';
+        col.innerHTML = `
+            <div class="day-header">${jour}</div>
+            <div class="day-content">
+                <div class="meal-slot">
+                    <label>Souper</label>
+                    <select id="${jour}-souper" onchange="updateMeal('${jour}', this.value)">
+                        <option value="">-- Choisir --</option>
+                    </select>
+                </div>
+            </div>
+        `;
+        planner.appendChild(col);
+    });
+    
+    updateWeekPlannerOptions();
+}
+
+function updateWeekPlannerOptions() {
+    const jours = Object.keys(weekPlan);
+    
+    jours.forEach(jour => {
+        const select = document.getElementById(`${jour}-souper`);
+        if (!select) return;
+        
+        const currentValue = select.value;
+        select.innerHTML = '<option value="">-- Choisir --</option>';
+        
+        // Ajouter toutes les recettes (sélectionnées en premier)
+        const selected = RECETTES.filter(r => selectedRecipes.has(r.num));
+        const other = RECETTES.filter(r => !selectedRecipes.has(r.num));
+        
+        if (selected.length > 0) {
+            const optgroup = document.createElement('optgroup');
+            optgroup.label = '⭐ Sélectionnées';
+            selected.forEach(r => {
+                const opt = document.createElement('option');
+                opt.value = r.num;
+                opt.textContent = `#${r.num} ${r.nom}`;
+                optgroup.appendChild(opt);
+            });
+            select.appendChild(optgroup);
+        }
+        
+        const optgroupOther = document.createElement('optgroup');
+        optgroupOther.label = 'Autres recettes';
+        other.forEach(r => {
+            const opt = document.createElement('option');
+            opt.value = r.num;
+            opt.textContent = `#${r.num} ${r.nom}`;
+            optgroupOther.appendChild(opt);
+        });
+        select.appendChild(optgroupOther);
+        
+        // Restaurer la valeur
+        if (currentValue) {
+            select.value = currentValue;
+        }
+    });
+}
+
+function updateMeal(jour, value) {
+    weekPlan[jour] = value ? parseInt(value) : null;
+}
+
+function autoFillWeek() {
+    const selected = Array.from(selectedRecipes);
+    if (selected.length === 0) {
+        alert('Veuillez d\'abord sélectionner des recettes dans l\'onglet "Sélection"');
+        return;
+    }
+    
+    const jours = Object.keys(weekPlan);
+    let index = 0;
+    
+    jours.forEach(jour => {
+        if (index < selected.length) {
+            weekPlan[jour] = selected[index];
+            document.getElementById(`${jour}-souper`).value = selected[index];
+            index++;
+        } else {
+            // Boucler si moins de 7 recettes sélectionnées
+            const recycledIndex = index % selected.length;
+            weekPlan[jour] = selected[recycledIndex];
+            document.getElementById(`${jour}-souper`).value = selected[recycledIndex];
+            index++;
+        }
+    });
+}
+
+function clearWeek() {
+    Object.keys(weekPlan).forEach(jour => {
+        weekPlan[jour] = null;
+        document.getElementById(`${jour}-souper`).value = '';
+    });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// GÉNÉRATION POUR IMPRESSION
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function generateMenuPrint() {
+    const table = document.getElementById('menu-table');
+    table.innerHTML = `
+        <tr>
+            <th style="width: 120px;">Jour</th>
+            <th>Souper</th>
+        </tr>
+    `;
+    
+    Object.entries(weekPlan).forEach(([jour, recetteNum]) => {
+        const recette = recetteNum ? RECETTES.find(r => r.num === recetteNum) : null;
+        
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><strong>${jour}</strong></td>
+            <td>${recette ? `#${recette.num} ${recette.nom} <span style="color: #666; font-size: 0.85rem;">(${recette.origine})</span>` : '—'}</td>
+        `;
+        table.appendChild(tr);
+    });
+    
+    document.getElementById('menu-print-area').classList.add('visible');
+}
+
+function generateTasksPrint() {
+    const list = document.getElementById('task-list');
+    list.innerHTML = '';
+    
+    if (selectedRecipes.size === 0) {
+        list.innerHTML = '<li>Aucune recette sélectionnée. Allez dans l\'onglet "Sélection" pour choisir vos recettes.</li>';
+        document.getElementById('tasks-print-area').classList.add('visible');
+        return;
+    }
+    
+    const selected = RECETTES.filter(r => selectedRecipes.has(r.num));
+    
+    selected.forEach(recette => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+            <span class="task-check">☐</span>
+            <div>
+                <div class="recipe-name">#${recette.num} ${recette.nom}</div>
+                <div>${recette.prep_weekend}</div>
+                <div style="color: #666; font-size: 0.85rem; margin-top: 5px;">
+                    Temps: ${recette.temps_prep_weekend} • ${recette.conservation}
+                </div>
+            </div>
+        `;
+        list.appendChild(li);
+    });
+    
+    document.getElementById('tasks-print-area').classList.add('visible');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// LISTE D'ÉPICERIE
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function categorizeIngredient(ingredient) {
+    const lower = ingredient.toLowerCase();
+    
+    for (const [category, keywords] of Object.entries(CATEGORIES_INGREDIENTS)) {
+        for (const keyword of keywords) {
+            if (lower.includes(keyword)) {
+                return category;
+            }
+        }
+    }
+    return 'Autres';
+}
+
+function generateGroceryPrint() {
+    const content = document.getElementById('grocery-list-content');
+    content.innerHTML = '';
+    
+    if (selectedRecipes.size === 0) {
+        content.innerHTML = '<p>Aucune recette sélectionnée. Allez dans l\'onglet "Sélection" pour choisir vos recettes.</p>';
+        document.getElementById('grocery-print-area').classList.add('visible');
+        document.getElementById('grocery-recipe-count').textContent = '0';
+        return;
+    }
+    
+    const selected = RECETTES.filter(r => selectedRecipes.has(r.num));
+    document.getElementById('grocery-recipe-count').textContent = selected.length;
+    
+    // Collecter tous les ingrédients par catégorie
+    const categorized = {};
+    
+    selected.forEach(recette => {
+        recette.ingredients.forEach(ing => {
+            const category = categorizeIngredient(ing);
+            if (!categorized[category]) {
+                categorized[category] = new Set();
+            }
+            categorized[category].add(ing);
+        });
+    });
+    
+    // Ordre des catégories
+    const orderedCategories = [
+        'Viandes & Poissons',
+        'Légumes frais',
+        'Herbes fraîches',
+        'Féculents',
+        'Légumineuses & Protéines végétales',
+        'Conserves & Sauces',
+        'Épices & Condiments',
+        'Huiles & Matières grasses',
+        'Autres'
+    ];
+    
+    orderedCategories.forEach(category => {
+        if (categorized[category] && categorized[category].size > 0) {
+            const section = document.createElement('div');
+            section.className = 'grocery-section';
+            
+            const items = Array.from(categorized[category]).sort();
+            
+            section.innerHTML = `
+                <h3>${category}</h3>
+                <ul class="grocery-list">
+                    ${items.map(item => `<li><span class="check-box">☐</span> ${item}</li>`).join('')}
+                </ul>
+            `;
+            
+            content.appendChild(section);
+        }
+    });
+    
+    document.getElementById('grocery-print-area').classList.add('visible');
+}
+
+function printMenu() {
+    document.getElementById('menu-print-area').classList.add('print-target');
+    window.print();
+    document.getElementById('menu-print-area').classList.remove('print-target');
+}
+
+function printTasks() {
+    document.getElementById('tasks-print-area').classList.add('print-target');
+    window.print();
+    document.getElementById('tasks-print-area').classList.remove('print-target');
+}
+
+function printGrocery() {
+    document.getElementById('grocery-print-area').classList.add('print-target');
+    window.print();
+    document.getElementById('grocery-print-area').classList.remove('print-target');
+}
+</script>
+</body>
+</html>
