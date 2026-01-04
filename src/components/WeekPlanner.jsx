@@ -11,6 +11,9 @@ function WeekPlanner({ weekPlan, selectedRecipes, recettes, onUpdateMeal }) {
   const selected = recettes.filter(r => selectedRecipes.has(r.num))
   const other = recettes.filter(r => !selectedRecipes.has(r.num))
 
+  // Get recipes already used in other days
+  const usedRecipes = Object.values(weekPlan).filter(v => v !== null)
+
   const jourLabels = {
     Lundi: { short: 'Lun', full: 'Lundi' },
     Mardi: { short: 'Mar', full: 'Mardi' },
@@ -47,19 +50,25 @@ function WeekPlanner({ weekPlan, selectedRecipes, recettes, onUpdateMeal }) {
                   <option value="">— Choisir —</option>
                   {selected.length > 0 && (
                     <optgroup label="⭐ Sélectionnées">
-                      {selected.map(r => (
-                        <option key={r.num} value={r.num}>
-                          #{r.num} {r.nom}
-                        </option>
-                      ))}
+                      {selected.map(r => {
+                        const isUsedElsewhere = usedRecipes.includes(r.num) && weekPlan[jour] !== r.num
+                        return (
+                          <option key={r.num} value={r.num} disabled={isUsedElsewhere}>
+                            #{r.num} {r.nom}{isUsedElsewhere ? ' (déjà planifié)' : ''}
+                          </option>
+                        )
+                      })}
                     </optgroup>
                   )}
                   <optgroup label="Autres recettes">
-                    {other.map(r => (
-                      <option key={r.num} value={r.num}>
-                        #{r.num} {r.nom}
-                      </option>
-                    ))}
+                    {other.map(r => {
+                      const isUsedElsewhere = usedRecipes.includes(r.num) && weekPlan[jour] !== r.num
+                      return (
+                        <option key={r.num} value={r.num} disabled={isUsedElsewhere}>
+                          #{r.num} {r.nom}{isUsedElsewhere ? ' (déjà planifié)' : ''}
+                        </option>
+                      )
+                    })}
                   </optgroup>
                 </select>
                 {selectedRecipe && (

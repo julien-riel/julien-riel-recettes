@@ -1,3 +1,5 @@
+import { normalizeIngredient } from '../data/categories'
+
 /**
  * Tasks and grocery panel component
  * @param {Object} props - Component props
@@ -8,6 +10,8 @@
  * @param {Function} props.onShowTasks - Show tasks callback
  * @param {Function} props.onShowGrocery - Show grocery callback
  * @param {Function} props.onPrint - Print callback
+ * @param {Set} props.ownedIngredients - Set of owned ingredient names
+ * @param {Function} props.onToggleOwned - Toggle owned ingredient callback
  */
 function TasksPanel({
   selectedRecipes,
@@ -16,7 +20,9 @@ function TasksPanel({
   groceryPrintVisible,
   onShowTasks,
   onShowGrocery,
-  onPrint
+  onPrint,
+  ownedIngredients = new Set(),
+  onToggleOwned
 }) {
   const orderedCategories = [
     { key: 'Viandes & Poissons', icon: '▣' },
@@ -118,12 +124,29 @@ function TasksPanel({
                   <span className="category-count">{items.size}</span>
                 </h3>
                 <ul className="grocery-list">
-                  {Array.from(items).sort().map((item, i) => (
-                    <li key={i}>
-                      <span className="check-box">☐</span>
-                      <span className="item-text">{item}</span>
-                    </li>
-                  ))}
+                  {Array.from(items).sort((a, b) => {
+                    // Sort owned items to the end
+                    const aOwned = ownedIngredients.has(normalizeIngredient(a))
+                    const bOwned = ownedIngredients.has(normalizeIngredient(b))
+                    if (aOwned && !bOwned) return 1
+                    if (!aOwned && bOwned) return -1
+                    return a.localeCompare(b)
+                  }).map((item, i) => {
+                    const isOwned = ownedIngredients.has(normalizeIngredient(item))
+                    return (
+                      <li key={i} className={isOwned ? 'owned' : ''}>
+                        <input
+                          type="checkbox"
+                          className="owned-checkbox"
+                          checked={isOwned}
+                          onChange={() => onToggleOwned(item)}
+                          aria-label={`Marquer ${item} comme déjà à la maison`}
+                        />
+                        <span className={`item-text ${isOwned ? 'strikethrough' : ''}`}>{item}</span>
+                        {isOwned && <span className="owned-badge">à la maison</span>}
+                      </li>
+                    )
+                  })}
                 </ul>
               </div>
             )

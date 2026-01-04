@@ -1106,16 +1106,15 @@ header p {
 
 @media print {
   body {
-    background: white;
+    background: white !important;
   }
 
   body::before {
-    display: none;
+    display: none !important;
   }
 
   header,
   .tabs,
-  .panel:not(.print-target),
   .actions,
   .print-buttons,
   .selection-count,
@@ -1123,12 +1122,49 @@ header p {
     display: none !important;
   }
 
-  .print-area {
+  /* Hide all panels except the one marked for printing */
+  .panel {
+    display: none !important;
+  }
+
+  .panel.print-target,
+  .panel:has(.print-target) {
     display: block !important;
-    box-shadow: none;
-    padding: 0;
-    border: none;
-    background: white;
+    background: white !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  /* Hide panel content except print area */
+  .panel.print-target > *:not(.print-area),
+  .panel:has(.print-target) > *:not(.print-area) {
+    display: none !important;
+  }
+
+  /* Hide panel title and subtitle in tasks panel */
+  .panel.print-target .panel-title,
+  .panel.print-target .panel-subtitle,
+  .panel.print-target .stats-row,
+  .panel.print-target .empty-state {
+    display: none !important;
+  }
+
+  .print-area {
+    display: none;
+  }
+
+  .print-area.print-target,
+  .print-area.visible {
+    display: block !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    border: none !important;
+    background: white !important;
+  }
+
+  /* Only show the specific print-target area */
+  .panel.print-target .print-area:not(.print-target) {
+    display: none !important;
   }
 
   .container {
@@ -1143,6 +1179,19 @@ header p {
   .task-list li {
     box-shadow: none;
     border: 1px solid #ddd;
+    background: white !important;
+  }
+
+  .grocery-section {
+    break-inside: avoid;
+  }
+
+  .print-area h2 {
+    color: black !important;
+  }
+
+  .grocery-section h3 {
+    color: black !important;
   }
 }
 
@@ -1536,4 +1585,527 @@ input:focus-visible {
 ::selection {
   background: var(--safran-light);
   color: var(--anthracite);
+}
+
+/* ============================================
+   Dark Mode
+   ============================================ */
+
+:root[data-theme="dark"] {
+  --creme: #1a1a1a;
+  --creme-dark: #252525;
+  --kraft: #2a2a2a;
+  --anthracite: #E8E8E8;
+  --gris-chaud: #BBBBBB;
+  --gris-clair: #888888;
+
+  /* Adjust primary colors for better contrast */
+  --terre-cuite: #E8705A;
+  --terre-cuite-light: #F0A090;
+  --terre-cuite-dark: #C05040;
+
+  --safran: #F0C060;
+  --safran-light: #F8D890;
+  --safran-dark: #D0A040;
+
+  --olive: #7A9D52;
+  --olive-light: #9DBD78;
+  --olive-dark: #5A7D38;
+
+  /* Adjust shadows for dark mode */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.5);
+  --shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.6);
+}
+
+:root[data-theme="dark"] body {
+  background: var(--creme);
+}
+
+:root[data-theme="dark"] body::before {
+  background-image:
+    radial-gradient(ellipse at 20% 30%, rgba(212, 168, 83, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(195, 88, 49, 0.04) 0%, transparent 50%);
+}
+
+:root[data-theme="dark"] .tabs,
+:root[data-theme="dark"] .panel,
+:root[data-theme="dark"] .recipe-card,
+:root[data-theme="dark"] .meal-slot,
+:root[data-theme="dark"] .menu-table td,
+:root[data-theme="dark"] .task-list li {
+  background: var(--kraft);
+}
+
+:root[data-theme="dark"] .recipe-card.selected {
+  background: linear-gradient(135deg, #2a3020 0%, #353530 100%);
+}
+
+:root[data-theme="dark"] .print-area {
+  background: var(--kraft);
+  border-color: #444;
+}
+
+:root[data-theme="dark"] .search-input,
+:root[data-theme="dark"] .filter-group select {
+  background: var(--kraft);
+  color: var(--anthracite);
+  border-color: #444;
+}
+
+:root[data-theme="dark"] .recipe-detail-content {
+  background: var(--kraft);
+}
+
+:root[data-theme="dark"] .info-box {
+  background: var(--creme);
+}
+
+:root[data-theme="dark"] .description-box {
+  background: linear-gradient(135deg, var(--creme) 0%, #2a2820 100%);
+}
+
+:root[data-theme="dark"] .ingredients-list li {
+  background: var(--creme);
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: var(--creme);
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #555;
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
+/* ============================================
+   Header with Dark Mode Toggle
+   ============================================ */
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header-text {
+  text-align: center;
+  flex: 1;
+}
+
+.dark-mode-toggle {
+  position: absolute;
+  right: var(--space-lg);
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--duration-fast);
+}
+
+.dark-mode-toggle:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-50%) scale(1.1);
+}
+
+header {
+  position: relative;
+}
+
+/* ============================================
+   Search Bar
+   ============================================ */
+
+.search-bar {
+  position: relative;
+  margin-bottom: var(--space-lg);
+}
+
+.search-input {
+  width: 100%;
+  padding: var(--space-md) var(--space-lg);
+  padding-right: 50px;
+  border: 2px solid var(--creme-dark);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  transition: all var(--duration-fast);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--olive);
+  box-shadow: 0 0 0 3px rgba(74, 93, 50, 0.1);
+}
+
+.search-input::placeholder {
+  color: var(--gris-clair);
+}
+
+.search-clear {
+  position: absolute;
+  right: var(--space-md);
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--gris-clair);
+  border: none;
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--duration-fast);
+}
+
+.search-clear:hover {
+  background: var(--gris-chaud);
+}
+
+/* ============================================
+   Additional Filters
+   ============================================ */
+
+.filters-row {
+  display: flex;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.filter-group label {
+  font-size: 0.75rem;
+  color: var(--gris-clair);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+.filter-group select {
+  padding: var(--space-sm) var(--space-md);
+  border: 2px solid var(--creme-dark);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--anthracite);
+  background: white;
+  cursor: pointer;
+  min-width: 120px;
+  transition: all var(--duration-fast);
+}
+
+.filter-group select:focus {
+  outline: none;
+  border-color: var(--olive);
+}
+
+.filter-group select:hover {
+  border-color: var(--olive-light);
+}
+
+.btn-sm {
+  padding: var(--space-sm) var(--space-md);
+  font-size: 0.85rem;
+}
+
+.results-count {
+  color: var(--gris-clair);
+  font-size: 0.9rem;
+  margin-bottom: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--creme);
+  border-radius: var(--radius-sm);
+  display: inline-block;
+}
+
+.filter-icon {
+  margin-right: var(--space-xs);
+}
+
+/* ============================================
+   Favorite Button (Card)
+   ============================================ */
+
+.favorite-btn {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  background: white;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gris-clair);
+  transition: all var(--duration-fast);
+  box-shadow: var(--shadow-sm);
+  z-index: 10;
+}
+
+.favorite-btn:hover {
+  transform: scale(1.15);
+  color: var(--terre-cuite);
+}
+
+.favorite-btn.active {
+  color: var(--terre-cuite);
+  background: var(--creme);
+}
+
+:root[data-theme="dark"] .favorite-btn {
+  background: var(--creme);
+}
+
+/* ============================================
+   Favorite Button (Detail Modal)
+   ============================================ */
+
+.detail-favorite-btn {
+  position: absolute;
+  top: var(--space-lg);
+  right: calc(var(--space-lg) + 50px);
+  background: var(--creme);
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gris-clair);
+  transition: all var(--duration-fast);
+}
+
+.detail-favorite-btn:hover {
+  transform: scale(1.1);
+  color: var(--terre-cuite);
+}
+
+.detail-favorite-btn.active {
+  color: var(--terre-cuite);
+}
+
+/* ============================================
+   Portions Selector
+   ============================================ */
+
+.portions-selector {
+  padding: var(--space-sm) !important;
+}
+
+.portions-buttons {
+  display: flex;
+  gap: 4px;
+  margin-top: var(--space-xs);
+}
+
+.portion-btn {
+  background: white;
+  border: 2px solid var(--creme-dark);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--duration-fast);
+  color: var(--gris-chaud);
+}
+
+.portion-btn:hover {
+  border-color: var(--olive-light);
+  color: var(--olive);
+}
+
+.portion-btn.active {
+  background: var(--olive);
+  border-color: var(--olive);
+  color: white;
+}
+
+:root[data-theme="dark"] .portion-btn {
+  background: var(--kraft);
+  border-color: #444;
+}
+
+.portions-indicator {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--terre-cuite);
+  margin-left: var(--space-sm);
+}
+
+/* ============================================
+   Owned Ingredients
+   ============================================ */
+
+.owned-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--creme-dark);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  position: relative;
+  transition: all var(--duration-fast);
+  background: white;
+  flex-shrink: 0;
+}
+
+.owned-checkbox:hover {
+  border-color: var(--olive-light);
+}
+
+.owned-checkbox:checked {
+  background: var(--olive);
+  border-color: var(--olive);
+}
+
+.owned-checkbox:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+.grocery-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.grocery-list li.owned {
+  opacity: 0.6;
+}
+
+.strikethrough {
+  text-decoration: line-through;
+  color: var(--gris-clair);
+}
+
+.owned-badge {
+  font-size: 0.7rem;
+  background: var(--olive-light);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+:root[data-theme="dark"] .owned-checkbox {
+  background: var(--kraft);
+  border-color: #444;
+}
+
+/* ============================================
+   Favorites Filter Button
+   ============================================ */
+
+.filter-btn[data-region="favoris"].active {
+  background: var(--terre-cuite);
+  border-color: var(--terre-cuite);
+}
+
+/* ============================================
+   Print Improvements
+   ============================================ */
+
+@media print {
+  .dark-mode-toggle,
+  .search-bar,
+  .filters-row,
+  .results-count,
+  .favorite-btn,
+  .detail-favorite-btn,
+  .portions-buttons,
+  .owned-badge {
+    display: none !important;
+  }
+
+  .owned-checkbox {
+    display: none;
+  }
+
+  .grocery-list li.owned {
+    opacity: 1;
+  }
+
+  .strikethrough {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  @page {
+    size: A4;
+    margin: 1cm;
+  }
+}
+
+/* ============================================
+   Responsive Adjustments for New Features
+   ============================================ */
+
+@media (max-width: 768px) {
+  .dark-mode-toggle {
+    right: var(--space-md);
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
+  }
+
+  .filters-row {
+    gap: var(--space-sm);
+  }
+
+  .filter-group {
+    flex: 1;
+    min-width: 100px;
+  }
+
+  .filter-group select {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .detail-favorite-btn {
+    right: calc(var(--space-md) + 45px);
+    width: 36px;
+    height: 36px;
+    font-size: 1.25rem;
+  }
 }

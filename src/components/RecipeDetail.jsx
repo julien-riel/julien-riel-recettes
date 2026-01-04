@@ -5,10 +5,18 @@ import { useEffect } from 'react'
  * @param {Object} props - Component props
  * @param {Object} props.recette - Recipe data
  * @param {boolean} props.isSelected - Whether the recipe is selected
+ * @param {boolean} props.isFavorite - Whether the recipe is a favorite
  * @param {Function} props.onClose - Close modal callback
  * @param {Function} props.onToggle - Toggle selection callback
+ * @param {Function} props.onToggleFavorite - Toggle favorite callback
+ * @param {number} props.portions - Current portions
+ * @param {Function} props.onUpdatePortions - Update portions callback
+ * @param {Function} props.scaleIngredient - Scale ingredient callback
  */
-function RecipeDetail({ recette, isSelected, onClose, onToggle }) {
+function RecipeDetail({ recette, isSelected, isFavorite, onClose, onToggle, onToggleFavorite, portions, onUpdatePortions, scaleIngredient }) {
+  const portionOptions = [2, 4, 6, 8]
+  const multiplier = portions / 4
+
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === 'Escape') onClose()
@@ -32,12 +40,23 @@ function RecipeDetail({ recette, isSelected, onClose, onToggle }) {
     onToggle(recette.num)
   }
 
+  const handleFavorite = (e) => {
+    onToggleFavorite(recette.num, e)
+  }
 
   return (
     <div className="recipe-detail open" onClick={handleBackdropClick}>
       <div className="recipe-detail-content">
         <button className="close-btn" onClick={onClose} aria-label="Fermer">
           ✕
+        </button>
+
+        <button
+          className={`detail-favorite-btn ${isFavorite ? 'active' : ''}`}
+          onClick={handleFavorite}
+          aria-label={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
+        >
+          {isFavorite ? '♥' : '♡'}
         </button>
 
         <h2>
@@ -60,9 +79,19 @@ function RecipeDetail({ recette, isSelected, onClose, onToggle }) {
             <label>Week-end</label>
             <strong>{recette.temps_prep_weekend}</strong>
           </div>
-          <div className="info-box">
+          <div className="info-box portions-selector">
             <label>Portions</label>
-            <strong>{recette.portions}</strong>
+            <div className="portions-buttons">
+              {portionOptions.map(p => (
+                <button
+                  key={p}
+                  className={`portion-btn ${portions === p ? 'active' : ''}`}
+                  onClick={() => onUpdatePortions(recette.num, p)}
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
           </div>
           <div className="info-box">
             <label>Conservation</label>
@@ -85,10 +114,10 @@ function RecipeDetail({ recette, isSelected, onClose, onToggle }) {
           </div>
         </div>
 
-        <h3>Ingrédients</h3>
+        <h3>Ingrédients {multiplier !== 1 && <span className="portions-indicator">(pour {portions} portions)</span>}</h3>
         <ul className="ingredients-list">
           {recette.ingredients.map((ing, i) => (
-            <li key={i}>{ing}</li>
+            <li key={i}>{multiplier !== 1 ? scaleIngredient(ing, multiplier) : ing}</li>
           ))}
         </ul>
 
