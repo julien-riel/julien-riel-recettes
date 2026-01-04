@@ -630,27 +630,145 @@ function App() {
     const printElement = document.getElementById(areaMap[area])
     if (!printElement) return
 
-    // Clone the element and add to body for printing
-    const clone = printElement.cloneNode(true)
-    clone.id = 'print-clone'
-    clone.classList.add('print-target')
-    document.body.appendChild(clone)
+    // Detect iOS/mobile Safari
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                  (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent))
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+                     (navigator.maxTouchPoints > 1)
 
-    // Clean up after print dialog closes
-    const cleanup = () => {
-      const cloneEl = document.getElementById('print-clone')
-      if (cloneEl) {
-        cloneEl.remove()
+    if (isIOS || isMobile) {
+      // On mobile: open a new window with printable content
+      const printWindow = window.open('', '_blank')
+      if (!printWindow) {
+        alert('Veuillez autoriser les pop-ups pour imprimer.')
+        return
       }
-      window.removeEventListener('afterprint', cleanup)
+
+      // Get all stylesheets for print
+      const styles = Array.from(document.styleSheets)
+        .map(sheet => {
+          try {
+            return Array.from(sheet.cssRules).map(rule => rule.cssText).join('\n')
+          } catch {
+            return ''
+          }
+        })
+        .join('\n')
+
+      const printContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Imprimer - Carnet de Recettes</title>
+          <style>
+            ${styles}
+            /* Force print styles on screen for mobile */
+            body {
+              background: white !important;
+              padding: 20px !important;
+              margin: 0 !important;
+            }
+            body > * { display: block !important; }
+            .print-target {
+              display: block !important;
+              background: white !important;
+            }
+            .print-recipe {
+              page-break-after: always;
+              page-break-inside: avoid;
+              padding: 20px 0;
+              border-bottom: 1px solid #ddd;
+              margin-bottom: 20px;
+            }
+            .print-recipe:last-child {
+              page-break-after: avoid;
+              border-bottom: none;
+            }
+            .print-recipe h2 {
+              font-size: 1.5rem;
+              color: black !important;
+              margin-bottom: 5px;
+              border-bottom: 2px solid #333;
+              padding-bottom: 10px;
+            }
+            .print-recipe-section {
+              margin-bottom: 20px;
+            }
+            .print-recipe-section h3 {
+              font-size: 1.1rem;
+              color: black !important;
+              margin-bottom: 10px;
+              border-left: 3px solid #333;
+              padding-left: 10px;
+            }
+            .print-recipe-section ul,
+            .print-recipe-section ol {
+              margin-left: 20px;
+            }
+            .print-recipe-section li {
+              margin-bottom: 5px;
+              line-height: 1.5;
+            }
+            .print-instructions {
+              background: #f0f7ff;
+              border: 1px solid #3b82f6;
+              border-radius: 8px;
+              padding: 15px;
+              margin-bottom: 20px;
+              text-align: center;
+            }
+            .print-instructions button {
+              background: #3b82f6;
+              color: white;
+              border: none;
+              padding: 10px 20px;
+              border-radius: 6px;
+              font-size: 1rem;
+              cursor: pointer;
+              margin-top: 10px;
+            }
+            @media print {
+              .print-instructions { display: none !important; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="print-instructions">
+            <p><strong>Pour imprimer :</strong></p>
+            <p>Utilisez le menu de partage (📤) ou le menu du navigateur → Imprimer</p>
+            <button onclick="window.print()">Imprimer maintenant</button>
+          </div>
+          <div class="print-target">
+            ${printElement.innerHTML}
+          </div>
+        </body>
+        </html>
+      `
+
+      printWindow.document.documentElement.innerHTML = printContent.replace(/<!DOCTYPE html>\s*<html>/, '').replace(/<\/html>\s*$/, '')
+    } else {
+      // On desktop: use the original window.print() approach
+      const clone = printElement.cloneNode(true)
+      clone.id = 'print-clone'
+      clone.classList.add('print-target')
+      document.body.appendChild(clone)
+
+      const cleanup = () => {
+        const cloneEl = document.getElementById('print-clone')
+        if (cloneEl) {
+          cloneEl.remove()
+        }
+        window.removeEventListener('afterprint', cleanup)
+      }
+      window.addEventListener('afterprint', cleanup)
+
+      window.print()
+
+      // Fallback cleanup after 5 minutes
+      setTimeout(cleanup, 300000)
     }
-    window.addEventListener('afterprint', cleanup)
-
-    // Try to print
-    window.print()
-
-    // Fallback cleanup after 5 minutes (in case afterprint doesn't fire on iOS)
-    setTimeout(cleanup, 300000)
   }, [])
 
   const regions = [
