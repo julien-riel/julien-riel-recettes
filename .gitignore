@@ -24,3 +24,7 @@ temp-vite/
 *.njsproj
 *.sln
 *.sw?
+
+# Playwright test artifacts
+.playwright-mcp/
+playwright-report/
