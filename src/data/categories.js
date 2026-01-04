@@ -87,10 +87,21 @@ export function getBaseIngredient(ingredient) {
 
   // Mapping des ingrédients similaires (ordre important - plus spécifique d'abord)
   const ingredientGroups = [
+    // Conserves & Sauces (AVANT les viandes pour éviter que "bouillon de poulet" matche "poulet")
+    ['lait de coco', ['lait de coco']],
+    ['bouillon de poulet', ['bouillon de poulet']],
+    ['bouillon de bœuf', ['bouillon de bœuf']],
+    ['bouillon de légumes', ['bouillon de légumes']],
+    ['bouillon', ['bouillon', 'cube de bouillon', 'eau ou bouillon']],
+    ['sauce soja', ['sauce soja']],
+    ['sauce poisson', ['sauce poisson']],
+    ['sauce d\'huître', ['sauce huître', 'sauce d\'huître']],
+
     // Viandes
     ['poulet', ['poitrine de poulet', 'poulet', 'hauts de cuisse de poulet', 'cuisses de poulet', 'hauts de cuisses de poulet']],
     ['bœuf', ['bœuf haché', 'bœuf', 'bavette', 'rumsteck']],
     ['porc', ['porc haché', 'porc', 'poitrine de porc', 'épaule de porc']],
+    ['agneau', ['agneau haché', 'agneau', 'épaule d\'agneau']],
     ['crevettes', ['crevettes', 'crevette']],
     ['poisson blanc', ['filet de poisson blanc', 'poisson blanc', 'cabillaud', 'lotte']],
 
@@ -140,15 +151,6 @@ export function getBaseIngredient(ingredient) {
     ['maïs', ['maïs', 'épi de maïs', 'maïs en grains']],
     ['tortillas', ['tortilla', 'tortillas']],
     ['semoule de couscous', ['semoule', 'couscous']],
-
-    // Conserves & Sauces
-    ['lait de coco', ['lait de coco']],
-    ['bouillon de poulet', ['bouillon de poulet']],
-    ['bouillon de bœuf', ['bouillon de bœuf']],
-    ['bouillon', ['bouillon', 'eau ou bouillon']],
-    ['sauce soja', ['sauce soja']],
-    ['sauce poisson', ['sauce poisson']],
-    ['sauce d\'huître', ['sauce huître', 'sauce d\'huître']],
 
     // Légumineuses
     ['haricots noirs', ['haricot noir', 'haricots noirs']],

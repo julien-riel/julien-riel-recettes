@@ -2,11 +2,13 @@
  * Week planner component for meal scheduling
  * @param {Object} props - Component props
  * @param {Object} props.weekPlan - Current week plan state
+ * @param {Object} props.weekPortions - Portions per day
  * @param {Set} props.selectedRecipes - Set of selected recipe numbers
  * @param {Array} props.recettes - Array of all recipes
  * @param {Function} props.onUpdateMeal - Update meal callback
+ * @param {Function} props.onUpdatePortions - Update portions callback
  */
-function WeekPlanner({ weekPlan, selectedRecipes, recettes, onUpdateMeal }) {
+function WeekPlanner({ weekPlan, weekPortions = {}, selectedRecipes, recettes, onUpdateMeal, onUpdatePortions }) {
   const jours = Object.keys(weekPlan)
   const selected = recettes.filter(r => selectedRecipes.has(r.num))
   const other = recettes.filter(r => !selectedRecipes.has(r.num))
@@ -75,6 +77,19 @@ function WeekPlanner({ weekPlan, selectedRecipes, recettes, onUpdateMeal }) {
                   <div className="selected-preview">
                     <span className="preview-name">{selectedRecipe.nom}</span>
                     <span className="preview-origin">{selectedRecipe.origine}</span>
+                    <div className="portions-selector">
+                      <label>Portions:</label>
+                      <select
+                        value={weekPortions[jour] || 4}
+                        onChange={(e) => onUpdatePortions(jour, e.target.value)}
+                        aria-label={`Nombre de portions pour ${jour}`}
+                      >
+                        <option value="2">2</option>
+                        <option value="4">4</option>
+                        <option value="6">6</option>
+                        <option value="8">8</option>
+                      </select>
+                    </div>
                   </div>
                 )}
               </div>

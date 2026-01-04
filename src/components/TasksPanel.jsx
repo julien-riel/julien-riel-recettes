@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { normalizeIngredient } from '../data/categories'
 
 /**
@@ -5,10 +6,9 @@ import { normalizeIngredient } from '../data/categories'
  * @param {Object} props - Component props
  * @param {Array} props.selectedRecipes - Array of selected recipes
  * @param {Object} props.categorizedIngredients - Ingredients organized by category
- * @param {boolean} props.tasksPrintVisible - Whether tasks print area is visible
- * @param {boolean} props.groceryPrintVisible - Whether grocery print area is visible
- * @param {Function} props.onShowTasks - Show tasks callback
- * @param {Function} props.onShowGrocery - Show grocery callback
+ * @param {Object} props.weekPlan - Week plan with day -> recipe num mapping
+ * @param {Object} props.weekPortions - Portions per day
+ * @param {Array} props.recettes - All recipes
  * @param {Function} props.onPrint - Print callback
  * @param {Set} props.ownedIngredients - Set of owned ingredient names
  * @param {Function} props.onToggleOwned - Toggle owned ingredient callback
@@ -16,14 +16,15 @@ import { normalizeIngredient } from '../data/categories'
 function TasksPanel({
   selectedRecipes,
   categorizedIngredients,
-  tasksPrintVisible,
-  groceryPrintVisible,
-  onShowTasks,
-  onShowGrocery,
+  weekPlan = {},
+  weekPortions = {},
+  recettes = [],
   onPrint,
   ownedIngredients = new Set(),
   onToggleOwned
 }) {
+  const [copyFeedback, setCopyFeedback] = useState(false)
+
   const orderedCategories = [
     { key: 'Viandes & Poissons', icon: '▣' },
     { key: 'Œufs & Produits frais', icon: '○' },
@@ -40,6 +41,32 @@ function TasksPanel({
 
   const totalIngredients = Object.values(categorizedIngredients)
     .reduce((acc, set) => acc + (set?.size || 0), 0)
+
+  /**
+   * Copies the grocery list to clipboard for iPhone Reminders
+   * Excludes items marked as "owned"
+   */
+  const copyGroceryList = async () => {
+    const lines = []
+
+    orderedCategories.forEach(({ key }) => {
+      const items = categorizedIngredients[key]
+      if (!items || items.size === 0) return
+
+      Array.from(items)
+        .filter(item => !ownedIngredients.has(normalizeIngredient(item)))
+        .sort((a, b) => a.localeCompare(b))
+        .forEach(item => lines.push(item))
+    })
+
+    try {
+      await navigator.clipboard.writeText(lines.join('\n'))
+      setCopyFeedback(true)
+      setTimeout(() => setCopyFeedback(false), 2000)
+    } catch (err) {
+      console.error('Erreur lors de la copie:', err)
+    }
+  }
 
   return (
     <>
@@ -66,20 +93,12 @@ function TasksPanel({
               <span className="stat-label">Ingrédient{totalIngredients > 1 ? 's' : ''}</span>
             </div>
           </div>
-
-          <div className="actions" style={{ marginBottom: '24px', marginTop: '8px' }}>
-            <button className="btn btn-primary" onClick={onShowTasks}>
-              Voir les tâches
-            </button>
-            <button className="btn btn-orange" onClick={onShowGrocery}>
-              Liste d'épicerie
-            </button>
-          </div>
         </>
       )}
 
       {/* Zone tâches */}
-      <div id="tasks-print-area" className={`print-area ${tasksPrintVisible ? 'visible' : ''}`}>
+      {selectedRecipes.length > 0 && (
+      <div id="tasks-print-area" className="print-area visible">
         <h2>Préparation du week-end</h2>
         <p className="print-subtitle">
           {selectedRecipes.length} recette{selectedRecipes.length > 1 ? 's' : ''} à préparer
@@ -105,13 +124,34 @@ function TasksPanel({
           </button>
         </div>
       </div>
+      )}
 
       {/* Zone épicerie */}
-      <div id="grocery-print-area" className={`print-area ${groceryPrintVisible ? 'visible' : ''}`}>
+      {selectedRecipes.length > 0 && (
+      <div id="grocery-print-area" className="print-area visible">
         <h2>Liste d'épicerie</h2>
         <p className="print-subtitle">
           {totalIngredients} ingrédient{totalIngredients > 1 ? 's' : ''} pour {selectedRecipes.length} recette{selectedRecipes.length > 1 ? 's' : ''}
         </p>
+
+        {/* Mini menu de la semaine */}
+        {Object.values(weekPlan).some(v => v !== null) && (
+          <div className="week-menu-summary">
+            {Object.entries(weekPlan).map(([jour, recetteNum]) => {
+              const recette = recetteNum ? recettes.find(r => r.num === recetteNum) : null
+              const portions = weekPortions[jour] || 4
+              return (
+                <div key={jour} className="week-menu-item">
+                  <span className="week-menu-day">{jour.slice(0, 3)}</span>
+                  <span className="week-menu-recipe">
+                    {recette ? `${recette.nom} (${portions} p.)` : '—'}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+        )}
+
         <div className="grocery-grid">
           {orderedCategories.map(({ key, icon }) => {
             const items = categorizedIngredients[key]
@@ -156,8 +196,12 @@ function TasksPanel({
           <button className="btn btn-primary" onClick={() => onPrint('grocery')}>
             Imprimer la liste
           </button>
+          <button className="btn btn-secondary" onClick={copyGroceryList}>
+            {copyFeedback ? 'Copié!' : 'Copier pour Rappels'}
+          </button>
         </div>
       </div>
+      )}
     </>
   )
 }

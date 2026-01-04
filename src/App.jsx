@@ -163,9 +163,15 @@ function App() {
     Samedi: null,
     Dimanche: null
   })
-  const [menuPrintVisible, setMenuPrintVisible] = useState(false)
-  const [tasksPrintVisible, setTasksPrintVisible] = useState(false)
-  const [groceryPrintVisible, setGroceryPrintVisible] = useState(false)
+  const [weekPortions, setWeekPortions] = useState(savedState?.weekPortions || {
+    Lundi: 4,
+    Mardi: 4,
+    Mercredi: 4,
+    Jeudi: 4,
+    Vendredi: 4,
+    Samedi: 4,
+    Dimanche: 4
+  })
 
   // New states for features
   const [favoriteRecipes, setFavoriteRecipes] = useState(() => new Set(savedState?.favorites || []))
@@ -176,18 +182,20 @@ function App() {
   const [difficultyFilter, setDifficultyFilter] = useState('all')
   const [ownedIngredients, setOwnedIngredients] = useState(() => new Set(savedState?.owned || []))
   const [portionMultipliers, setPortionMultipliers] = useState(savedState?.portions || {})
+  const [recipesToPrint, setRecipesToPrint] = useState(new Set())
 
   // Save to localStorage when relevant state changes
   useEffect(() => {
     saveToStorage({
       selectedRecipes: [...selectedRecipes],
       weekPlan,
+      weekPortions,
       favorites: [...favoriteRecipes],
       darkMode,
       owned: [...ownedIngredients],
       portions: portionMultipliers
     })
-  }, [selectedRecipes, weekPlan, favoriteRecipes, darkMode, ownedIngredients, portionMultipliers])
+  }, [selectedRecipes, weekPlan, weekPortions, favoriteRecipes, darkMode, ownedIngredients, portionMultipliers])
 
   // Apply dark mode
   useEffect(() => {
@@ -244,14 +252,29 @@ function App() {
     setSelectedRecipes(new Set(RECETTES.map(r => r.num)))
   }, [])
 
+  const selectRandomWeek = useCallback(() => {
+    // Shuffle and pick 7 random recipes
+    const shuffled = [...RECETTES].sort(() => Math.random() - 0.5)
+    const randomSeven = shuffled.slice(0, 7).map(r => r.num)
+    setSelectedRecipes(new Set(randomSeven))
+    // Apply selection filter to show only selected recipes
+    setActiveFilter('selection')
+  }, [])
+
   const deselectAll = useCallback(() => {
     setSelectedRecipes(new Set())
-  }, [])
+    // Reset filter if currently filtering by selection
+    if (activeFilter === 'selection') {
+      setActiveFilter('all')
+    }
+  }, [activeFilter])
 
   // Filter recipes based on all active filters
   const filteredRecipes = RECETTES.filter(r => {
     // Region filter
-    if (activeFilter === 'favoris') {
+    if (activeFilter === 'selection') {
+      if (!selectedRecipes.has(r.num)) return false
+    } else if (activeFilter === 'favoris') {
       if (!favoriteRecipes.has(r.num)) return false
     } else if (activeFilter !== 'all' && getRegion(r.origine) !== activeFilter) {
       return false
@@ -287,6 +310,13 @@ function App() {
     setWeekPlan(prev => ({
       ...prev,
       [jour]: value ? parseInt(value) : null
+    }))
+  }, [])
+
+  const updateWeekPortions = useCallback((jour, portions) => {
+    setWeekPortions(prev => ({
+      ...prev,
+      [jour]: parseInt(portions)
     }))
   }, [])
 
@@ -326,14 +356,28 @@ function App() {
     const categorized = {}
     const ingredientsByBase = {}
 
-    // Première passe : regrouper par ingrédient de base
+    // Trouver le multiplicateur de portions pour une recette
+    const getRecipeMultiplier = (recetteNum) => {
+      for (const [jour, num] of Object.entries(weekPlan)) {
+        if (num === recetteNum) {
+          const portions = weekPortions[jour] || 4
+          return portions / 4 // Recettes sont pour 4 portions par défaut
+        }
+      }
+      return 1 // Pas dans le plan = portions par défaut
+    }
+
+    // Première passe : regrouper par ingrédient de base avec mise à l'échelle
     selected.forEach(recette => {
+      const multiplier = getRecipeMultiplier(recette.num)
       recette.ingredients.forEach(ing => {
         const baseIng = getBaseIngredient(ing)
 
         // Ignorer l'eau pure
         if (baseIng === 'eau') return
 
+        // Mettre à l'échelle l'ingrédient si nécessaire
+        const scaledIng = multiplier !== 1 ? scaleIngredient(ing, multiplier) : ing
         const category = categorizeIngredient(ing)
 
         if (!ingredientsByBase[category]) {
@@ -342,7 +386,7 @@ function App() {
         if (!ingredientsByBase[category][baseIng]) {
           ingredientsByBase[category][baseIng] = []
         }
-        ingredientsByBase[category][baseIng].push(ing)
+        ingredientsByBase[category][baseIng].push(scaledIng)
       })
     })
 
@@ -364,7 +408,7 @@ function App() {
     }
 
     return categorized
-  }, [getSelectedRecipesList])
+  }, [getSelectedRecipesList, weekPlan, weekPortions])
 
   const handlePrint = useCallback((area) => {
     const printArea = document.getElementById(`${area}-print-area`)
@@ -421,7 +465,7 @@ function App() {
         <div className="header-content">
           <div className="header-text">
             <h1>Carnet de Recettes</h1>
-            <p>Cuisines du monde sans produits laitiers — équilibre parfait entre légumes, protéines et féculents</p>
+            <p>Cuisines du monde sans produits laitiers — équilibre parfait entre légumes, protéines et féculents (50%, 25%, 25%)</p>
           </div>
           <button
             className="dark-mode-toggle"
@@ -453,18 +497,34 @@ function App() {
           >
             <span className="tab-icon">○</span> Épicerie
           </button>
+          <button
+            className={`tab-btn ${activeTab === 'cuisiner' ? 'active' : ''}`}
+            onClick={() => setActiveTab('cuisiner')}
+          >
+            <span className="tab-icon">◉</span> Cuisiner
+          </button>
         </nav>
 
         {/* Panel Selection */}
         <div className={`panel ${activeTab === 'selection' ? 'active' : ''}`}>
           <div className="selection-count">
-            <span><strong>{selectedRecipes.size}</strong> recette{selectedRecipes.size > 1 ? 's' : ''} sélectionnée{selectedRecipes.size > 1 ? 's' : ''}</span>
+            <button
+              className={`selection-count-btn ${activeFilter === 'selection' ? 'active' : ''}`}
+              onClick={() => setActiveFilter(activeFilter === 'selection' ? 'all' : 'selection')}
+              disabled={selectedRecipes.size === 0}
+            >
+              <strong>{selectedRecipes.size}</strong> recette{selectedRecipes.size > 1 ? 's' : ''} sélectionnée{selectedRecipes.size > 1 ? 's' : ''}
+              {selectedRecipes.size > 0 && <span className="filter-hint">{activeFilter === 'selection' ? '✕' : '→ Filtrer'}</span>}
+            </button>
             <div className="selection-buttons">
+              <button className="btn btn-primary" onClick={selectRandomWeek}>
+                🎲 Semaine aléatoire
+              </button>
               <button className="btn btn-secondary" onClick={selectAll}>
                 Tout sélectionner
               </button>
               <button className="btn btn-gray" onClick={deselectAll}>
-                Effacer la sélection
+                Effacer
               </button>
             </div>
           </div>
@@ -565,47 +625,54 @@ function App() {
 
         {/* Panel Menu */}
         <div className={`panel ${activeTab === 'menu' ? 'active' : ''}`}>
-          <h2 className="panel-title">Planifiez vos soupers</h2>
-          <p className="panel-subtitle">Attribuez une recette à chaque jour de la semaine pour créer votre menu personnalisé.</p>
+          <div className="panel-header-row">
+            <div>
+              <h2 className="panel-title">Planifiez vos soupers</h2>
+              <p className="panel-subtitle">Attribuez une recette à chaque jour de la semaine.</p>
+            </div>
+            <div className="panel-actions">
+              <button className="btn btn-secondary" onClick={autoFillWeek}>
+                Remplissage auto
+              </button>
+              <button className="btn btn-gray" onClick={clearWeek}>
+                Réinitialiser
+              </button>
+            </div>
+          </div>
 
           <WeekPlanner
             weekPlan={weekPlan}
+            weekPortions={weekPortions}
             selectedRecipes={selectedRecipes}
             recettes={RECETTES}
             onUpdateMeal={updateMeal}
+            onUpdatePortions={updateWeekPortions}
           />
 
-          <div className="actions">
-            <button className="btn btn-primary" onClick={() => setMenuPrintVisible(true)}>
-              Générer le menu
-            </button>
-            <button className="btn btn-secondary" onClick={autoFillWeek}>
-              Remplissage automatique
-            </button>
-            <button className="btn btn-gray" onClick={clearWeek}>
-              Réinitialiser
-            </button>
-          </div>
-
-          <div id="menu-print-area" className={`print-area ${menuPrintVisible ? 'visible' : ''}`}>
-            <h2>Menu de la semaine</h2>
+          <div id="menu-print-area" className="menu-summary">
+            <h3>Menu de la semaine</h3>
             <table className="menu-table">
               <thead>
                 <tr>
-                  <th style={{ width: '120px' }}>Jour</th>
+                  <th style={{ width: '100px' }}>Jour</th>
                   <th>Souper</th>
+                  <th style={{ width: '80px', textAlign: 'center' }}>Portions</th>
                 </tr>
               </thead>
               <tbody>
                 {Object.entries(weekPlan).map(([jour, recetteNum]) => {
                   const recette = recetteNum ? RECETTES.find(r => r.num === recetteNum) : null
+                  const portions = weekPortions[jour] || 4
                   return (
                     <tr key={jour}>
                       <td><strong>{jour}</strong></td>
                       <td>
                         {recette
-                          ? <span>#{recette.num} {recette.nom} <span style={{ color: '#666', fontSize: '0.85rem' }}>({recette.origine})</span></span>
-                          : '—'}
+                          ? <span>#{recette.num} {recette.nom} <span style={{ color: 'var(--gris-clair)', fontSize: '0.85rem' }}>({recette.origine})</span></span>
+                          : <span className="empty-slot">—</span>}
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        {recette ? portions : '—'}
                       </td>
                     </tr>
                   )
@@ -614,7 +681,7 @@ function App() {
             </table>
             <div className="print-buttons">
               <button className="btn btn-primary" onClick={() => handlePrint('menu')}>
-                Imprimer
+                Imprimer le menu
               </button>
             </div>
           </div>
@@ -625,14 +692,157 @@ function App() {
           <TasksPanel
             selectedRecipes={getSelectedRecipesList()}
             categorizedIngredients={getCategorizedIngredients()}
-            tasksPrintVisible={tasksPrintVisible}
-            groceryPrintVisible={groceryPrintVisible}
-            onShowTasks={() => setTasksPrintVisible(true)}
-            onShowGrocery={() => setGroceryPrintVisible(true)}
+            weekPlan={weekPlan}
+            weekPortions={weekPortions}
+            recettes={RECETTES}
             onPrint={handlePrint}
             ownedIngredients={ownedIngredients}
             onToggleOwned={toggleOwned}
           />
+        </div>
+
+        {/* Panel Cuisiner */}
+        <div className={`panel ${activeTab === 'cuisiner' ? 'active' : ''}`}>
+          <div className="panel-header-row">
+            <div>
+              <h2 className="panel-title">Cuisiner</h2>
+              <p className="panel-subtitle">Sélectionnez les recettes à imprimer pour cuisiner.</p>
+            </div>
+            <div className="panel-actions">
+              <button
+                className="btn btn-secondary"
+                onClick={() => setRecipesToPrint(new Set(selectedRecipes))}
+                disabled={selectedRecipes.size === 0}
+              >
+                Tout cocher
+              </button>
+              <button
+                className="btn btn-gray"
+                onClick={() => setRecipesToPrint(new Set())}
+                disabled={recipesToPrint.size === 0}
+              >
+                Tout décocher
+              </button>
+            </div>
+          </div>
+
+          {selectedRecipes.size === 0 ? (
+            <div className="empty-state">
+              <div className="empty-icon">👨‍🍳</div>
+              <h3>Aucune recette sélectionnée</h3>
+              <p>Retournez à l'onglet "Sélection" pour choisir vos recettes.</p>
+            </div>
+          ) : (
+            <>
+              <div className="cook-recipes-grid">
+                {getSelectedRecipesList().map(recette => {
+                  const isChecked = recipesToPrint.has(recette.num)
+                  // Chercher les portions dans le plan de la semaine
+                  let portions = 4
+                  let jourAssigne = null
+                  for (const [jour, num] of Object.entries(weekPlan)) {
+                    if (num === recette.num) {
+                      portions = weekPortions[jour] || 4
+                      jourAssigne = jour
+                      break
+                    }
+                  }
+                  return (
+                    <div
+                      key={recette.num}
+                      className={`cook-recipe-card ${isChecked ? 'checked' : ''}`}
+                      onClick={() => {
+                        setRecipesToPrint(prev => {
+                          const newSet = new Set(prev)
+                          if (newSet.has(recette.num)) {
+                            newSet.delete(recette.num)
+                          } else {
+                            newSet.add(recette.num)
+                          }
+                          return newSet
+                        })
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        className="cook-checkbox"
+                        checked={isChecked}
+                        onChange={() => {}}
+                        aria-label={`Imprimer ${recette.nom}`}
+                      />
+                      <div className="cook-recipe-info">
+                        <span className="cook-recipe-num">#{recette.num}</span>
+                        <span className="cook-recipe-name">{recette.nom}</span>
+                        <span className="cook-recipe-origin">{recette.origine}</span>
+                        {jourAssigne && (
+                          <span className="cook-recipe-portions">{jourAssigne} • {portions} portions</span>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+
+              <div className="cook-print-section">
+                <div className="cook-print-count">
+                  <strong>{recipesToPrint.size}</strong> recette{recipesToPrint.size > 1 ? 's' : ''} à imprimer
+                </div>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => handlePrint('recipes')}
+                  disabled={recipesToPrint.size === 0}
+                >
+                  Imprimer les recettes
+                </button>
+              </div>
+
+              {/* Zone d'impression des recettes */}
+              <div id="recipes-print-area" className="print-area recipes-print-area">
+                {RECETTES.filter(r => recipesToPrint.has(r.num)).map(recette => {
+                  // Chercher les portions dans le plan de la semaine
+                  let portions = 4
+                  for (const [jour, num] of Object.entries(weekPlan)) {
+                    if (num === recette.num) {
+                      portions = weekPortions[jour] || 4
+                      break
+                    }
+                  }
+                  const multiplier = portions / 4
+                  return (
+                    <div key={recette.num} className="print-recipe">
+                      <h2>#{recette.num} {recette.nom}</h2>
+                      <p className="print-recipe-origin">{recette.origine} • {portions} portions</p>
+
+                      <div className="print-recipe-section">
+                        <h3>Ingrédients</h3>
+                        <ul>
+                          {recette.ingredients.map((ing, i) => (
+                            <li key={i}>{multiplier !== 1 ? scaleIngredient(ing, multiplier) : ing}</li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div className="print-recipe-section">
+                        <h3>Préparation</h3>
+                        <ol>
+                          {recette.etapes.map((etape, i) => (
+                            <li key={i}>{etape}</li>
+                          ))}
+                        </ol>
+                      </div>
+
+                      {recette.variantes && (
+                        <div className="print-recipe-section">
+                          <h3>Variantes</h3>
+                          <p>{recette.variantes}</p>
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </>
+          )}
         </div>
       </div>
 
