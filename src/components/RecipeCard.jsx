@@ -1,3 +1,58 @@
+import * as Flags from 'country-flag-icons/react/3x2'
+
+/**
+ * Country code mapping for flag display
+ */
+const COUNTRY_CODES = {
+  'Thaïlande': 'TH',
+  'Corée': 'KR',
+  'Corée du Sud': 'KR',
+  'Japon': 'JP',
+  'Vietnam': 'VN',
+  'Indonésie': 'ID',
+  'Maroc': 'MA',
+  'Grèce': 'GR',
+  'Liban': 'LB',
+  'Israël': 'IL',
+  'Israël / Maghreb': 'IL',
+  'Mexique': 'MX',
+  'Mexique / USA': 'MX',
+  'Brésil': 'BR',
+  'Venezuela': 'VE',
+  'Pérou': 'PE',
+  'Inde': 'IN',
+  'Inde / Royaume-Uni': 'IN',
+  'Sénégal': 'SN',
+  'Éthiopie': 'ET',
+  'Jamaïque': 'JM',
+  'Antilles': 'MQ',
+  'Martinique / Antilles': 'MQ',
+  'Espagne': 'ES',
+  'Québec': 'CA',
+  'Québec / Italie': 'CA',
+  'France': 'FR',
+  'Italie': 'IT',
+  'Italie / Méditerranée': 'IT',
+  'Fusion': null
+}
+
+/**
+ * Flag icon component
+ * @param {Object} props - Component props
+ * @param {string} props.country - Country name
+ */
+function FlagIcon({ country }) {
+  const code = COUNTRY_CODES[country]
+  if (!code) {
+    return <span className="flag-fallback">🌍</span>
+  }
+  const FlagComponent = Flags[code]
+  if (!FlagComponent) {
+    return <span className="flag-fallback">🌍</span>
+  }
+  return <FlagComponent title={country} className="flag-icon" />
+}
+
 /**
  * Recipe card component for the grid view
  * @param {Object} props - Component props
@@ -18,34 +73,6 @@ function RecipeCard({ recette, isSelected, isFavorite, onToggle, onToggleFavorit
   const handleFavoriteClick = (e) => {
     e.stopPropagation()
     onToggleFavorite(recette.num, e)
-  }
-
-  const getRegionIcon = (origine) => {
-    const iconMap = {
-      'Thaïlande': '◆',
-      'Corée': '◇',
-      'Japon': '●',
-      'Vietnam': '○',
-      'Indonésie': '■',
-      'Maroc': '▲',
-      'Grèce': '◆',
-      'Liban': '◇',
-      'Israël': '●',
-      'Mexique': '▲',
-      'Brésil': '■',
-      'Venezuela': '◆',
-      'Pérou': '◇',
-      'Inde': '●',
-      'Sénégal': '▲',
-      'Éthiopie': '■',
-      'Jamaïque': '◆',
-      'Antilles': '◇',
-      'Espagne': '●',
-      'Québec': '❖',
-      'France': '◆',
-      'Italie': '■'
-    }
-    return iconMap[origine] || '◈'
   }
 
   const getSourceInfo = (source) => {
@@ -79,7 +106,7 @@ function RecipeCard({ recette, isSelected, isFavorite, onToggle, onToggleFavorit
         onClick={handleFavoriteClick}
         aria-label={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
       >
-        {isFavorite ? '♥' : '♡'}
+        {isFavorite ? '❤️' : '🤍'}
       </button>
       <div className="header">
         <input
@@ -93,13 +120,13 @@ function RecipeCard({ recette, isSelected, isFavorite, onToggle, onToggleFavorit
         <span className="nom">{recette.nom}</span>
       </div>
       <div className="origine">
-        <span className="origine-icon">{getRegionIcon(recette.origine)}</span>
-        {recette.origine} • {recette.portions} portions
+        <span className="origine-icon"><FlagIcon country={recette.origine} /></span>
+        {recette.origine} • 👥 {recette.portions} portions
       </div>
       <div className="description">{recette.description}</div>
       <div className="meta">
-        <span title="Temps de préparation">{recette.temps_prep_semaine}</span>
-        <span title="Conservation">{recette.conservation.split('|')[0].trim()}</span>
+        <span title="Temps de préparation">⏱️ {recette.temps_prep_semaine}</span>
+        <span title="Conservation">🧊 {recette.conservation.split('|')[0].trim()}</span>
       </div>
       <div className={`source-badge ${sourceInfo.className}`} title={sourceInfo.label}>
         <span className="source-icon">{sourceInfo.icon}</span>

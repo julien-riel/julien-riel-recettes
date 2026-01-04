@@ -783,37 +783,37 @@ function App() {
   }, [])
 
   const regions = [
-    { id: 'all', label: 'Toutes', count: RECETTES.length },
-    { id: 'favoris', label: 'Favoris', count: favoriteRecipes.size, icon: '♥' },
-    { id: 'Québec', label: 'Québec' },
-    { id: 'Asie', label: 'Asie' },
-    { id: 'Méditerranée', label: 'Méditerranée' },
-    { id: 'Amérique', label: 'Amérique Latine' },
-    { id: 'Afrique', label: 'Afrique & Caraïbes' },
-    { id: 'Europe', label: 'Europe' }
+    { id: 'all', label: 'Toutes', count: RECETTES.length, icon: '🌍' },
+    { id: 'favoris', label: 'Favoris', count: favoriteRecipes.size, icon: '❤️' },
+    { id: 'Québec', label: 'Québec', icon: '🍁' },
+    { id: 'Asie', label: 'Asie', icon: '🥢' },
+    { id: 'Méditerranée', label: 'Méditerranée', icon: '🫒' },
+    { id: 'Amérique', label: 'Amérique Latine', icon: '🌮' },
+    { id: 'Afrique', label: 'Afrique & Caraïbes', icon: '🥥' },
+    { id: 'Europe', label: 'Europe', icon: '🥖' }
   ]
 
   const proteinOptions = [
     { id: 'all', label: 'Toutes' },
-    { id: 'poulet', label: 'Poulet' },
-    { id: 'boeuf', label: 'Boeuf' },
-    { id: 'porc', label: 'Porc' },
-    { id: 'poisson', label: 'Poisson' },
-    { id: 'vegetarien', label: 'Végétarien' }
+    { id: 'poulet', label: '🍗 Poulet' },
+    { id: 'boeuf', label: '🥩 Boeuf' },
+    { id: 'porc', label: '🐷 Porc' },
+    { id: 'poisson', label: '🐟 Poisson' },
+    { id: 'vegetarien', label: '🥬 Végétarien' }
   ]
 
   const prepTimeOptions = [
     { id: 'all', label: 'Tous' },
-    { id: 'rapide', label: '≤15 min' },
-    { id: 'moyen', label: '16-30 min' },
-    { id: 'long', label: '>30 min' }
+    { id: 'rapide', label: '⚡ ≤15 min' },
+    { id: 'moyen', label: '⏱️ 16-30 min' },
+    { id: 'long', label: '🕐 >30 min' }
   ]
 
   const difficultyOptions = [
     { id: 'all', label: 'Toutes' },
-    { id: 'facile', label: 'Facile' },
-    { id: 'moyen', label: 'Moyen' },
-    { id: 'difficile', label: 'Difficile' }
+    { id: 'facile', label: '😊 Facile' },
+    { id: 'moyen', label: '💪 Moyen' },
+    { id: 'difficile', label: '🔥 Difficile' }
   ]
 
   return (
@@ -839,25 +839,25 @@ function App() {
           className={`tab-btn ${activeTab === 'selection' ? 'active' : ''}`}
           onClick={() => setActiveTab('selection')}
         >
-          <span className="tab-icon">◈</span> Sélection
+          <span className="tab-icon">📚</span> Sélection
         </button>
         <button
           className={`tab-btn ${activeTab === 'menu' ? 'active' : ''}`}
           onClick={() => setActiveTab('menu')}
         >
-          <span className="tab-icon">◇</span> Planifier
+          <span className="tab-icon">📅</span> Planifier
         </button>
         <button
           className={`tab-btn ${activeTab === 'taches' ? 'active' : ''}`}
           onClick={() => setActiveTab('taches')}
         >
-          <span className="tab-icon">○</span> Épicerie
+          <span className="tab-icon">🛒</span> Épicerie
         </button>
         <button
           className={`tab-btn ${activeTab === 'cuisiner' ? 'active' : ''}`}
           onClick={() => setActiveTab('cuisiner')}
         >
-          <span className="tab-icon">◉</span> Cuisiner
+          <span className="tab-icon">👨‍🍳</span> Cuisiner
         </button>
       </nav>
 
@@ -878,10 +878,10 @@ function App() {
                 🎲 Semaine aléatoire
               </button>
               <button className="btn btn-secondary" onClick={selectAll}>
-                Tout sélectionner
+                ✅ Tout sélectionner
               </button>
               <button className="btn btn-gray" onClick={deselectAll}>
-                Effacer
+                🗑️ Effacer
               </button>
             </div>
           </div>
@@ -989,16 +989,16 @@ function App() {
             </div>
             <div className="panel-actions">
               <button className="btn btn-primary" onClick={startNewMenu}>
-                Nouveau menu
+                ✨ Nouveau menu
               </button>
               <button className="btn btn-secondary" onClick={shareMenu}>
-                {shareFeedback ? 'Lien copié!' : 'Partager'}
+                {shareFeedback ? '✅ Lien copié!' : '🔗 Partager'}
               </button>
               <button className="btn btn-secondary" onClick={autoFillWeek}>
-                Remplissage auto
+                🪄 Remplissage auto
               </button>
               <button className="btn btn-gray" onClick={clearWeek}>
-                Réinitialiser
+                🗑️ Réinitialiser
               </button>
             </div>
           </div>
@@ -1045,7 +1045,7 @@ function App() {
             </table>
             <div className="print-buttons">
               <button className="btn btn-primary" onClick={() => handlePrint('menu')}>
-                Imprimer le menu
+                🖨️ Imprimer le menu
               </button>
             </div>
           </div>
@@ -1083,14 +1083,14 @@ function App() {
                 onClick={() => setRecipesToPrint(new Set(getMenuRecipesList().map(r => r.num)))}
                 disabled={getMenuRecipesList().length === 0}
               >
-                Tout cocher
+                ✅ Tout cocher
               </button>
               <button
                 className="btn btn-gray"
                 onClick={() => setRecipesToPrint(new Set())}
                 disabled={recipesToPrint.size === 0}
               >
-                Tout décocher
+                ⬜ Tout décocher
               </button>
             </div>
           </div>
@@ -1166,7 +1166,7 @@ function App() {
                   onClick={() => handlePrint('recipes')}
                   disabled={recipesToPrint.size === 0}
                 >
-                  Imprimer les recettes
+                  🖨️ Imprimer les recettes
                 </button>
               </div>
 

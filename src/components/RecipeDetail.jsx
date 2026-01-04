@@ -1,5 +1,59 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
+import * as Flags from 'country-flag-icons/react/3x2'
+
+/**
+ * Country code mapping for flag display
+ */
+const COUNTRY_CODES = {
+  'Thaïlande': 'TH',
+  'Corée': 'KR',
+  'Corée du Sud': 'KR',
+  'Japon': 'JP',
+  'Vietnam': 'VN',
+  'Indonésie': 'ID',
+  'Maroc': 'MA',
+  'Grèce': 'GR',
+  'Liban': 'LB',
+  'Israël': 'IL',
+  'Israël / Maghreb': 'IL',
+  'Mexique': 'MX',
+  'Mexique / USA': 'MX',
+  'Brésil': 'BR',
+  'Venezuela': 'VE',
+  'Pérou': 'PE',
+  'Inde': 'IN',
+  'Inde / Royaume-Uni': 'IN',
+  'Sénégal': 'SN',
+  'Éthiopie': 'ET',
+  'Jamaïque': 'JM',
+  'Antilles': 'MQ',
+  'Martinique / Antilles': 'MQ',
+  'Espagne': 'ES',
+  'Québec': 'CA',
+  'Québec / Italie': 'CA',
+  'France': 'FR',
+  'Italie': 'IT',
+  'Italie / Méditerranée': 'IT',
+  'Fusion': null
+}
+
+/**
+ * Flag icon component
+ * @param {Object} props - Component props
+ * @param {string} props.country - Country name
+ */
+function FlagIcon({ country }) {
+  const code = COUNTRY_CODES[country]
+  if (!code) {
+    return <span className="flag-fallback">🌍</span>
+  }
+  const FlagComponent = Flags[code]
+  if (!FlagComponent) {
+    return <span className="flag-fallback">🌍</span>
+  }
+  return <FlagComponent title={country} className="flag-icon" />
+}
 
 /**
  * Recipe detail modal component
@@ -65,14 +119,15 @@ function RecipeDetail({ recette, isSelected, isFavorite, onClose, onToggle, onTo
           onClick={handleFavorite}
           aria-label={isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris'}
         >
-          {isFavorite ? '♥' : '♡'}
+          {isFavorite ? '❤️' : '🤍'}
         </button>
 
         <h2>
           <span className="recipe-num">#{recette.num}</span> {recette.nom}
         </h2>
         <div className="origine">
-          {recette.origine} • {recette.portions} portions
+          <span className="origine-icon"><FlagIcon country={recette.origine} /></span>
+          {recette.origine} • 👥 {recette.portions} portions
         </div>
 
         <div className="description-box">
@@ -81,15 +136,15 @@ function RecipeDetail({ recette, isSelected, isFavorite, onClose, onToggle, onTo
 
         <div className="info-grid">
           <div className="info-box">
-            <label>Préparation</label>
+            <label>⏱️ Préparation</label>
             <strong>{recette.temps_prep_semaine}</strong>
           </div>
           <div className="info-box">
-            <label>Week-end</label>
+            <label>📅 Week-end</label>
             <strong>{recette.temps_prep_weekend}</strong>
           </div>
           <div className="info-box portions-selector">
-            <label>Portions</label>
+            <label>👥 Portions</label>
             <div className="portions-buttons">
               {portionOptions.map(p => (
                 <button
@@ -103,36 +158,36 @@ function RecipeDetail({ recette, isSelected, isFavorite, onClose, onToggle, onTo
             </div>
           </div>
           <div className="info-box">
-            <label>Conservation</label>
+            <label>🧊 Conservation</label>
             <strong>{recette.conservation.split('|')[0].trim()}</strong>
           </div>
         </div>
 
         <div className="info-grid nutrition-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
           <div className="info-box legumes-box">
-            <label>Légumes (50%)</label>
+            <label>🥬 Légumes (50%)</label>
             <span>{recette.legumes}</span>
           </div>
           <div className="info-box proteines-box">
-            <label>Protéines (25%)</label>
+            <label>🍖 Protéines (25%)</label>
             <span>{recette.proteines}</span>
           </div>
           <div className="info-box feculents-box">
-            <label>Féculents (25%)</label>
+            <label>🍚 Féculents (25%)</label>
             <span>{recette.feculents}</span>
           </div>
         </div>
 
-        <h3>Ingrédients {multiplier !== 1 && <span className="portions-indicator">(pour {portions} portions)</span>}</h3>
+        <h3>🥘 Ingrédients {multiplier !== 1 && <span className="portions-indicator">(pour {portions} portions)</span>}</h3>
         <ul className="ingredients-list">
           {recette.ingredients.map((ing, i) => (
             <li key={i}>{multiplier !== 1 ? scaleIngredient(ing, multiplier) : ing}</li>
           ))}
         </ul>
 
-        <h3>Préparation</h3>
+        <h3>👩‍🍳 Préparation</h3>
         <div className="weekend-legend">
-          <span className="weekend-badge">WE</span> = Peut être fait le week-end à l'avance
+          <span className="weekend-badge">📅 WE</span> = Peut être fait le week-end à l'avance
         </div>
         <ol className="steps-list">
           {recette.etapes.map((etape, index) => {
@@ -146,13 +201,13 @@ function RecipeDetail({ recette, isSelected, isFavorite, onClose, onToggle, onTo
           })}
         </ol>
 
-        <h3>Préparation du week-end</h3>
+        <h3>📅 Préparation du week-end</h3>
         <div className="weekend-note">
           <strong>Ce qui peut être préparé à l'avance :</strong><br />
           {recette.note_weekend || recette.prep_weekend}
         </div>
 
-        <h3>Variantes possibles</h3>
+        <h3>🔄 Variantes possibles</h3>
         <p className="variantes-text">{recette.variantes}</p>
 
         {/* Source info section */}
@@ -193,7 +248,7 @@ function RecipeDetail({ recette, isSelected, isFavorite, onClose, onToggle, onTo
             className={`btn ${isSelected ? 'btn-orange' : 'btn-primary'}`}
             onClick={handleToggle}
           >
-            {isSelected ? '✓ Sélectionnée' : '+ Ajouter à ma sélection'}
+            {isSelected ? '✅ Sélectionnée' : '➕ Ajouter à ma sélection'}
           </button>
         </div>
       </div>

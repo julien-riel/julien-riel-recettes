@@ -36,17 +36,17 @@ function TasksPanel({
   const [copyFeedback, setCopyFeedback] = useState(false)
 
   const orderedCategories = [
-    { key: 'Viandes & Poissons', icon: '▣' },
-    { key: 'Œufs & Produits frais', icon: '○' },
-    { key: 'Légumes frais', icon: '◆' },
-    { key: 'Fruits', icon: '◇' },
-    { key: 'Herbes fraîches', icon: '✦' },
-    { key: 'Féculents', icon: '■' },
-    { key: 'Légumineuses & Protéines végétales', icon: '●' },
-    { key: 'Conserves & Sauces', icon: '▲' },
-    { key: 'Épices & Condiments', icon: '✧' },
-    { key: 'Huiles & Matières grasses', icon: '◈' },
-    { key: 'Autres', icon: '□' }
+    { key: 'Viandes & Poissons', icon: '🥩' },
+    { key: 'Œufs & Produits frais', icon: '🥚' },
+    { key: 'Légumes frais', icon: '🥬' },
+    { key: 'Fruits', icon: '🍎' },
+    { key: 'Herbes fraîches', icon: '🌿' },
+    { key: 'Féculents', icon: '🍚' },
+    { key: 'Légumineuses & Protéines végétales', icon: '🫘' },
+    { key: 'Conserves & Sauces', icon: '🥫' },
+    { key: 'Épices & Condiments', icon: '🧂' },
+    { key: 'Huiles & Matières grasses', icon: '🫒' },
+    { key: 'Autres', icon: '📦' }
   ]
 
   // Count items to buy (not owned and not purchased)
@@ -146,7 +146,7 @@ function TasksPanel({
         </ul>
         <div className="print-buttons">
           <button className="btn btn-primary" onClick={() => onPrint('tasks')}>
-            Imprimer les tâches
+            🖨️ Imprimer les tâches
           </button>
         </div>
       </div>
@@ -166,7 +166,7 @@ function TasksPanel({
             className={`btn ${shoppingMode ? 'btn-primary shopping-active' : 'btn-secondary'}`}
             onClick={onToggleShoppingMode}
           >
-            {shoppingMode ? '✓ À l\'épicerie' : 'À l\'épicerie'}
+            {shoppingMode ? '✅ À l\'épicerie' : '🛒 À l\'épicerie'}
           </button>
         </div>
 
@@ -258,10 +258,10 @@ function TasksPanel({
         </div>
         <div className="print-buttons">
           <button className="btn btn-primary" onClick={() => onPrint('grocery')}>
-            Imprimer la liste
+            🖨️ Imprimer la liste
           </button>
           <button className="btn btn-secondary" onClick={copyGroceryList}>
-            {copyFeedback ? 'Copié!' : 'Copier pour Rappels'}
+            {copyFeedback ? '✅ Copié!' : '📋 Copier pour Rappels'}
           </button>
         </div>
       </div>

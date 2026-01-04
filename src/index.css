@@ -1807,7 +1807,21 @@ header p {
 .origine-icon {
   color: var(--terre-cuite);
   font-size: 0.7rem;
-  margin-right: 4px;
+  margin-right: 6px;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.origine-icon .flag-icon {
+  width: 1.4em;
+  height: auto;
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.origine-icon .flag-fallback {
+  font-size: 1rem;
 }
 
 /* ============================================
