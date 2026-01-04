@@ -1442,71 +1442,90 @@ header p {
     display: none !important;
   }
 
-  /* Hide all panels except the one marked for printing */
+  /* Hide all panels by default */
   .panel {
     display: none !important;
   }
 
-  .panel.print-target,
-  .panel:has(.print-target) {
+  /* ===== MENU PRINT ===== */
+  body[data-print-area="menu"] .panel:has(#menu-print-area) {
     display: block !important;
     background: white !important;
     box-shadow: none !important;
     padding: 0 !important;
   }
 
-  /* Hide panel content except print area */
-  .panel.print-target > *:not(.print-area),
-  .panel:has(.print-target) > *:not(.print-area) {
+  body[data-print-area="menu"] .panel-header-row,
+  body[data-print-area="menu"] .week-planner {
     display: none !important;
   }
 
-  /* Hide panel title and subtitle in tasks panel */
-  .panel.print-target .panel-title,
-  .panel.print-target .panel-subtitle,
-  .panel.print-target .stats-row,
-  .panel.print-target .empty-state {
-    display: none !important;
-  }
-
-  .print-area {
-    display: none;
-  }
-
-  .print-area.print-target,
-  .print-area.visible,
-  .menu-summary.print-target {
+  body[data-print-area="menu"] #menu-print-area {
     display: block !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    border: none !important;
     background: white !important;
   }
 
-  .menu-summary.print-target h3 {
+  body[data-print-area="menu"] #menu-print-area h3 {
     color: black !important;
   }
 
-  /* Only show the specific print-target area */
-  .panel.print-target .print-area:not(.print-target),
-  .panel.print-target .menu-summary:not(.print-target) {
-    display: none !important;
-  }
-
-  /* Hide week planner when printing menu */
-  .panel.print-target .week-planner {
-    display: none !important;
-  }
-
-  /* Hide cook grid when printing recipes */
-  .panel.print-target .cook-recipes-grid,
-  .panel.print-target .cook-print-section {
-    display: none !important;
-  }
-
-  /* Show recipes print area */
-  .recipes-print-area.print-target {
+  /* ===== TASKS PRINT ===== */
+  body[data-print-area="tasks"] .panel:has(#tasks-print-area) {
     display: block !important;
+    background: white !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  body[data-print-area="tasks"] .panel-title,
+  body[data-print-area="tasks"] .panel-subtitle,
+  body[data-print-area="tasks"] .stats-row,
+  body[data-print-area="tasks"] #grocery-print-area {
+    display: none !important;
+  }
+
+  body[data-print-area="tasks"] #tasks-print-area {
+    display: block !important;
+    background: white !important;
+  }
+
+  /* ===== GROCERY PRINT ===== */
+  body[data-print-area="grocery"] .panel:has(#grocery-print-area) {
+    display: block !important;
+    background: white !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  body[data-print-area="grocery"] .panel-title,
+  body[data-print-area="grocery"] .panel-subtitle,
+  body[data-print-area="grocery"] .stats-row,
+  body[data-print-area="grocery"] #tasks-print-area {
+    display: none !important;
+  }
+
+  body[data-print-area="grocery"] #grocery-print-area {
+    display: block !important;
+    background: white !important;
+  }
+
+  /* ===== RECIPES PRINT ===== */
+  body[data-print-area="recipes"] .panel:has(#recipes-print-area) {
+    display: block !important;
+    background: white !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+
+  body[data-print-area="recipes"] .panel-header-row,
+  body[data-print-area="recipes"] .cook-recipes-grid,
+  body[data-print-area="recipes"] .cook-print-section {
+    display: none !important;
+  }
+
+  body[data-print-area="recipes"] #recipes-print-area {
+    display: block !important;
+    background: white !important;
   }
 
   .print-recipe {

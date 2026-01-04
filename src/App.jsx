@@ -418,18 +418,11 @@ function App() {
   }, [getSelectedRecipesList, weekPlan, weekPortions])
 
   const handlePrint = useCallback((area) => {
-    const printArea = document.getElementById(`${area}-print-area`)
-    if (printArea) {
-      // Add print-target to both the print area and parent panel for compatibility
-      const parentPanel = printArea.closest('.panel')
-      printArea.classList.add('print-target')
-      if (parentPanel) parentPanel.classList.add('print-target')
-
-      window.print()
-
-      printArea.classList.remove('print-target')
-      if (parentPanel) parentPanel.classList.remove('print-target')
-    }
+    // Set data attribute on body for CSS targeting (iOS Safari compatible)
+    document.body.setAttribute('data-print-area', area)
+    window.print()
+    // Clean up after print dialog closes
+    document.body.removeAttribute('data-print-area')
   }, [])
 
   const regions = [
