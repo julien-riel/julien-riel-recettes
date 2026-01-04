@@ -1490,7 +1490,15 @@ header p {
    ============================================ */
 
 @media print {
-  body {
+  * {
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
     background: white !important;
   }
 
@@ -1498,12 +1506,20 @@ header p {
     display: none !important;
   }
 
+  .container {
+    overflow: visible !important;
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
   header,
   .tabs,
   .actions,
   .print-buttons,
   .selection-count,
-  .filters {
+  .filters,
+  .filters-row,
+  .search-bar {
     display: none !important;
   }
 
@@ -1513,15 +1529,17 @@ header p {
   }
 
   /* ===== MENU PRINT ===== */
-  body[data-print-area="menu"] .panel:has(#menu-print-area) {
+  body[data-print-area="menu"] .panel {
     display: block !important;
     background: white !important;
     box-shadow: none !important;
     padding: 0 !important;
+    overflow: visible !important;
   }
 
   body[data-print-area="menu"] .panel-header-row,
-  body[data-print-area="menu"] .week-planner {
+  body[data-print-area="menu"] .week-planner,
+  body[data-print-area="menu"] .panel:not(:nth-of-type(2)) {
     display: none !important;
   }
 
@@ -1535,17 +1553,19 @@ header p {
   }
 
   /* ===== TASKS PRINT ===== */
-  body[data-print-area="tasks"] .panel:has(#tasks-print-area) {
+  body[data-print-area="tasks"] .panel {
     display: block !important;
     background: white !important;
     box-shadow: none !important;
     padding: 0 !important;
+    overflow: visible !important;
   }
 
   body[data-print-area="tasks"] .panel-title,
   body[data-print-area="tasks"] .panel-subtitle,
   body[data-print-area="tasks"] .stats-row,
-  body[data-print-area="tasks"] #grocery-print-area {
+  body[data-print-area="tasks"] #grocery-print-area,
+  body[data-print-area="tasks"] .panel:not(:nth-of-type(3)) {
     display: none !important;
   }
 
@@ -1555,17 +1575,19 @@ header p {
   }
 
   /* ===== GROCERY PRINT ===== */
-  body[data-print-area="grocery"] .panel:has(#grocery-print-area) {
+  body[data-print-area="grocery"] .panel {
     display: block !important;
     background: white !important;
     box-shadow: none !important;
     padding: 0 !important;
+    overflow: visible !important;
   }
 
   body[data-print-area="grocery"] .panel-title,
   body[data-print-area="grocery"] .panel-subtitle,
   body[data-print-area="grocery"] .stats-row,
-  body[data-print-area="grocery"] #tasks-print-area {
+  body[data-print-area="grocery"] #tasks-print-area,
+  body[data-print-area="grocery"] .panel:not(:nth-of-type(3)) {
     display: none !important;
   }
 
@@ -1575,27 +1597,36 @@ header p {
   }
 
   /* ===== RECIPES PRINT ===== */
-  body[data-print-area="recipes"] .panel:has(#recipes-print-area) {
+  body[data-print-area="recipes"] .panel {
     display: block !important;
     background: white !important;
     box-shadow: none !important;
     padding: 0 !important;
+    overflow: visible !important;
   }
 
   body[data-print-area="recipes"] .panel-header-row,
   body[data-print-area="recipes"] .cook-recipes-grid,
-  body[data-print-area="recipes"] .cook-print-section {
+  body[data-print-area="recipes"] .cook-print-section,
+  body[data-print-area="recipes"] .panel:not(:nth-of-type(4)) {
     display: none !important;
   }
 
   body[data-print-area="recipes"] #recipes-print-area {
     display: block !important;
     background: white !important;
+    overflow: visible !important;
   }
 
   .print-recipe {
     page-break-after: always;
-    padding: 20px 0;
+    page-break-inside: avoid;
+    padding: 20px;
+    overflow: visible !important;
+  }
+
+  .print-area {
+    overflow: visible !important;
   }
 
   .print-recipe:last-child {
@@ -1637,11 +1668,6 @@ header p {
   .print-recipe-section li {
     margin-bottom: 5px;
     line-height: 1.5;
-  }
-
-  .container {
-    max-width: 100%;
-    padding: 0;
   }
 
   .grocery-list {

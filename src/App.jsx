@@ -620,11 +620,21 @@ function App() {
   }, [getSelectedRecipesList, weekPlan, weekPortions])
 
   const handlePrint = useCallback((area) => {
-    // Set data attribute on body for CSS targeting (iOS Safari compatible)
+    // Set data attribute on body for CSS targeting
     document.body.setAttribute('data-print-area', area)
-    window.print()
+
     // Clean up after print dialog closes
-    document.body.removeAttribute('data-print-area')
+    const cleanup = () => {
+      document.body.removeAttribute('data-print-area')
+      window.removeEventListener('afterprint', cleanup)
+    }
+    window.addEventListener('afterprint', cleanup)
+
+    // Try to print
+    window.print()
+
+    // Fallback cleanup after 5 minutes (in case afterprint doesn't fire on iOS)
+    setTimeout(cleanup, 300000)
   }, [])
 
   const regions = [
