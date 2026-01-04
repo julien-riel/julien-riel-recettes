@@ -735,6 +735,46 @@ header p {
   background: var(--safran);
 }
 
+/* Source Badge on Recipe Cards */
+.source-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  margin-top: var(--space-sm);
+}
+
+.source-badge.source-ai {
+  background: var(--gris-clair);
+  color: white;
+  opacity: 0.6;
+}
+
+.source-badge.source-tested {
+  background: var(--olive);
+  color: white;
+}
+
+.source-badge.source-family {
+  background: var(--terre-cuite);
+  color: white;
+}
+
+.source-badge .source-icon {
+  font-size: 0.9rem;
+}
+
+.source-badge .source-label {
+  font-weight: 500;
+}
+
+.source-badge .source-rating {
+  color: var(--safran);
+  margin-left: var(--space-xs);
+}
+
 /* ============================================
    Buttons
    ============================================ */
@@ -1762,6 +1802,52 @@ header p {
   border-radius: var(--radius-sm);
   color: var(--gris-chaud);
   font-style: italic;
+}
+
+/* Source Section in Recipe Detail */
+.source-section {
+  margin-top: var(--space-lg);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  border-left: 4px solid;
+}
+
+.source-section.ai {
+  background: var(--creme);
+  border-color: var(--gris-clair);
+}
+
+.source-section.ai-tested {
+  background: rgba(122, 157, 82, 0.1);
+  border-color: var(--olive);
+}
+
+.source-section.family {
+  background: rgba(198, 107, 77, 0.1);
+  border-color: var(--terre-cuite);
+}
+
+.source-section h3 {
+  margin-bottom: var(--space-sm);
+  font-size: 1rem;
+}
+
+.source-rating-display {
+  font-size: 1.2rem;
+  color: var(--safran);
+  margin-bottom: var(--space-sm);
+  letter-spacing: 2px;
+}
+
+.source-note {
+  color: var(--gris-chaud);
+  font-style: italic;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.source-note.source-untested {
+  opacity: 0.8;
 }
 
 .detail-actions {

@@ -146,6 +146,26 @@ function RecipeDetail({ recette, isSelected, isFavorite, onClose, onToggle, onTo
         <h3>Variantes possibles</h3>
         <p className="variantes-text">{recette.variantes}</p>
 
+        {/* Source info section */}
+        <div className={`source-section ${recette.source?.type || 'ai'}`}>
+          <h3>
+            {!recette.source || recette.source.type === 'ai' ? '🤖 Recette générée par IA' :
+             recette.source.type === 'ai-tested' ? '✓ Recette testée' :
+             '👨‍👩‍👧‍👦 Recette de famille'}
+          </h3>
+          {recette.source?.rating && (
+            <div className="source-rating-display">
+              {'★'.repeat(recette.source.rating)}{'☆'.repeat(5 - recette.source.rating)}
+            </div>
+          )}
+          {recette.source?.note && (
+            <p className="source-note">{recette.source.note}</p>
+          )}
+          {!recette.source && (
+            <p className="source-note source-untested">Cette recette n'a pas encore été testée. Les quantités et étapes sont générées par IA.</p>
+          )}
+        </div>
+
         <div className="detail-actions">
           <button
             className={`btn ${isSelected ? 'btn-orange' : 'btn-primary'}`}

@@ -44,5 +44,11 @@ export const recette2 = {
     3,
     4
   ],
-  "note_weekend": "Le riz, le bœuf mariné et tous les légumes peuvent être préparés à l'avance."
+  "note_weekend": "Le riz, le bœuf mariné et tous les légumes peuvent être préparés à l'avance.",
+  "source": {
+    "type": "ai-tested",
+    "rating": 4,
+    "note": "Très bon! Le gochujang fait toute la différence. Prochaine fois, ajouter un œuf au plat.",
+    "photos": []
+  }
 };

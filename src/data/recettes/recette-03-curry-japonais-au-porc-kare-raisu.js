@@ -44,5 +44,11 @@ export const recette3 = {
     7,
     8
   ],
-  "note_weekend": "Ce plat peut être entièrement préparé le week-end, il se bonifie au repos."
+  "note_weekend": "Ce plat peut être entièrement préparé le week-end, il se bonifie au repos.",
+  "source": {
+    "type": "family",
+    "rating": 5,
+    "note": "Recette de grand-maman Riel. Un classique du dimanche soir depuis 30 ans!",
+    "photos": []
+  }
 };

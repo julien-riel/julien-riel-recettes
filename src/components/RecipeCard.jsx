@@ -48,6 +48,20 @@ function RecipeCard({ recette, isSelected, isFavorite, onToggle, onToggleFavorit
     return iconMap[origine] || '◈'
   }
 
+  const getSourceInfo = (source) => {
+    if (!source) return { icon: '🤖', label: 'IA', className: 'source-ai' }
+    switch (source.type) {
+      case 'ai-tested':
+        return { icon: '✓', label: 'Testée', className: 'source-tested' }
+      case 'family':
+        return { icon: '👨‍👩‍👧‍👦', label: 'Famille', className: 'source-family' }
+      default:
+        return { icon: '🤖', label: 'IA', className: 'source-ai' }
+    }
+  }
+
+  const sourceInfo = getSourceInfo(recette.source)
+
   return (
     <div
       className={`recipe-card ${isSelected ? 'selected' : ''}`}
@@ -79,6 +93,13 @@ function RecipeCard({ recette, isSelected, isFavorite, onToggle, onToggleFavorit
       <div className="meta">
         <span title="Temps de préparation">{recette.temps_prep_semaine}</span>
         <span title="Conservation">{recette.conservation.split('|')[0].trim()}</span>
+      </div>
+      <div className={`source-badge ${sourceInfo.className}`} title={sourceInfo.label}>
+        <span className="source-icon">{sourceInfo.icon}</span>
+        <span className="source-label">{sourceInfo.label}</span>
+        {recette.source?.rating && (
+          <span className="source-rating">{'★'.repeat(recette.source.rating)}</span>
+        )}
       </div>
     </div>
   )
