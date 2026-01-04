@@ -8,7 +8,7 @@ export const recette9 = {
   "conservation": "Falafels crus congélateur 2 mois | Cuits frigo 4 jours",
   "rechauffage": "Four 180°C 10 min pour recroquanter",
   "proteines": "Pois chiches secs (200g)",
-  "legumes": "Persil, menthe, tomates, concombre, oignon",
+  "legumes": "Tomates (2), concombre (1/2), poivrons (1)",
   "feculents": "Boulgour (150g)",
   "variantes": "Falafels aux fèves, version sans friture (au four)",
   "ingredients": [
@@ -23,6 +23,7 @@ export const recette9 = {
     "1/2 c. à café de bicarbonate",
     "2 tomates, en dés",
     "1/2 concombre, en dés",
+    "1 poivron rouge, en dés",
     "Jus de 2 citrons",
     "4 c. à soupe d'huile d'olive",
     "Huile pour friture"
@@ -32,7 +33,7 @@ export const recette9 = {
     "Mixer avec oignon, ail, persil (garder 1/2 pour taboulé), cumin, coriandre jusqu'à obtenir une pâte granuleuse.",
     "Ajouter le bicarbonate, assaisonner. Réfrigérer 30 min.",
     "Pour le taboulé: réhydrater le boulgour 20 min dans l'eau tiède.",
-    "Mélanger boulgour, tomates, concombre, persil et menthe hachés.",
+    "Mélanger boulgour, tomates, concombre, poivron, persil et menthe hachés.",
     "Assaisonner de citron, huile d'olive, sel et poivre.",
     "Former des galettes de falafel, frire dans l'huile chaude 3-4 min par côté.",
     "Égoutter sur papier absorbant. Servir avec le taboulé."

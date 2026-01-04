@@ -36,7 +36,7 @@ export const recette28 = {
     "Servir le poulet et légumes sur la polenta, garnir de basilic."
   ],
   "portions": 4,
-  "description": "Le poulet aux citrons confits et olives évoque les riads de Fès et les souks parfumés de Marrakech. Cette combinaison aigre-douce-salée est typique de la cuisine marocaine raffinée, héritière des influences berbères, arabes, andalouses et juives séfarades.",
+  "description": "Ce poulet rôti aux saveurs méditerranéennes marie les agrumes, les olives et les artichauts, ingrédients emblématiques du pourtour méditerranéen. Simple à préparer mais sophistiqué en saveurs, il évoque les tables ensoleillées de l'Italie du Sud et de la Provence.",
   "etapes_weekend": [
     1,
     2,
@@ -46,5 +46,5 @@ export const recette28 = {
     6,
     7
   ],
-  "note_weekend": "Ce tajine peut être entièrement préparé et se bonifie au repos."
+  "note_weekend": "Le poulet peut mariner et les légumes être préparés à l'avance."
 };

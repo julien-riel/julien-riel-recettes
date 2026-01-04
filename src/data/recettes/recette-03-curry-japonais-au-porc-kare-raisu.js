@@ -8,7 +8,7 @@ export const recette3 = {
   "conservation": "Frigo 4 jours | Congélateur 3 mois (le curry se bonifie)",
   "rechauffage": "Se réchauffe très bien, ajouter un peu d'eau",
   "proteines": "Porc (300g)",
-  "legumes": "Carottes, oignons, pommes de terre",
+  "legumes": "Carottes, oignons, petits pois (150g)",
   "feculents": "Riz japonais (200g)",
   "variantes": "Poulet, bœuf, légumes seuls (vegan)",
   "ingredients": [

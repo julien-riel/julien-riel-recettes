@@ -8,7 +8,7 @@ export const recette8 = {
   "conservation": "Keftas crues frigo 2 jours | Congélateur 3 mois",
   "rechauffage": "Se réchauffe très bien dans la sauce",
   "proteines": "Bœuf/agneau haché (300g)",
-  "legumes": "Tomates, oignons, poivrons, courgettes",
+  "legumes": "Tomates (400g), poivrons, courgettes",
   "feculents": "Semoule de couscous (200g)",
   "variantes": "Poulet haché, agneau seul, version végé aux lentilles",
   "ingredients": [

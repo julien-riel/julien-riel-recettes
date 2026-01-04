@@ -8,7 +8,7 @@ export const recette33 = {
   "conservation": "Frigo 5 jours | Congélateur 3 mois",
   "rechauffage": "Se réchauffe parfaitement, ajouter du bouillon si trop épaisse",
   "proteines": "Jambon fumé ou lardons (200g)",
-  "legumes": "Carottes, céleri, oignons, poireaux",
+  "legumes": "Carottes (2), céleri (2 branches), oignon, poireau, salade verte en accompagnement",
   "feculents": "Pois jaunes secs (300g)",
   "variantes": "Version végétarienne aux herbes salées, avec saucisses fumées",
   "portions": 8,
@@ -35,7 +35,7 @@ export const recette33 = {
     "Réduire le feu et laisser mijoter 1h30 à 2h, jusqu'à ce que les pois soient fondants.",
     "Retirer le laurier. Écraser légèrement une partie des pois pour épaissir.",
     "Ajuster l'assaisonnement. Ajouter les herbes salées si désiré.",
-    "Servir très chaud avec du pain croûté."
+    "Servir très chaud avec du pain croûté et une salade verte."
   ],
   "etapes_weekend": [
     1,

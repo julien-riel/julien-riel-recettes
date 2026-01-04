@@ -4,7 +4,7 @@ export const recette7 = {
   "origine": "Grèce",
   "temps_prep_semaine": "15 min",
   "temps_prep_weekend": "30 min + marinade",
-  "prep_weekend": "Mariner poulet, préparer salade et sauce tzatziki sans lait",
+  "prep_weekend": "Mariner poulet, cuire orzo, préparer salade",
   "conservation": "Poulet frigo 4 jours | Congélateur 2 mois",
   "rechauffage": "Se réchauffe bien au four ou poêle",
   "proteines": "Poulet (350g)",

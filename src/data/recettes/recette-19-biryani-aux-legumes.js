@@ -8,7 +8,7 @@ export const recette19 = {
   "conservation": "Frigo 4 jours | Congélateur 2 mois",
   "rechauffage": "Four couvert 180°C 15 min ou micro-ondes",
   "proteines": "Tofu ou paneer (200g) + noix de cajou",
-  "legumes": "Carottes, haricots verts, petits pois, oignons frits",
+  "legumes": "Carottes, haricots verts, petits pois, oignons",
   "feculents": "Riz basmati (250g)",
   "variantes": "Poulet, agneau, crevettes, œufs durs",
   "ingredients": [

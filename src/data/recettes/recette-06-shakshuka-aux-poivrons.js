@@ -8,7 +8,7 @@ export const recette6 = {
   "conservation": "Sauce frigo 5 jours | Congélateur 2 mois",
   "rechauffage": "Réchauffer sauce, ajouter œufs frais",
   "proteines": "Œufs (4)",
-  "legumes": "Tomates, poivrons, oignons, ail",
+  "legumes": "Tomates (400g), poivrons (2), oignons",
   "feculents": "Pain pita complet (2)",
   "variantes": "Ajouter merguez, feta (si toléré), pois chiches",
   "ingredients": [

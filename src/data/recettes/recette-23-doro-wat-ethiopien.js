@@ -8,7 +8,7 @@ export const recette23 = {
   "conservation": "Frigo 5 jours | Congélateur 3 mois",
   "rechauffage": "Se réchauffe parfaitement",
   "proteines": "Poulet (400g) + œufs durs (4)",
-  "legumes": "Oignons (beaucoup), tomates, gingembre",
+  "legumes": "Gomen (chou vert braisé) (200g), carottes (2)",
   "feculents": "Injera ou riz (200g)",
   "variantes": "Bœuf (key wat), lentilles (misir wat)",
   "ingredients": [
@@ -21,6 +21,8 @@ export const recette23 = {
     "3 cm de gingembre, râpé",
     "100ml d'huile végétale ou niter kibbeh (beurre clarifié épicé)",
     "200ml d'eau ou bouillon",
+    "200g de chou vert ou kale, émincé (pour gomen)",
+    "2 carottes, en rondelles",
     "Injera ou riz pour servir"
   ],
   "etapes": [
@@ -31,7 +33,10 @@ export const recette23 = {
     "Ajouter le poulet, couvrir et mijoter 45 min à feu doux.",
     "Pendant ce temps, cuire les œufs durs, les écaler.",
     "Faire de petites incisions dans les œufs, les ajouter au wat.",
-    "Poursuivre la cuisson 10 min. Servir sur l'injera ou le riz."
+    "Poursuivre la cuisson 10 min.",
+    "À part, faire braiser le chou avec un peu d'ail et de gingembre pour faire le gomen.",
+    "Cuire les carottes à la vapeur ou dans le bouillon.",
+    "Servir le doro wat accompagné du gomen et des carottes sur l'injera ou le riz."
   ],
   "portions": 4,
   "description": "Le doro wat est le plat de fête par excellence en Éthiopie, traditionnellement servi lors des grandes occasions et fêtes religieuses. Ce ragoût de poulet mijoté dans le berbéré, mélange d'épices complexe, se déguste avec l'injera, cette crêpe spongieuse qui sert d'assiette et de couverts.",

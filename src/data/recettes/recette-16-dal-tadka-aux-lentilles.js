@@ -8,14 +8,15 @@ export const recette16 = {
   "conservation": "Frigo 5 jours | Congélateur 3 mois",
   "rechauffage": "Se réchauffe parfaitement, ajouter eau si épais",
   "proteines": "Lentilles corail (200g)",
-  "legumes": "Tomates, épinards, oignons, ail, gingembre",
+  "legumes": "Tomates, épinards, carottes, oignons",
   "feculents": "Riz basmati (200g)",
   "variantes": "Lentilles vertes, ajout de poulet, pois chiches",
   "ingredients": [
     "200g de lentilles corail",
     "200g de riz basmati",
-    "100g d'épinards frais",
+    "200g d'épinards frais",
     "2 tomates, en dés",
+    "1 carotte, en petits dés",
     "1 oignon, haché",
     "4 gousses d'ail, hachées",
     "2 cm de gingembre, râpé",
@@ -27,7 +28,7 @@ export const recette16 = {
     "Coriandre fraîche"
   ],
   "etapes": [
-    "Rincer les lentilles, cuire dans 600ml d'eau avec curcuma 20-25 min.",
+    "Rincer les lentilles, cuire dans 600ml d'eau avec curcuma et carotte 20-25 min.",
     "Cuire le riz basmati selon les instructions.",
     "Pour le tadka: chauffer le ghee, faire crépiter les graines de cumin.",
     "Ajouter oignon, faire dorer 5 min. Incorporer ail et gingembre.",
@@ -40,10 +41,7 @@ export const recette16 = {
   "description": "Le dal est l'âme de la cuisine indienne, préparé quotidiennement dans des millions de foyers. Cette soupe de lentilles épicée existe en centaines de variations régionales. Le tadka, ces épices grésillantes versées au dernier moment, lui donne sa signature aromatique.",
   "etapes_weekend": [
     1,
-    2,
-    3,
-    4,
-    5
+    2
   ],
-  "note_weekend": "Le dal peut être entièrement préparé, le tadka sera refait au moment de servir pour plus de fraîcheur."
+  "note_weekend": "Les lentilles et le riz peuvent être cuits à l'avance. Le tadka (étapes 3-5) sera préparé frais au moment de servir."
 };

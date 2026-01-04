@@ -8,7 +8,7 @@ export const recette5 = {
   "conservation": "Bœuf grillé frigo 3 jours | Sauce 2 semaines",
   "rechauffage": "Meilleur froid ou température ambiante",
   "proteines": "Bœuf (250g)",
-  "legumes": "Carottes, concombre, laitue, menthe, coriandre, germes de soja",
+  "legumes": "Carottes, concombre, laitue, germes de soja (400g)",
   "feculents": "Vermicelles de riz (150g)",
   "variantes": "Poulet grillé, porc caramélisé, tofu grillé",
   "ingredients": [

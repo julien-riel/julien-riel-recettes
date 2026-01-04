@@ -8,13 +8,15 @@ export const recette21 = {
   "conservation": "Frigo 4 jours | Congélateur 3 mois",
   "rechauffage": "Se réchauffe très bien",
   "proteines": "Poulet (400g)",
-  "legumes": "Oignons (beaucoup!), citrons, olives",
+  "legumes": "Oignons, poivrons, carottes",
   "feculents": "Riz brisé (200g)",
   "variantes": "Poisson yassa, agneau, tofu",
   "ingredients": [
     "400g de cuisses de poulet",
     "200g de riz brisé ou long",
     "4 gros oignons, émincés finement",
+    "2 poivrons (rouge et vert), en lanières",
+    "2 carottes, en rondelles",
     "Jus de 4 citrons",
     "100g d'olives vertes",
     "4 gousses d'ail, hachées",
@@ -29,17 +31,20 @@ export const recette21 = {
     "Mariner le poulet et les oignons dans ce mélange au moins 4h (idéal une nuit).",
     "Retirer le poulet, le faire griller à la poêle ou au four jusqu'à doré.",
     "Récupérer les oignons marinés, les faire fondre à feu doux 20 min.",
+    "Ajouter les poivrons et carottes, cuire 5 min.",
     "Ajouter un peu d'eau et le cube de bouillon.",
     "Remettre le poulet, ajouter les olives, mijoter 20-30 min couvert.",
     "Cuire le riz brisé selon les instructions.",
-    "Servir le poulet nappé de sauce aux oignons sur le riz."
+    "Servir le poulet nappé de sauce aux oignons et légumes sur le riz."
   ],
   "portions": 4,
   "description": "Le poulet yassa est le plat national du Sénégal, originaire de Casamance. Les oignons caramélisés longuement avec le citron et la moutarde créent une sauce onctueuse et acidulée unique. Traditionnellement préparé pour les grandes fêtes et célébrations familiales.",
   "etapes_weekend": [
     1,
     2,
-    3
+    3,
+    4,
+    5
   ],
-  "note_weekend": "Le poulet peut mariner longuement (idéalement 24h) pour plus de saveur."
+  "note_weekend": "Le poulet peut mariner longuement (idéalement 24h), être grillé et les oignons peuvent être fondus. Réchauffer et finaliser la cuisson en semaine."
 };

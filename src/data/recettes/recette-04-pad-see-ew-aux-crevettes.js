@@ -8,7 +8,7 @@ export const recette4 = {
   "conservation": "Frigo 2 jours (nouilles ramollissent)",
   "rechauffage": "Meilleur frais, sinon poêle à feu vif",
   "proteines": "Crevettes (250g)",
-  "legumes": "Brocoli chinois (gai lan), ail",
+  "legumes": "Brocoli chinois (gai lan) (300g), carottes",
   "feculents": "Nouilles de riz larges (200g)",
   "variantes": "Poulet, tofu, bœuf",
   "ingredients": [

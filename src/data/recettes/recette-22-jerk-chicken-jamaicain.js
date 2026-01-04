@@ -8,11 +8,13 @@ export const recette22 = {
   "conservation": "Frigo 4 jours | Congélateur 3 mois",
   "rechauffage": "Se réchauffe bien au four",
   "proteines": "Poulet (400g)",
-  "legumes": "Oignons verts, thym, piments, ail",
-  "feculents": "Riz et pois (rice and peas) (250g)",
+  "legumes": "Poivrons grillés (2), chou sauté (200g)",
+  "feculents": "Riz et pois (rice and peas) (200g)",
   "variantes": "Porc, poisson, crevettes, tofu",
   "ingredients": [
     "400g de hauts de cuisse de poulet",
+    "2 poivrons (rouge et vert), en lanières",
+    "200g de chou vert, émincé",
     "200g de riz long",
     "200ml de lait de coco",
     "150g de haricots rouges en conserve",
@@ -26,8 +28,10 @@ export const recette22 = {
     "Griller le poulet au BBQ ou au four à 200°C, 25-30 min.",
     "Badigeonner régulièrement de marinade pendant la cuisson.",
     "La peau doit être légèrement noircie et caramélisée.",
+    "Griller les poivrons au BBQ ou au four avec le poulet les 10 dernières minutes.",
+    "Faire sauter le chou rapidement à la poêle avec un peu d'huile.",
     "Aérer le riz à la fourchette, retirer le laurier.",
-    "Servir le poulet sur le riz aux haricots."
+    "Servir le poulet sur le riz aux haricots avec les légumes grillés."
   ],
   "portions": 4,
   "description": "Le jerk chicken est né dans les montagnes de la Jamaïque, créé par les Marrons, esclaves africains en fuite. Cette technique de marinade épicée et de cuisson au bois de pimento est devenue l'emblème culinaire de l'île, célébrée chaque été lors des festivals.",

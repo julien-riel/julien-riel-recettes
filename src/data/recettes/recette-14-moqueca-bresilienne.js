@@ -8,7 +8,7 @@ export const recette14 = {
   "conservation": "Frigo 2 jours (poisson)",
   "rechauffage": "Se réchauffe doucement, ne pas faire bouillir",
   "proteines": "Poisson blanc (350g)",
-  "legumes": "Poivrons, tomates, oignons, coriandre",
+  "legumes": "Poivrons (2), tomates (400g), oignons",
   "feculents": "Riz (200g)",
   "variantes": "Crevettes, mélange fruits de mer, poisson + crevettes",
   "ingredients": [
@@ -37,9 +37,10 @@ export const recette14 = {
   "portions": 4,
   "description": "La moqueca est un ragoût de poisson originaire de Bahia, au Brésil, où se mêlent influences africaines, indigènes et portugaises. Le lait de coco et l'huile de palme (dendê) lui donnent sa couleur dorée et sa saveur unique, témoin de l'histoire métissée du Brésil.",
   "etapes_weekend": [
-    1,
     2,
-    3
+    3,
+    4,
+    5
   ],
-  "note_weekend": "La base aux légumes peut être préparée, le poisson sera ajouté au dernier moment."
+  "note_weekend": "La base aux légumes et tomates peut être préparée entièrement. Le poisson sera mariné et ajouté au dernier moment."
 };

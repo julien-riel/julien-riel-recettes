@@ -8,15 +8,16 @@ export const recette18 = {
   "conservation": "Frigo 5 jours | Congélateur 3 mois",
   "rechauffage": "Se réchauffe parfaitement",
   "proteines": "Pois chiches (400g)",
-  "legumes": "Tomates, oignons, épinards, gingembre",
+  "legumes": "Tomates, oignons, épinards, poivrons",
   "feculents": "Pain naan ou riz (150g)",
   "variantes": "Ajouter pommes de terre, paneer, poulet",
   "ingredients": [
     "400g de pois chiches en conserve (ou 200g secs, cuits)",
     "150g de riz basmati ou 2 naans",
-    "100g d'épinards",
+    "150g d'épinards",
     "400g de tomates concassées",
     "2 oignons, hachés",
+    "1 poivron rouge, en dés",
     "4 gousses d'ail",
     "3 cm de gingembre, râpé",
     "2 c. à café de garam masala",
@@ -30,7 +31,8 @@ export const recette18 = {
   "etapes": [
     "Chauffer l'huile, faire revenir les oignons 8 min jusqu'à dorés.",
     "Ajouter ail et gingembre, cuire 2 min.",
-    "Incorporer toutes les épices, mélanger 1 min.",
+    "Incorporer le poivron, cuire 3 min.",
+    "Ajouter toutes les épices, mélanger 1 min.",
     "Verser les tomates, laisser mijoter 10 min.",
     "Ajouter les pois chiches égouttés et 100ml d'eau.",
     "Cuire 15 min, écraser quelques pois chiches pour épaissir.",
@@ -45,7 +47,8 @@ export const recette18 = {
     3,
     4,
     5,
-    6
+    6,
+    7
   ],
   "note_weekend": "Ce plat peut être entièrement préparé et se bonifie au repos."
 };

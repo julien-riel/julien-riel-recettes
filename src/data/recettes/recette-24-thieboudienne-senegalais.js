@@ -44,5 +44,5 @@ export const recette24 = {
     3,
     4
   ],
-  "note_weekend": "La farce aux herbes et le bouillon peuvent être préparés à l'avance."
+  "note_weekend": "La farce aux herbes, le bouillon et la base de sauce peuvent être préparés à l'avance."
 };

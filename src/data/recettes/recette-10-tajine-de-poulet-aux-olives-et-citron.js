@@ -8,13 +8,15 @@ export const recette10 = {
   "conservation": "Frigo 4 jours | Congélateur 3 mois",
   "rechauffage": "Se réchauffe parfaitement à feu doux",
   "proteines": "Poulet (400g)",
-  "legumes": "Oignons, olives vertes, citron confit",
+  "legumes": "Oignons, carottes, courgettes",
   "feculents": "Semoule de couscous (200g)",
   "variantes": "Agneau, poulet aux abricots, version légumes",
   "ingredients": [
     "400g de cuisses de poulet",
     "200g de semoule de couscous",
     "2 oignons, émincés",
+    "2 carottes (200g), en rondelles épaisses",
+    "1 courgette (200g), en demi-rondelles",
     "100g d'olives vertes dénoyautées",
     "2 citrons confits, en quartiers (ou 1 citron frais en tranches)",
     "4 gousses d'ail, hachées",
@@ -29,9 +31,9 @@ export const recette10 = {
     "Mélanger gingembre, curcuma et safran avec un peu d'huile. Enrober le poulet.",
     "Chauffer l'huile dans un tajine ou cocotte, dorer le poulet. Réserver.",
     "Faire fondre les oignons 10 minutes à feu doux.",
-    "Ajouter l'ail, remettre le poulet, verser le bouillon.",
-    "Couvrir et laisser mijoter 30 minutes à feu doux.",
-    "Ajouter les olives et citron confit, poursuivre 15 minutes.",
+    "Ajouter l'ail, les carottes, remettre le poulet, verser le bouillon.",
+    "Couvrir et laisser mijoter 20 minutes à feu doux.",
+    "Ajouter les courgettes, olives et citron confit, poursuivre 15-20 minutes.",
     "Préparer le couscous selon les instructions.",
     "Servir le tajine sur le couscous, garnir de coriandre fraîche."
   ],
@@ -43,8 +45,7 @@ export const recette10 = {
     3,
     4,
     5,
-    6,
-    7
+    6
   ],
-  "note_weekend": "Le tajine peut être préparé entièrement, il se bonifie au repos."
+  "note_weekend": "Le tajine peut être préparé entièrement (étapes 1-6), il se bonifie au repos. Le couscous se prépare en 5 minutes le jour même."
 };

@@ -8,7 +8,7 @@ export const recette1 = {
   "conservation": "Frigo 3 jours | Congélateur 2 mois",
   "rechauffage": "Se réchauffe bien à la poêle",
   "proteines": "Poulet (300g)",
-  "legumes": "Poivrons, haricots verts, oignon, ail, basilic thaï",
+  "legumes": "Poivrons, haricots verts, oignon",
   "feculents": "Riz jasmin (200g)",
   "variantes": "Tofu ferme, crevettes, bœuf émincé",
   "ingredients": [
@@ -31,7 +31,7 @@ export const recette1 = {
     "Mélanger les sauces soja, d'huître, de poisson et le sucre dans un petit bol.",
     "Chauffer l'huile à feu vif dans un wok ou grande poêle.",
     "Saisir le poulet 3-4 minutes jusqu'à coloration. Retirer et réserver.",
-    "Dans le même wok, faire sauter l'oignon et l'ail 1 minute.",
+    "Dans le même wok, faire sauter l'oignon, l'ail et les piments (si utilisés) 1 minute.",
     "Ajouter les poivrons et haricots verts, cuire 3-4 minutes en remuant.",
     "Remettre le poulet, verser la sauce et mélanger 2 minutes.",
     "Hors du feu, incorporer le basilic thaï. Servir sur le riz."

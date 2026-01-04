@@ -3,12 +3,12 @@ export const recette32 = {
   "nom": "Tourtière du Lac-Saint-Jean",
   "origine": "Québec",
   "temps_prep_semaine": "20 min",
-  "temps_prep_weekend": "3h (avec cuisson)",
+  "temps_prep_weekend": "3h (+ marinade 2h ou nuit)",
   "prep_weekend": "Préparer et cuire la tourtière complète",
   "conservation": "Frigo 5 jours | Congélateur 3 mois",
   "rechauffage": "Four 180°C 25-30 min, couvrir de papier d'alu",
   "proteines": "Porc, bœuf, poulet (500g total)",
-  "legumes": "Oignons, céleri, carottes",
+  "legumes": "Oignons (2), céleri (2 branches), carottes (2), rutabaga (150g), salade verte en accompagnement",
   "feculents": "Pommes de terre en cubes (300g), pâte à tarte",
   "variantes": "Gibier (chevreuil, orignal), version au poulet seul",
   "portions": 8,
@@ -20,7 +20,9 @@ export const recette32 = {
     "300g de pommes de terre, en cubes",
     "2 oignons, hachés",
     "2 branches de céleri, en dés",
-    "1 carotte, en dés",
+    "2 carottes, en dés",
+    "150g de rutabaga, en dés",
+    "Salade verte en accompagnement",
     "500ml de bouillon de bœuf",
     "1 c. à café de sarriette",
     "1/2 c. à café de clou de girofle moulu",
@@ -32,12 +34,13 @@ export const recette32 = {
     "Mélanger toutes les viandes avec les oignons, céleri, épices, sel et poivre. Laisser mariner 2h ou toute la nuit.",
     "Préchauffer le four à 150°C (300°F).",
     "Foncer un grand plat creux (ou cocotte) avec une pâte à tarte.",
-    "Disposer une couche de viande marinée, puis une couche de pommes de terre et carottes.",
+    "Disposer une couche de viande marinée, puis une couche de pommes de terre, carottes et rutabaga.",
     "Répéter les couches jusqu'à épuisement des ingrédients.",
     "Verser le bouillon doucement sur le côté.",
     "Couvrir avec la seconde pâte, sceller les bords, faire des incisions pour la vapeur.",
     "Cuire au four 2h30 à 3h, jusqu'à ce que les pommes de terre soient tendres.",
-    "Laisser reposer 15 minutes avant de servir."
+    "Laisser reposer 15 minutes avant de servir.",
+    "Accompagner d'une salade verte pour équilibrer le repas."
   ],
   "etapes_weekend": [
     1,
@@ -48,7 +51,8 @@ export const recette32 = {
     6,
     7,
     8,
-    9
+    9,
+    10
   ],
   "note_weekend": "Ce plat traditionnel se prépare entièrement le week-end et se bonifie au repos. Idéal pour les grandes tablées."
 };

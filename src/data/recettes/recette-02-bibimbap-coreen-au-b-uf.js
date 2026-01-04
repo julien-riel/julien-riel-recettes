@@ -21,7 +21,7 @@ export const recette2 = {
     "100g de germes de soja",
     "4 c. à soupe de sauce soja",
     "2 c. à soupe d'huile de sésame",
-    "2 c. à soupe de gochujang (pâte piment coréenne)",
+    "2 c. à soupe de gochujang (pâte de piment coréenne)",
     "2 gousses d'ail, hachées",
     "1 c. à café de sucre",
     "Graines de sésame pour garnir"

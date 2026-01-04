@@ -8,7 +8,7 @@ export const recette26 = {
   "conservation": "Bouillon frigo 5 jours | Congélateur 3 mois",
   "rechauffage": "Réchauffer bouillon, assembler avec nouilles fraîches",
   "proteines": "Porc (chashu) (200g) + œuf mollet",
-  "legumes": "Maïs, oignons verts, algues nori, champignons",
+  "legumes": "Pak choi (200g), germes de soja (100g), champignons shiitake, maïs",
   "feculents": "Nouilles ramen (200g)",
   "variantes": "Poulet, tofu, version végétarienne",
   "ingredients": [
@@ -20,7 +20,9 @@ export const recette26 = {
     "2 c. à soupe de sauce soja",
     "1 c. à soupe d'huile de sésame",
     "100g de maïs en grains",
-    "100g de champignons shiitake, émincés",
+    "150g de champignons shiitake, émincés",
+    "200g de pak choi, coupé en deux",
+    "100g de germes de soja",
     "4 oignons verts, émincés",
     "Feuilles de nori",
     "Marinade porc: 3 c. à soupe sauce soja, 2 c. à soupe saké, 1 c. à soupe sucre"
@@ -33,7 +35,7 @@ export const recette26 = {
     "Ajouter sauce soja et huile de sésame.",
     "Cuire les nouilles selon les instructions, égoutter.",
     "Répartir les nouilles dans les bols, verser le bouillon chaud.",
-    "Garnir de tranches de porc, œuf coupé en deux, maïs, champignons, oignons et nori."
+    "Garnir de tranches de porc, œuf coupé en deux, pak choi blanchi, germes de soja, maïs, champignons, oignons et nori."
   ],
   "portions": 4,
   "description": "Le ramen est devenu une obsession nationale au Japon, avec des restaurants spécialisés dans chaque style régional. Ce plat d'origine chinoise a été transformé par les Japonais en un art culinaire, où le bouillon mijote parfois 24 heures pour atteindre la perfection.",

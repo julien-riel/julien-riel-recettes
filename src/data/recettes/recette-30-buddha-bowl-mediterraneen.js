@@ -35,7 +35,7 @@ export const recette30 = {
     "Cuire le quinoa selon les instructions, laisser refroidir légèrement.",
     "Dans chaque bol, disposer le quinoa comme base.",
     "Ajouter épinards, légumes rôtis, tomates, concombre et pois chiches.",
-    "Servir avec une cuillère de houmous, arroser de tahini et jus de citron."
+    "Servir avec une cuillère de houmous, arroser de tahini et jus de citron. Garnir de persil frais."
   ],
   "portions": 4,
   "description": "Le Buddha bowl est né dans les cercles végétariens californiens des années 2010, inspiré des bols zen des moines bouddhistes. Son nom viendrait de la forme bombée du bol rempli, évoquant le ventre de Bouddha. Il incarne la tendance du « manger sain et coloré ».",
@@ -45,5 +45,5 @@ export const recette30 = {
     3,
     4
   ],
-  "note_weekend": "Les légumes rôtis, pois chiches et sauce peuvent être préparés à l'avance."
+  "note_weekend": "Les légumes rôtis, pois chiches et quinoa peuvent être préparés à l'avance. Le houmous et tahini se conservent bien."
 };

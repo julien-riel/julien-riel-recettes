@@ -8,7 +8,7 @@ export const recette20 = {
   "conservation": "Frigo 4 jours | Congélateur 2 mois",
   "rechauffage": "Se réchauffe bien à feu doux",
   "proteines": "Tofu ferme (300g)",
-  "legumes": "Aubergines thaï, poivrons, bambou, basilic thaï",
+  "legumes": "Aubergines thaï, poivrons, pousses de bambou",
   "feculents": "Riz jasmin (200g)",
   "variantes": "Poulet, crevettes, canard",
   "ingredients": [
