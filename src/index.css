@@ -1490,9 +1490,9 @@ header p {
    ============================================ */
 
 @media print {
+  /* Reset all elements for print */
   * {
     overflow: visible !important;
-    height: auto !important;
     max-height: none !important;
   }
 
@@ -1500,132 +1500,40 @@ header p {
     height: auto !important;
     overflow: visible !important;
     background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   body::before {
     display: none !important;
   }
 
-  .container {
-    overflow: visible !important;
-    max-width: none !important;
-    padding: 0 !important;
-  }
-
-  header,
-  .tabs,
-  .actions,
-  .print-buttons,
-  .selection-count,
-  .filters,
-  .filters-row,
-  .search-bar {
+  /* Hide everything by default */
+  body > * {
     display: none !important;
   }
 
-  /* Hide all panels by default */
-  .panel {
-    display: none !important;
-  }
-
-  /* ===== MENU PRINT ===== */
-  body[data-print-area="menu"] .panel {
+  /* Show only the print target */
+  .print-target {
     display: block !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
     background: white !important;
-    box-shadow: none !important;
-    padding: 0 !important;
+    padding: 20px !important;
     overflow: visible !important;
   }
 
-  body[data-print-area="menu"] .panel-header-row,
-  body[data-print-area="menu"] .week-planner,
-  body[data-print-area="menu"] .panel:not(:nth-of-type(2)) {
-    display: none !important;
+  .print-target * {
+    visibility: visible !important;
   }
 
-  body[data-print-area="menu"] #menu-print-area {
-    display: block !important;
-    background: white !important;
-  }
-
-  body[data-print-area="menu"] #menu-print-area h3 {
-    color: black !important;
-  }
-
-  /* ===== TASKS PRINT ===== */
-  body[data-print-area="tasks"] .panel {
-    display: block !important;
-    background: white !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    overflow: visible !important;
-  }
-
-  body[data-print-area="tasks"] .panel-title,
-  body[data-print-area="tasks"] .panel-subtitle,
-  body[data-print-area="tasks"] .stats-row,
-  body[data-print-area="tasks"] #grocery-print-area,
-  body[data-print-area="tasks"] .panel:not(:nth-of-type(3)) {
-    display: none !important;
-  }
-
-  body[data-print-area="tasks"] #tasks-print-area {
-    display: block !important;
-    background: white !important;
-  }
-
-  /* ===== GROCERY PRINT ===== */
-  body[data-print-area="grocery"] .panel {
-    display: block !important;
-    background: white !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    overflow: visible !important;
-  }
-
-  body[data-print-area="grocery"] .panel-title,
-  body[data-print-area="grocery"] .panel-subtitle,
-  body[data-print-area="grocery"] .stats-row,
-  body[data-print-area="grocery"] #tasks-print-area,
-  body[data-print-area="grocery"] .panel:not(:nth-of-type(3)) {
-    display: none !important;
-  }
-
-  body[data-print-area="grocery"] #grocery-print-area {
-    display: block !important;
-    background: white !important;
-  }
-
-  /* ===== RECIPES PRINT ===== */
-  body[data-print-area="recipes"] .panel {
-    display: block !important;
-    background: white !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    overflow: visible !important;
-  }
-
-  body[data-print-area="recipes"] .panel-header-row,
-  body[data-print-area="recipes"] .cook-recipes-grid,
-  body[data-print-area="recipes"] .cook-print-section,
-  body[data-print-area="recipes"] .panel:not(:nth-of-type(4)) {
-    display: none !important;
-  }
-
-  body[data-print-area="recipes"] #recipes-print-area {
-    display: block !important;
-    background: white !important;
-    overflow: visible !important;
-  }
-
+  /* Recipe print styles */
   .print-recipe {
     page-break-after: always;
     page-break-inside: avoid;
-    padding: 20px;
-    overflow: visible !important;
-  }
-
-  .print-area {
+    padding: 20px 0;
     overflow: visible !important;
   }
 
@@ -1690,6 +1598,33 @@ header p {
 
   .grocery-section h3 {
     color: black !important;
+  }
+
+  /* Hide interactive elements */
+  .dark-mode-toggle,
+  .search-bar,
+  .filters-row,
+  .results-count,
+  .favorite-btn,
+  .detail-favorite-btn,
+  .portions-buttons,
+  .owned-badge,
+  .owned-checkbox {
+    display: none !important;
+  }
+
+  .grocery-list li.owned {
+    opacity: 1;
+  }
+
+  .strikethrough {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  @page {
+    size: A4;
+    margin: 1cm;
   }
 }
 
@@ -2718,40 +2653,6 @@ header {
   border-color: var(--terre-cuite);
 }
 
-/* ============================================
-   Print Improvements
-   ============================================ */
-
-@media print {
-  .dark-mode-toggle,
-  .search-bar,
-  .filters-row,
-  .results-count,
-  .favorite-btn,
-  .detail-favorite-btn,
-  .portions-buttons,
-  .owned-badge {
-    display: none !important;
-  }
-
-  .owned-checkbox {
-    display: none;
-  }
-
-  .grocery-list li.owned {
-    opacity: 1;
-  }
-
-  .strikethrough {
-    text-decoration: none;
-    color: inherit;
-  }
-
-  @page {
-    size: A4;
-    margin: 1cm;
-  }
-}
 
 /* ============================================
    Responsive Adjustments for New Features

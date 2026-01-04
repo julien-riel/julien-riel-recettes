@@ -620,12 +620,23 @@ function App() {
   }, [getSelectedRecipesList, weekPlan, weekPortions])
 
   const handlePrint = useCallback((area) => {
-    // Set data attribute on body for CSS targeting
-    document.body.setAttribute('data-print-area', area)
+    // Find the print area element and add print-target class
+    const areaMap = {
+      'menu': 'menu-print-area',
+      'tasks': 'tasks-print-area',
+      'grocery': 'grocery-print-area',
+      'recipes': 'recipes-print-area'
+    }
+    const printElement = document.getElementById(areaMap[area])
+    if (printElement) {
+      printElement.classList.add('print-target')
+    }
 
     // Clean up after print dialog closes
     const cleanup = () => {
-      document.body.removeAttribute('data-print-area')
+      if (printElement) {
+        printElement.classList.remove('print-target')
+      }
       window.removeEventListener('afterprint', cleanup)
     }
     window.addEventListener('afterprint', cleanup)
