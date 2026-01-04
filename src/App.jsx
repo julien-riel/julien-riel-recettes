@@ -447,47 +447,26 @@ function App() {
     }))
   }, [])
 
-  const autoFillWeek = useCallback(() => {
+
+  const startNewMenu = useCallback(() => {
     const selected = Array.from(selectedRecipes)
     if (selected.length === 0) {
       alert('Veuillez d\'abord sélectionner des recettes dans l\'onglet "Sélection"')
       return
     }
 
-    const jours = Object.keys(weekPlan)
+    if (!confirm('Créer un nouveau menu? Cela réinitialisera le plan de la semaine et les ingrédients "à la maison".')) {
+      return
+    }
+
+    // Auto-fill week plan with selected recipes
+    const jours = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
     const newPlan = {}
     jours.forEach((jour, index) => {
       newPlan[jour] = selected[index % selected.length]
     })
     setWeekPlan(newPlan)
-  }, [selectedRecipes, weekPlan])
 
-  const clearWeek = useCallback(() => {
-    setWeekPlan({
-      Lundi: null,
-      Mardi: null,
-      Mercredi: null,
-      Jeudi: null,
-      Vendredi: null,
-      Samedi: null,
-      Dimanche: null
-    })
-  }, [])
-
-  const startNewMenu = useCallback(() => {
-    if (!confirm('Créer un nouveau menu? Cela réinitialisera le plan de la semaine et les ingrédients "à la maison".')) {
-      return
-    }
-    // Reset week plan
-    setWeekPlan({
-      Lundi: null,
-      Mardi: null,
-      Mercredi: null,
-      Jeudi: null,
-      Vendredi: null,
-      Samedi: null,
-      Dimanche: null
-    })
     // Reset portions to default
     setWeekPortions({
       Lundi: 4,
@@ -505,7 +484,7 @@ function App() {
     setMenuStartDate(getNextMonday())
     // Exit shopping mode
     setShoppingMode(false)
-  }, [])
+  }, [selectedRecipes])
 
   const togglePurchased = useCallback((ingredient) => {
     const normalized = normalizeIngredient(ingredient)
@@ -984,21 +963,22 @@ function App() {
         <div className={`panel ${activeTab === 'menu' ? 'active' : ''}`}>
           <div className="panel-header-row">
             <div>
-              <h2 className="panel-title">Menu de la semaine du {formatMenuDate(menuStartDate)}</h2>
+              <div className="panel-title-row">
+                <h2 className="panel-title">Menu de la semaine du {formatMenuDate(menuStartDate)}</h2>
+                <button
+                  className="btn-icon"
+                  onClick={shareMenu}
+                  aria-label="Partager le menu"
+                  title={shareFeedback ? 'Lien copié!' : 'Partager le menu'}
+                >
+                  {shareFeedback ? '✅' : '🔗'}
+                </button>
+              </div>
               <p className="panel-subtitle">Attribuez une recette à chaque jour de la semaine.</p>
             </div>
             <div className="panel-actions">
               <button className="btn btn-primary" onClick={startNewMenu}>
                 ✨ Nouveau menu
-              </button>
-              <button className="btn btn-secondary" onClick={shareMenu}>
-                {shareFeedback ? '✅ Lien copié!' : '🔗 Partager'}
-              </button>
-              <button className="btn btn-secondary" onClick={autoFillWeek}>
-                🪄 Remplissage auto
-              </button>
-              <button className="btn btn-gray" onClick={clearWeek}>
-                🗑️ Réinitialiser
               </button>
             </div>
           </div>
