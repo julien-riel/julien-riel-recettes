@@ -705,34 +705,34 @@ function App() {
         </div>
       </header>
 
-      <div className="container">
-        <nav className="tabs">
-          <button
-            className={`tab-btn ${activeTab === 'selection' ? 'active' : ''}`}
-            onClick={() => setActiveTab('selection')}
-          >
-            <span className="tab-icon">◈</span> Sélection
-          </button>
-          <button
-            className={`tab-btn ${activeTab === 'menu' ? 'active' : ''}`}
-            onClick={() => setActiveTab('menu')}
-          >
-            <span className="tab-icon">◇</span> Planifier
-          </button>
-          <button
-            className={`tab-btn ${activeTab === 'taches' ? 'active' : ''}`}
-            onClick={() => setActiveTab('taches')}
-          >
-            <span className="tab-icon">○</span> Épicerie
-          </button>
-          <button
-            className={`tab-btn ${activeTab === 'cuisiner' ? 'active' : ''}`}
-            onClick={() => setActiveTab('cuisiner')}
-          >
-            <span className="tab-icon">◉</span> Cuisiner
-          </button>
-        </nav>
+      <nav className="tabs">
+        <button
+          className={`tab-btn ${activeTab === 'selection' ? 'active' : ''}`}
+          onClick={() => setActiveTab('selection')}
+        >
+          <span className="tab-icon">◈</span> Sélection
+        </button>
+        <button
+          className={`tab-btn ${activeTab === 'menu' ? 'active' : ''}`}
+          onClick={() => setActiveTab('menu')}
+        >
+          <span className="tab-icon">◇</span> Planifier
+        </button>
+        <button
+          className={`tab-btn ${activeTab === 'taches' ? 'active' : ''}`}
+          onClick={() => setActiveTab('taches')}
+        >
+          <span className="tab-icon">○</span> Épicerie
+        </button>
+        <button
+          className={`tab-btn ${activeTab === 'cuisiner' ? 'active' : ''}`}
+          onClick={() => setActiveTab('cuisiner')}
+        >
+          <span className="tab-icon">◉</span> Cuisiner
+        </button>
+      </nav>
 
+      <div className="container">
         {/* Panel Selection */}
         <div className={`panel ${activeTab === 'selection' ? 'active' : ''}`}>
           <div className="selection-count">

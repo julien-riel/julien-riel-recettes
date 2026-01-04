@@ -79,7 +79,7 @@
 
 html, body {
   scroll-behavior: smooth;
-  overflow-x: hidden;
+  overflow-x: clip;
   max-width: 100%;
 }
 
@@ -175,7 +175,6 @@ header p {
   max-width: 1400px;
   margin: 0 auto;
   padding: var(--space-lg);
-  overflow-x: hidden;
 }
 
 /* ============================================
@@ -185,12 +184,16 @@ header p {
 .tabs {
   display: flex;
   gap: var(--space-sm);
-  margin-bottom: var(--space-xl);
   flex-wrap: wrap;
   background: white;
-  padding: var(--space-sm);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-sm);
+  padding: var(--space-sm) var(--space-lg);
+  box-shadow: var(--shadow-md);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  max-width: 1400px;
+  margin: 0 auto var(--space-lg);
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
 }
 
 .tab-btn {
