@@ -116,6 +116,54 @@ Le projet se deploie automatiquement sur push vers `main` via GitHub Actions. Le
 - `SSH_PORT` - Port SSH
 - `SSH_USER` - Utilisateur SSH
 
+## Commandes Claude
+
+Le projet inclut des commandes Claude Code pour faciliter la gestion des recettes.
+
+| Commande | Description |
+|----------|-------------|
+| `/ajouter-recette` | Ajoute une nouvelle recette en suivant le format exact du projet |
+| `/suggerer-recettes` | Analyse les recettes existantes et suggere de nouvelles recettes |
+| `/menu-semaine` | Genere un menu equilibre de 7 jours avec liste d'epicerie |
+| `/convertir-recette` | Convertit une recette externe au format du projet (ratio 50/25/25, sans laitiers) |
+| `/valider-recettes` | Verifie la conformite technique de toutes les recettes |
+| `/reviser-recette` | Analyse la qualite culinaire et la clarte des instructions |
+
+### Exemples d'utilisation
+
+```bash
+# Ajouter une recette
+/ajouter-recette Poulet kung pao avec riz jasmin
+/ajouter-recette interactive
+
+# Obtenir des suggestions
+/suggerer-recettes analyser
+/suggerer-recettes Asie
+/suggerer-recettes vegetarien
+
+# Planifier la semaine
+/menu-semaine
+/menu-semaine sans porc, rapide
+
+# Convertir une recette trouvee en ligne
+/convertir-recette coller
+/convertir-recette [texte de la recette]
+
+# Valider les recettes
+/valider-recettes toutes
+/valider-recettes 15
+
+# Reviser une recette
+/reviser-recette 5
+/reviser-recette toutes
+```
+
+### Notes
+
+- `/valider-recettes` complete `/reviser-recette` : l'une verifie la structure technique, l'autre la qualite culinaire
+- `/ajouter-recette interactive` pose des questions pour guider la creation
+- `/suggerer-recettes analyser` montre les regions et proteines sous-representees
+
 ## Licence
 
 Planificateur cree pour accompagner le livre "30 Repas Sante Sans Produits Laitiers"
