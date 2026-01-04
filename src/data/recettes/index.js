@@ -35,6 +35,8 @@ import { recette34 } from './recette-34-bun-cha-vietnamien.js';
 import { recette35 } from './recette-35-nasi-goreng-indonesien.js';
 import { recette36 } from './recette-36-tacos-camarones-coco.js';
 import { recette37 } from './recette-37-poulet-aux-arachides.js';
+import { recette38 } from './recette-38-pho-ga-soupe-tonkinoise-au-poulet.js';
+import { recette39 } from './recette-39-lasagne-aux-legumes.js';
 
 export const RECETTES = [
   recette1,
@@ -74,6 +76,8 @@ export const RECETTES = [
   recette35,
   recette36,
   recette37,
+  recette38,
+  recette39,
 ];
 
 // Export individuel pour imports sélectifs
@@ -115,4 +119,6 @@ export {
   recette35,
   recette36,
   recette37,
+  recette38,
+  recette39,
 };
