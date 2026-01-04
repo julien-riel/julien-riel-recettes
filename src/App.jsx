@@ -10,6 +10,33 @@ import TasksPanel from './components/TasksPanel'
 const STORAGE_KEY = 'recettes-app-state'
 
 /**
+ * Gets the next Monday date (or today if it's Monday)
+ * @returns {string} ISO date string for the next Monday
+ */
+function getNextMonday() {
+  const today = new Date()
+  const dayOfWeek = today.getDay()
+  const daysUntilMonday = dayOfWeek === 0 ? 1 : dayOfWeek === 1 ? 0 : 8 - dayOfWeek
+  const nextMonday = new Date(today)
+  nextMonday.setDate(today.getDate() + daysUntilMonday)
+  return nextMonday.toISOString().split('T')[0]
+}
+
+/**
+ * Formats a date string to French format
+ * @param {string} dateStr - ISO date string
+ * @returns {string} Formatted date like "lundi 5 janvier"
+ */
+function formatMenuDate(dateStr) {
+  const date = new Date(dateStr)
+  return date.toLocaleDateString('fr-CA', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long'
+  })
+}
+
+/**
  * Loads state from localStorage
  * @returns {Object|null} The saved state or null
  */
@@ -183,6 +210,9 @@ function App() {
   const [ownedIngredients, setOwnedIngredients] = useState(() => new Set(savedState?.owned || []))
   const [portionMultipliers, setPortionMultipliers] = useState(savedState?.portions || {})
   const [recipesToPrint, setRecipesToPrint] = useState(new Set())
+  const [menuStartDate, setMenuStartDate] = useState(savedState?.menuStartDate || getNextMonday())
+  const [shoppingMode, setShoppingMode] = useState(false)
+  const [purchasedItems, setPurchasedItems] = useState(() => new Set(savedState?.purchased || []))
 
   // Save to localStorage when relevant state changes
   useEffect(() => {
@@ -193,9 +223,11 @@ function App() {
       favorites: [...favoriteRecipes],
       darkMode,
       owned: [...ownedIngredients],
-      portions: portionMultipliers
+      portions: portionMultipliers,
+      menuStartDate,
+      purchased: [...purchasedItems]
     })
-  }, [selectedRecipes, weekPlan, weekPortions, favoriteRecipes, darkMode, ownedIngredients, portionMultipliers])
+  }, [selectedRecipes, weekPlan, weekPortions, favoriteRecipes, darkMode, ownedIngredients, portionMultipliers, menuStartDate, purchasedItems])
 
   // Apply dark mode
   useEffect(() => {
@@ -351,6 +383,52 @@ function App() {
       Vendredi: null,
       Samedi: null,
       Dimanche: null
+    })
+  }, [])
+
+  const startNewMenu = useCallback(() => {
+    if (!confirm('Créer un nouveau menu? Cela réinitialisera le plan de la semaine et les ingrédients "à la maison".')) {
+      return
+    }
+    // Reset week plan
+    setWeekPlan({
+      Lundi: null,
+      Mardi: null,
+      Mercredi: null,
+      Jeudi: null,
+      Vendredi: null,
+      Samedi: null,
+      Dimanche: null
+    })
+    // Reset portions to default
+    setWeekPortions({
+      Lundi: 4,
+      Mardi: 4,
+      Mercredi: 4,
+      Jeudi: 4,
+      Vendredi: 4,
+      Samedi: 4,
+      Dimanche: 4
+    })
+    // Reset owned ingredients and purchased items
+    setOwnedIngredients(new Set())
+    setPurchasedItems(new Set())
+    // Set new menu date to next Monday
+    setMenuStartDate(getNextMonday())
+    // Exit shopping mode
+    setShoppingMode(false)
+  }, [])
+
+  const togglePurchased = useCallback((ingredient) => {
+    const normalized = normalizeIngredient(ingredient)
+    setPurchasedItems(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(normalized)) {
+        newSet.delete(normalized)
+      } else {
+        newSet.add(normalized)
+      }
+      return newSet
     })
   }, [])
 
@@ -627,10 +705,13 @@ function App() {
         <div className={`panel ${activeTab === 'menu' ? 'active' : ''}`}>
           <div className="panel-header-row">
             <div>
-              <h2 className="panel-title">Planifiez vos soupers</h2>
+              <h2 className="panel-title">Menu de la semaine du {formatMenuDate(menuStartDate)}</h2>
               <p className="panel-subtitle">Attribuez une recette à chaque jour de la semaine.</p>
             </div>
             <div className="panel-actions">
+              <button className="btn btn-primary" onClick={startNewMenu}>
+                Nouveau menu
+              </button>
               <button className="btn btn-secondary" onClick={autoFillWeek}>
                 Remplissage auto
               </button>
@@ -650,7 +731,7 @@ function App() {
           />
 
           <div id="menu-print-area" className="menu-summary">
-            <h3>Menu de la semaine</h3>
+            <h3>Menu de la semaine du {formatMenuDate(menuStartDate)}</h3>
             <table className="menu-table">
               <thead>
                 <tr>
@@ -698,6 +779,11 @@ function App() {
             onPrint={handlePrint}
             ownedIngredients={ownedIngredients}
             onToggleOwned={toggleOwned}
+            shoppingMode={shoppingMode}
+            onToggleShoppingMode={() => setShoppingMode(!shoppingMode)}
+            purchasedItems={purchasedItems}
+            onTogglePurchased={togglePurchased}
+            menuStartDate={menuStartDate}
           />
         </div>
 

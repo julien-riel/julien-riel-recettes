@@ -12,6 +12,11 @@ import { normalizeIngredient } from '../data/categories'
  * @param {Function} props.onPrint - Print callback
  * @param {Set} props.ownedIngredients - Set of owned ingredient names
  * @param {Function} props.onToggleOwned - Toggle owned ingredient callback
+ * @param {boolean} props.shoppingMode - Whether in shopping mode
+ * @param {Function} props.onToggleShoppingMode - Toggle shopping mode callback
+ * @param {Set} props.purchasedItems - Set of purchased item names
+ * @param {Function} props.onTogglePurchased - Toggle purchased item callback
+ * @param {string} props.menuStartDate - Menu start date
  */
 function TasksPanel({
   selectedRecipes,
@@ -21,7 +26,12 @@ function TasksPanel({
   recettes = [],
   onPrint,
   ownedIngredients = new Set(),
-  onToggleOwned
+  onToggleOwned,
+  shoppingMode = false,
+  onToggleShoppingMode,
+  purchasedItems = new Set(),
+  onTogglePurchased,
+  menuStartDate
 }) {
   const [copyFeedback, setCopyFeedback] = useState(false)
 
@@ -42,9 +52,19 @@ function TasksPanel({
   const totalIngredients = Object.values(categorizedIngredients)
     .reduce((acc, set) => acc + (set?.size || 0), 0)
 
+  // Count items to buy (not owned and not purchased)
+  const itemsToBuy = Object.values(categorizedIngredients)
+    .reduce((acc, set) => {
+      if (!set) return acc
+      return acc + Array.from(set).filter(item => {
+        const normalized = normalizeIngredient(item)
+        return !ownedIngredients.has(normalized) && !purchasedItems.has(normalized)
+      }).length
+    }, 0)
+
   /**
    * Copies the grocery list to clipboard for iPhone Reminders
-   * Excludes items marked as "owned"
+   * Excludes items marked as "owned" or "purchased"
    */
   const copyGroceryList = async () => {
     const lines = []
@@ -54,7 +74,10 @@ function TasksPanel({
       if (!items || items.size === 0) return
 
       Array.from(items)
-        .filter(item => !ownedIngredients.has(normalizeIngredient(item)))
+        .filter(item => {
+          const normalized = normalizeIngredient(item)
+          return !ownedIngredients.has(normalized) && !purchasedItems.has(normalized)
+        })
         .sort((a, b) => a.localeCompare(b))
         .forEach(item => lines.push(item))
     })
@@ -89,8 +112,8 @@ function TasksPanel({
               <span className="stat-label">Recette{selectedRecipes.length > 1 ? 's' : ''}</span>
             </div>
             <div className="stat-card">
-              <span className="stat-number">{totalIngredients}</span>
-              <span className="stat-label">Ingrédient{totalIngredients > 1 ? 's' : ''}</span>
+              <span className="stat-number">{itemsToBuy}</span>
+              <span className="stat-label">À acheter</span>
             </div>
           </div>
         </>
@@ -129,10 +152,20 @@ function TasksPanel({
       {/* Zone épicerie */}
       {selectedRecipes.length > 0 && (
       <div id="grocery-print-area" className="print-area visible">
-        <h2>Liste d'épicerie</h2>
-        <p className="print-subtitle">
-          {totalIngredients} ingrédient{totalIngredients > 1 ? 's' : ''} pour {selectedRecipes.length} recette{selectedRecipes.length > 1 ? 's' : ''}
-        </p>
+        <div className="grocery-header">
+          <div>
+            <h2>Liste d'épicerie</h2>
+            <p className="print-subtitle">
+              {itemsToBuy} ingrédient{itemsToBuy > 1 ? 's' : ''} à acheter
+            </p>
+          </div>
+          <button
+            className={`btn ${shoppingMode ? 'btn-primary shopping-active' : 'btn-secondary'}`}
+            onClick={onToggleShoppingMode}
+          >
+            {shoppingMode ? '✓ À l\'épicerie' : 'À l\'épicerie'}
+          </button>
+        </div>
 
         {/* Mini menu de la semaine */}
         {Object.values(weekPlan).some(v => v !== null) && (
@@ -165,25 +198,45 @@ function TasksPanel({
                 </h3>
                 <ul className="grocery-list">
                   {Array.from(items).sort((a, b) => {
-                    // Sort owned items to the end
-                    const aOwned = ownedIngredients.has(normalizeIngredient(a))
-                    const bOwned = ownedIngredients.has(normalizeIngredient(b))
-                    if (aOwned && !bOwned) return 1
-                    if (!aOwned && bOwned) return -1
+                    const aNorm = normalizeIngredient(a)
+                    const bNorm = normalizeIngredient(b)
+                    // Sort: not checked first, then owned, then purchased
+                    const aOwned = ownedIngredients.has(aNorm)
+                    const bOwned = ownedIngredients.has(bNorm)
+                    const aPurchased = purchasedItems.has(aNorm)
+                    const bPurchased = purchasedItems.has(bNorm)
+                    const aChecked = aOwned || aPurchased
+                    const bChecked = bOwned || bPurchased
+                    if (aChecked && !bChecked) return 1
+                    if (!aChecked && bChecked) return -1
                     return a.localeCompare(b)
                   }).map((item, i) => {
-                    const isOwned = ownedIngredients.has(normalizeIngredient(item))
+                    const normalized = normalizeIngredient(item)
+                    const isOwned = ownedIngredients.has(normalized)
+                    const isPurchased = purchasedItems.has(normalized)
+                    const isChecked = shoppingMode ? isPurchased : isOwned
+                    const onToggle = shoppingMode ? onTogglePurchased : onToggleOwned
+
                     return (
-                      <li key={i} className={isOwned ? 'owned' : ''}>
+                      <li key={i} className={isOwned || isPurchased ? 'owned' : ''}>
                         <input
                           type="checkbox"
                           className="owned-checkbox"
-                          checked={isOwned}
-                          onChange={() => onToggleOwned(item)}
-                          aria-label={`Marquer ${item} comme déjà à la maison`}
+                          checked={isChecked}
+                          onChange={() => onToggle(item)}
+                          aria-label={shoppingMode
+                            ? `Marquer ${item} comme acheté`
+                            : `Marquer ${item} comme déjà à la maison`}
                         />
-                        <span className={`item-text ${isOwned ? 'strikethrough' : ''}`}>{item}</span>
-                        {isOwned && <span className="owned-badge">à la maison</span>}
+                        <span className={`item-text ${isOwned || isPurchased ? 'strikethrough' : ''}`}>
+                          {item}
+                        </span>
+                        {isOwned && !shoppingMode && (
+                          <span className="owned-badge">à la maison</span>
+                        )}
+                        {isPurchased && shoppingMode && (
+                          <span className="owned-badge purchased">acheté</span>
+                        )}
                       </li>
                     )
                   })}

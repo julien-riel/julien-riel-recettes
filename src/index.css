@@ -2464,6 +2464,32 @@ header {
   white-space: nowrap;
 }
 
+.owned-badge.purchased {
+  background: var(--terre-cuite);
+}
+
+.grocery-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.grocery-header h2 {
+  margin-bottom: var(--space-xs);
+}
+
+.shopping-active {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
 :root[data-theme="dark"] .owned-checkbox {
   background: var(--kraft);
   border-color: #444;
