@@ -67,7 +67,7 @@ test.describe('Planificateur de Repas', () => {
       await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
 
       // Go to Planifier tab
-      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      await page.getByRole('button', { name: '📅 Planifier' }).click();
 
       // Handle potential confirm dialog for new menu
       page.on('dialog', async dialog => {
@@ -98,7 +98,7 @@ test.describe('Planificateur de Repas', () => {
       // Setup: select recipes and create menu
       await page.getByRole('button', { name: 'Effacer' }).click();
       await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
-      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      await page.getByRole('button', { name: '📅 Planifier' }).click();
 
       page.on('dialog', dialog => dialog.accept());
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
@@ -118,7 +118,7 @@ test.describe('Planificateur de Repas', () => {
       // Setup menu
       await page.getByRole('button', { name: 'Effacer' }).click();
       await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
-      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      await page.getByRole('button', { name: '📅 Planifier' }).click();
 
       page.on('dialog', dialog => dialog.accept());
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
@@ -146,14 +146,14 @@ test.describe('Planificateur de Repas', () => {
       // Setup menu
       await page.getByRole('button', { name: 'Effacer' }).click();
       await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
-      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      await page.getByRole('button', { name: '📅 Planifier' }).click();
 
       page.on('dialog', dialog => dialog.accept());
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
       await page.getByRole('button', { name: 'Remplissage auto' }).click();
 
       // Go to Épicerie tab
-      await page.getByRole('button', { name: '○ Épicerie' }).click();
+      await page.getByRole('button', { name: '🛒 Épicerie' }).click();
 
       // Verify grocery list is displayed with items to buy
       const itemsToBuy = page.locator('text=/\\d+ ingrédients à acheter|À acheter/');
@@ -166,14 +166,14 @@ test.describe('Planificateur de Repas', () => {
       // Setup menu
       await page.getByRole('button', { name: 'Effacer' }).click();
       await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
-      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      await page.getByRole('button', { name: '📅 Planifier' }).click();
 
       page.on('dialog', dialog => dialog.accept());
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
       await page.getByRole('button', { name: 'Remplissage auto' }).click();
 
       // Go to Épicerie tab
-      await page.getByRole('button', { name: '○ Épicerie' }).click();
+      await page.getByRole('button', { name: '🛒 Épicerie' }).click();
 
       // Get initial count
       const counterText = await page.locator('text=/\\d+/').filter({ hasText: 'À acheter' }).first().textContent();
@@ -193,14 +193,14 @@ test.describe('Planificateur de Repas', () => {
       // Setup menu
       await page.getByRole('button', { name: 'Effacer' }).click();
       await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
-      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      await page.getByRole('button', { name: '📅 Planifier' }).click();
 
       page.on('dialog', dialog => dialog.accept());
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
       await page.getByRole('button', { name: 'Remplissage auto' }).click();
 
       // Go to Épicerie tab
-      await page.getByRole('button', { name: '○ Épicerie' }).click();
+      await page.getByRole('button', { name: '🛒 Épicerie' }).click();
 
       // Click "À l'épicerie" button to switch mode
       await page.getByRole('button', { name: 'À l\'épicerie' }).click();
@@ -242,7 +242,7 @@ test.describe('Planificateur de Repas', () => {
       // Setup and create menu
       await page.getByRole('button', { name: 'Effacer' }).click();
       await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
-      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      await page.getByRole('button', { name: '📅 Planifier' }).click();
 
       page.on('dialog', dialog => dialog.accept());
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
@@ -258,7 +258,7 @@ test.describe('Planificateur de Repas', () => {
 
       // Refresh
       await page.reload();
-      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      await page.getByRole('button', { name: '📅 Planifier' }).click();
 
       // Verify Monday still has same recipe and portions
       await expect(page.getByRole('combobox', { name: 'Sélectionner le souper pour Lundi' })).toHaveValue(mondayRecipe);
@@ -271,14 +271,14 @@ test.describe('Planificateur de Repas', () => {
       // Setup menu
       await page.getByRole('button', { name: 'Effacer' }).click();
       await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
-      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      await page.getByRole('button', { name: '📅 Planifier' }).click();
 
       page.on('dialog', dialog => dialog.accept());
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
       await page.getByRole('button', { name: 'Remplissage auto' }).click();
 
       // Go to Épicerie
-      await page.getByRole('button', { name: '○ Épicerie' }).click();
+      await page.getByRole('button', { name: '🛒 Épicerie' }).click();
 
       // Mark first ingredient as "à la maison"
       const firstCheckbox = page.locator('input[type="checkbox"][aria-label*="Marquer"]').first();
@@ -289,7 +289,7 @@ test.describe('Planificateur de Repas', () => {
 
       // Refresh
       await page.reload();
-      await page.getByRole('button', { name: '○ Épicerie' }).click();
+      await page.getByRole('button', { name: '🛒 Épicerie' }).click();
 
       // Verify "à la maison" label still visible
       await expect(page.locator('text=à la maison').first()).toBeVisible();
@@ -304,7 +304,7 @@ test.describe('Planificateur de Repas', () => {
       // Setup menu
       await page.getByRole('button', { name: 'Effacer' }).click();
       await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
-      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      await page.getByRole('button', { name: '📅 Planifier' }).click();
 
       page.on('dialog', dialog => dialog.accept());
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
@@ -315,11 +315,11 @@ test.describe('Planificateur de Repas', () => {
       const mondayRecipe = await mondaySelect.inputValue();
 
       // Go back to Sélection and make new random selection
-      await page.getByRole('button', { name: '◈ Sélection' }).click();
+      await page.getByRole('button', { name: '📚 Sélection' }).click();
       await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
 
       // Go back to Planifier
-      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      await page.getByRole('button', { name: '📅 Planifier' }).click();
 
       // Verify Monday still has same recipe
       await expect(page.getByRole('combobox', { name: 'Sélectionner le souper pour Lundi' })).toHaveValue(mondayRecipe);
@@ -469,14 +469,13 @@ test.describe('Planificateur de Repas', () => {
     test('devrait filtrer par protéine', async ({ page }) => {
       await page.goto('/');
 
-      // Select "Poulet" from protein filter
-      await page.getByRole('combobox').first().selectOption('Poulet');
+      // Select "🍗 Poulet" from protein filter (value is 'poulet')
+      await page.getByRole('combobox').first().selectOption('poulet');
 
       // All visible recipes should be chicken dishes
       // (We can't easily verify this without knowing the data, but we verify the filter was applied)
       const proteinSelect = page.getByRole('combobox').first();
-      // The value may be lowercase 'poulet' depending on the implementation
-      await expect(proteinSelect).toHaveValue(/[Pp]oulet/);
+      await expect(proteinSelect).toHaveValue('poulet');
     });
   });
 
@@ -489,7 +488,7 @@ test.describe('Planificateur de Repas', () => {
       // Setup menu
       await page.getByRole('button', { name: 'Effacer' }).click();
       await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
-      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      await page.getByRole('button', { name: '📅 Planifier' }).click();
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
       await page.getByRole('button', { name: 'Remplissage auto' }).click();
 
@@ -512,12 +511,12 @@ test.describe('Planificateur de Repas', () => {
       // Setup menu
       await page.getByRole('button', { name: 'Effacer' }).click();
       await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
-      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      await page.getByRole('button', { name: '📅 Planifier' }).click();
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
       await page.getByRole('button', { name: 'Remplissage auto' }).click();
 
       // Go to Épicerie tab
-      await page.getByRole('button', { name: '○ Épicerie' }).click();
+      await page.getByRole('button', { name: '🛒 Épicerie' }).click();
 
       // Click on a recipe name in the weekend prep section
       const recipeNameBtn = page.locator('.task-list .recipe-name-btn').first();
@@ -538,12 +537,12 @@ test.describe('Planificateur de Repas', () => {
       // Setup menu
       await page.getByRole('button', { name: 'Effacer' }).click();
       await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
-      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      await page.getByRole('button', { name: '📅 Planifier' }).click();
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
       await page.getByRole('button', { name: 'Remplissage auto' }).click();
 
       // Go to Épicerie tab
-      await page.getByRole('button', { name: '○ Épicerie' }).click();
+      await page.getByRole('button', { name: '🛒 Épicerie' }).click();
 
       // Click on a recipe in the week summary menu
       const weekMenuRecipeBtn = page.locator('.week-menu-recipe-btn').first();
@@ -564,7 +563,7 @@ test.describe('Planificateur de Repas', () => {
       // Setup menu
       await page.getByRole('button', { name: 'Effacer' }).click();
       await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
-      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      await page.getByRole('button', { name: '📅 Planifier' }).click();
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
       await page.getByRole('button', { name: 'Remplissage auto' }).click();
 
@@ -609,7 +608,7 @@ test.describe('Planificateur de Repas', () => {
       await expect(page.getByRole('button', { name: /recette sélectionnée/ })).toContainText('1');
 
       // Step 2: Create a menu with this recipe
-      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      await page.getByRole('button', { name: '📅 Planifier' }).click();
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
 
       // Manually assign the recipe to Monday using the value (recipe title)
@@ -626,13 +625,13 @@ test.describe('Planificateur de Repas', () => {
       }
 
       // Step 3: Go to Épicerie and verify "Pâté chinois" ingredients are shown
-      await page.getByRole('button', { name: '○ Épicerie' }).click();
+      await page.getByRole('button', { name: '🛒 Épicerie' }).click();
 
       // Pâté chinois has specific ingredients like "maïs" (corn) - look in item-text spans
       await expect(page.locator('.item-text:has-text("maïs")')).toBeVisible();
 
       // Step 4: Go back to Sélection and select DIFFERENT recipes (clear Pâté chinois, select Asian recipes)
-      await page.getByRole('button', { name: '◈ Sélection' }).click();
+      await page.getByRole('button', { name: '📚 Sélection' }).click();
       await page.getByRole('button', { name: 'Effacer' }).click();
 
       // Select Asian recipes (which don't have "maïs")
@@ -640,7 +639,7 @@ test.describe('Planificateur de Repas', () => {
       await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
 
       // Step 5: Go back to Épicerie - should STILL show Pâté chinois ingredients (from menu)
-      await page.getByRole('button', { name: '○ Épicerie' }).click();
+      await page.getByRole('button', { name: '🛒 Épicerie' }).click();
 
       // BUG DETECTION: If this fails, it means Épicerie is incorrectly using selection instead of menu
       // Maïs should still be visible because the MENU still has Pâté chinois
@@ -660,7 +659,7 @@ test.describe('Planificateur de Repas', () => {
       await page.getByRole('button', { name: '✕' }).click();
 
       // Step 2: Create a menu with this recipe
-      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      await page.getByRole('button', { name: '📅 Planifier' }).click();
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
 
       // Manually assign the recipe to Monday
@@ -681,7 +680,7 @@ test.describe('Planificateur de Repas', () => {
       await expect(page.locator('.cook-recipe-name-btn:has-text("Soupe aux pois")')).toBeVisible();
 
       // Step 4: Go back to Sélection and select DIFFERENT recipes
-      await page.getByRole('button', { name: '◈ Sélection' }).click();
+      await page.getByRole('button', { name: '📚 Sélection' }).click();
       await page.getByRole('button', { name: 'Effacer' }).click();
       await page.getByRole('button', { name: 'Asie' }).click();
       await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
@@ -705,7 +704,7 @@ test.describe('Planificateur de Repas', () => {
       await page.getByRole('button', { name: '✕' }).click();
 
       // Step 2: Create a menu with default portions
-      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      await page.getByRole('button', { name: '📅 Planifier' }).click();
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
 
       const mondaySelect = page.getByRole('combobox', { name: 'Sélectionner le souper pour Lundi' });
@@ -720,19 +719,19 @@ test.describe('Planificateur de Repas', () => {
       }
 
       // Step 3: Go to Épicerie and note an ingredient quantity
-      await page.getByRole('button', { name: '○ Épicerie' }).click();
+      await page.getByRole('button', { name: '🛒 Épicerie' }).click();
 
       // Find an ingredient item with a quantity in its text (look in grocery list items)
       const ingredientItem = page.locator('.item-text').first();
       const quantityBefore = await ingredientItem.textContent();
 
       // Step 4: Go back to Planifier and DOUBLE the portions (4 -> 8)
-      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      await page.getByRole('button', { name: '📅 Planifier' }).click();
       const mondayPortions = page.getByRole('combobox', { name: 'Nombre de portions pour Lundi' });
       await mondayPortions.selectOption('8');
 
       // Step 5: Go back to Épicerie - quantities should have DOUBLED
-      await page.getByRole('button', { name: '○ Épicerie' }).click();
+      await page.getByRole('button', { name: '🛒 Épicerie' }).click();
 
       const quantityAfter = await ingredientItem.textContent();
 
@@ -753,7 +752,7 @@ test.describe('Planificateur de Repas', () => {
       await expect(page.getByRole('button', { name: /recettes sélectionnées/ })).toContainText('7');
 
       // Go to Épicerie without creating a menu
-      await page.getByRole('button', { name: '○ Épicerie' }).click();
+      await page.getByRole('button', { name: '🛒 Épicerie' }).click();
 
       // BUG DETECTION: Should show a message that no menu is planned, not ingredients from selection
       // Either show "Aucun menu planifié" or show 0 ingredients
