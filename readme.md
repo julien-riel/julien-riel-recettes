@@ -76,17 +76,27 @@ Un calendrier visuel pour organiser vos 7 soupers :
 
 ### 3. Taches & Epicerie
 
-Deux listes essentielles pour votre organisation :
+Deux listes essentielles pour votre organisation. **Important :** Les taches et la liste d'epicerie sont generees a partir du **menu planifie** (pas de la selection de recettes).
 
 **Liste des taches (preparation week-end)**
-- Ce qu'il faut preparer a l'avance pour chaque recette
+- Ce qu'il faut preparer a l'avance pour chaque recette du menu
 - Temps estime de preparation
 - Informations de conservation
 
 **Liste d'epicerie**
-- Tous les ingredients regroupes par categorie
-- Cases a cocher pour faciliter les courses
+- Tous les ingredients du menu regroupes par categorie
+- Quantites ajustees selon les portions definies pour chaque jour
+- Cases a cocher pour faciliter les courses ("a la maison" ou "achete")
 - Imprimable en format pratique
+
+### 4. Cuisiner
+
+L'onglet pour preparer vos recettes. **Important :** Cet onglet affiche les recettes du **menu planifie** (pas de la selection).
+
+- Liste des recettes a cuisiner cette semaine
+- Portions ajustees selon la planification
+- Selection des recettes a imprimer
+- Impression des fiches recettes avec ingredients ajustes
 
 ## Detail d'une recette
 

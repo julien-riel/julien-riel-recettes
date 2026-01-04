@@ -16,6 +16,7 @@ import { normalizeIngredient } from '../data/categories'
  * @param {Function} props.onToggleShoppingMode - Toggle shopping mode callback
  * @param {Set} props.purchasedItems - Set of purchased item names
  * @param {Function} props.onTogglePurchased - Toggle purchased item callback
+ * @param {Function} props.onShowDetail - Show recipe detail callback
  */
 function TasksPanel({
   selectedRecipes,
@@ -29,7 +30,8 @@ function TasksPanel({
   shoppingMode = false,
   onToggleShoppingMode,
   purchasedItems = new Set(),
-  onTogglePurchased
+  onTogglePurchased,
+  onShowDetail
 }) {
   const [copyFeedback, setCopyFeedback] = useState(false)
 
@@ -96,8 +98,8 @@ function TasksPanel({
       {selectedRecipes.length === 0 ? (
         <div className="empty-state">
           <div className="empty-icon">📋</div>
-          <h3>Aucune recette sélectionnée</h3>
-          <p>Retournez à l'onglet "Sélection" pour choisir vos recettes de la semaine.</p>
+          <h3>Aucun menu planifié</h3>
+          <p>Retournez à l'onglet "Planifier" pour créer votre menu de la semaine.</p>
         </div>
       ) : (
         <>
@@ -126,7 +128,13 @@ function TasksPanel({
             <li key={recette.num}>
               <span className="task-check"></span>
               <div className="task-content">
-                <div className="recipe-name">#{recette.num} {recette.nom}</div>
+                <button
+                  className="recipe-name-btn"
+                  onClick={() => onShowDetail && onShowDetail(recette)}
+                  aria-label={`Voir la recette ${recette.nom}`}
+                >
+                  #{recette.num} {recette.nom}
+                </button>
                 <div className="task-description">{recette.prep_weekend}</div>
                 <div className="task-meta">
                   <span>⏱ {recette.temps_prep_weekend}</span>
@@ -171,9 +179,17 @@ function TasksPanel({
               return (
                 <div key={jour} className="week-menu-item">
                   <span className="week-menu-day">{jour.slice(0, 3)}</span>
-                  <span className="week-menu-recipe">
-                    {recette ? `${recette.nom} (${portions} p.)` : '—'}
-                  </span>
+                  {recette ? (
+                    <button
+                      className="week-menu-recipe-btn"
+                      onClick={() => onShowDetail && onShowDetail(recette)}
+                      aria-label={`Voir la recette ${recette.nom}`}
+                    >
+                      {recette.nom} ({portions} p.)
+                    </button>
+                  ) : (
+                    <span className="week-menu-recipe">—</span>
+                  )}
                 </div>
               )
             })}

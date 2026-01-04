@@ -479,4 +479,286 @@ test.describe('Planificateur de Repas', () => {
       await expect(proteinSelect).toHaveValue(/[Pp]oulet/);
     });
   });
+
+  test.describe('Test 8: Popups de consultation des recettes', () => {
+
+    test('devrait ouvrir le popup de recette depuis la section Planifier', async ({ page }) => {
+      await page.goto('/');
+      page.on('dialog', dialog => dialog.accept());
+
+      // Setup menu
+      await page.getByRole('button', { name: 'Effacer' }).click();
+      await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
+      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      await page.getByRole('button', { name: 'Nouveau menu' }).click();
+      await page.getByRole('button', { name: 'Remplissage auto' }).click();
+
+      // Click on the recipe preview button for Monday (first day with a recipe)
+      const recipePreviewBtn = page.locator('button[aria-label^="Voir la recette"]').first();
+      await recipePreviewBtn.click();
+
+      // Verify the recipe detail modal is visible
+      await expect(page.locator('.recipe-detail')).toBeVisible();
+
+      // Close the modal
+      await page.getByRole('button', { name: 'Fermer' }).click();
+      await expect(page.locator('.recipe-detail')).not.toBeVisible();
+    });
+
+    test('devrait ouvrir le popup de recette depuis la section Épicerie (préparation weekend)', async ({ page }) => {
+      await page.goto('/');
+      page.on('dialog', dialog => dialog.accept());
+
+      // Setup menu
+      await page.getByRole('button', { name: 'Effacer' }).click();
+      await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
+      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      await page.getByRole('button', { name: 'Nouveau menu' }).click();
+      await page.getByRole('button', { name: 'Remplissage auto' }).click();
+
+      // Go to Épicerie tab
+      await page.getByRole('button', { name: '○ Épicerie' }).click();
+
+      // Click on a recipe name in the weekend prep section
+      const recipeNameBtn = page.locator('.task-list .recipe-name-btn').first();
+      await recipeNameBtn.click();
+
+      // Verify the recipe detail modal is visible
+      await expect(page.locator('.recipe-detail')).toBeVisible();
+
+      // Close the modal with Escape key
+      await page.keyboard.press('Escape');
+      await expect(page.locator('.recipe-detail')).not.toBeVisible();
+    });
+
+    test('devrait ouvrir le popup de recette depuis le mini-menu dans Épicerie', async ({ page }) => {
+      await page.goto('/');
+      page.on('dialog', dialog => dialog.accept());
+
+      // Setup menu
+      await page.getByRole('button', { name: 'Effacer' }).click();
+      await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
+      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      await page.getByRole('button', { name: 'Nouveau menu' }).click();
+      await page.getByRole('button', { name: 'Remplissage auto' }).click();
+
+      // Go to Épicerie tab
+      await page.getByRole('button', { name: '○ Épicerie' }).click();
+
+      // Click on a recipe in the week summary menu
+      const weekMenuRecipeBtn = page.locator('.week-menu-recipe-btn').first();
+      await weekMenuRecipeBtn.click();
+
+      // Verify the recipe detail modal is visible
+      await expect(page.locator('.recipe-detail')).toBeVisible();
+
+      // Close the modal by clicking the backdrop area (the recipe-detail element itself)
+      await page.locator('.recipe-detail').click({ position: { x: 10, y: 10 } });
+      await expect(page.locator('.recipe-detail')).not.toBeVisible();
+    });
+
+    test('devrait ouvrir le popup de recette depuis la section Cuisiner', async ({ page }) => {
+      await page.goto('/');
+      page.on('dialog', dialog => dialog.accept());
+
+      // Setup menu
+      await page.getByRole('button', { name: 'Effacer' }).click();
+      await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
+      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      await page.getByRole('button', { name: 'Nouveau menu' }).click();
+      await page.getByRole('button', { name: 'Remplissage auto' }).click();
+
+      // Go to Cuisiner tab
+      await page.getByRole('button', { name: /Cuisiner/ }).click();
+
+      // Click on a recipe name button
+      const cookRecipeNameBtn = page.locator('.cook-recipe-name-btn').first();
+      await cookRecipeNameBtn.click();
+
+      // Verify the recipe detail modal is visible
+      await expect(page.locator('.recipe-detail')).toBeVisible();
+
+      // The modal should show the recipe name
+      const recipeTitle = await cookRecipeNameBtn.textContent();
+      await expect(page.locator('.recipe-detail h2')).toContainText(recipeTitle || '');
+
+      // Close the modal
+      await page.getByRole('button', { name: 'Fermer' }).click();
+      await expect(page.locator('.recipe-detail')).not.toBeVisible();
+    });
+  });
+
+  test.describe('Test 9: Épicerie et Cuisiner doivent utiliser le menu planifié (pas la sélection)', () => {
+
+    test('l\'épicerie devrait afficher les ingrédients du menu planifié, pas de la sélection', async ({ page }) => {
+      await page.goto('/');
+      page.on('dialog', dialog => dialog.accept());
+
+      // Step 1: Clear and select only "Pâté chinois" by searching
+      await page.getByRole('button', { name: 'Effacer' }).click();
+      await page.getByRole('textbox', { name: 'Rechercher une recette...' }).fill('Pâté chinois');
+
+      // Select the found recipe
+      const pateCheckbox = page.getByRole('checkbox', { name: /Pâté chinois/ });
+      await pateCheckbox.click();
+
+      // Clear search to see all recipes
+      await page.getByRole('button', { name: '✕' }).click();
+
+      // Verify 1 recipe selected
+      await expect(page.getByRole('button', { name: /recette sélectionnée/ })).toContainText('1');
+
+      // Step 2: Create a menu with this recipe
+      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      await page.getByRole('button', { name: 'Nouveau menu' }).click();
+
+      // Manually assign the recipe to Monday using the value (recipe title)
+      const mondaySelect = page.getByRole('combobox', { name: 'Sélectionner le souper pour Lundi' });
+      // Get the option that contains "Pâté chinois" and select it
+      const options = await mondaySelect.locator('option').all();
+      for (const option of options) {
+        const text = await option.textContent();
+        if (text && text.includes('Pâté chinois')) {
+          const value = await option.getAttribute('value');
+          if (value) await mondaySelect.selectOption(value);
+          break;
+        }
+      }
+
+      // Step 3: Go to Épicerie and verify "Pâté chinois" ingredients are shown
+      await page.getByRole('button', { name: '○ Épicerie' }).click();
+
+      // Pâté chinois has specific ingredients like "maïs" (corn) - look in item-text spans
+      await expect(page.locator('.item-text:has-text("maïs")')).toBeVisible();
+
+      // Step 4: Go back to Sélection and select DIFFERENT recipes (clear Pâté chinois, select Asian recipes)
+      await page.getByRole('button', { name: '◈ Sélection' }).click();
+      await page.getByRole('button', { name: 'Effacer' }).click();
+
+      // Select Asian recipes (which don't have "maïs")
+      await page.getByRole('button', { name: 'Asie' }).click();
+      await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
+
+      // Step 5: Go back to Épicerie - should STILL show Pâté chinois ingredients (from menu)
+      await page.getByRole('button', { name: '○ Épicerie' }).click();
+
+      // BUG DETECTION: If this fails, it means Épicerie is incorrectly using selection instead of menu
+      // Maïs should still be visible because the MENU still has Pâté chinois
+      await expect(page.locator('.item-text:has-text("maïs")')).toBeVisible({ timeout: 5000 });
+    });
+
+    test('cuisiner devrait afficher les recettes du menu planifié, pas de la sélection', async ({ page }) => {
+      await page.goto('/');
+      page.on('dialog', dialog => dialog.accept());
+
+      // Step 1: Select only "Soupe aux pois" by searching
+      await page.getByRole('button', { name: 'Effacer' }).click();
+      await page.getByRole('textbox', { name: 'Rechercher une recette...' }).fill('Soupe aux pois');
+
+      const soupeCheckbox = page.getByRole('checkbox', { name: /Soupe aux pois/ });
+      await soupeCheckbox.click();
+      await page.getByRole('button', { name: '✕' }).click();
+
+      // Step 2: Create a menu with this recipe
+      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      await page.getByRole('button', { name: 'Nouveau menu' }).click();
+
+      // Manually assign the recipe to Monday
+      const mondaySelect = page.getByRole('combobox', { name: 'Sélectionner le souper pour Lundi' });
+      const options = await mondaySelect.locator('option').all();
+      for (const option of options) {
+        const text = await option.textContent();
+        if (text && text.includes('Soupe aux pois')) {
+          const value = await option.getAttribute('value');
+          if (value) await mondaySelect.selectOption(value);
+          break;
+        }
+      }
+
+      // Step 3: Go to Cuisiner and verify "Soupe aux pois" is shown in the recipe list
+      await page.getByRole('button', { name: /Cuisiner/ }).click();
+      // Look for the recipe name in the cook panel (now a button)
+      await expect(page.locator('.cook-recipe-name-btn:has-text("Soupe aux pois")')).toBeVisible();
+
+      // Step 4: Go back to Sélection and select DIFFERENT recipes
+      await page.getByRole('button', { name: '◈ Sélection' }).click();
+      await page.getByRole('button', { name: 'Effacer' }).click();
+      await page.getByRole('button', { name: 'Asie' }).click();
+      await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
+
+      // Step 5: Go back to Cuisiner - should STILL show "Soupe aux pois" (from menu)
+      await page.getByRole('button', { name: /Cuisiner/ }).click();
+
+      // BUG DETECTION: If this fails, Cuisiner is incorrectly using selection instead of menu
+      await expect(page.locator('.cook-recipe-name-btn:has-text("Soupe aux pois")')).toBeVisible({ timeout: 5000 });
+    });
+
+    test('les portions du menu devraient affecter les quantités dans l\'épicerie', async ({ page }) => {
+      await page.goto('/');
+      page.on('dialog', dialog => dialog.accept());
+
+      // Step 1: Select a recipe
+      await page.getByRole('button', { name: 'Effacer' }).click();
+      await page.getByRole('textbox', { name: 'Rechercher une recette...' }).fill('Pâté chinois');
+      const pateCheckbox = page.getByRole('checkbox', { name: /Pâté chinois/ });
+      await pateCheckbox.click();
+      await page.getByRole('button', { name: '✕' }).click();
+
+      // Step 2: Create a menu with default portions
+      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      await page.getByRole('button', { name: 'Nouveau menu' }).click();
+
+      const mondaySelect = page.getByRole('combobox', { name: 'Sélectionner le souper pour Lundi' });
+      const options = await mondaySelect.locator('option').all();
+      for (const option of options) {
+        const text = await option.textContent();
+        if (text && text.includes('Pâté chinois')) {
+          const value = await option.getAttribute('value');
+          if (value) await mondaySelect.selectOption(value);
+          break;
+        }
+      }
+
+      // Step 3: Go to Épicerie and note an ingredient quantity
+      await page.getByRole('button', { name: '○ Épicerie' }).click();
+
+      // Find an ingredient item with a quantity in its text (look in grocery list items)
+      const ingredientItem = page.locator('.item-text').first();
+      const quantityBefore = await ingredientItem.textContent();
+
+      // Step 4: Go back to Planifier and DOUBLE the portions (4 -> 8)
+      await page.getByRole('button', { name: '◇ Planifier' }).click();
+      const mondayPortions = page.getByRole('combobox', { name: 'Nombre de portions pour Lundi' });
+      await mondayPortions.selectOption('8');
+
+      // Step 5: Go back to Épicerie - quantities should have DOUBLED
+      await page.getByRole('button', { name: '○ Épicerie' }).click();
+
+      const quantityAfter = await ingredientItem.textContent();
+
+      // BUG DETECTION: If quantities are the same, portions are not being considered
+      // The quantities should be different (doubled) after changing portions
+      expect(quantityAfter).not.toBe(quantityBefore);
+    });
+
+    test('l\'épicerie ne devrait rien afficher si aucun menu n\'est planifié', async ({ page }) => {
+      await page.goto('/');
+
+      // Clear everything
+      await page.evaluate(() => localStorage.clear());
+      await page.reload();
+
+      // Select some recipes but DON'T create a menu
+      await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
+      await expect(page.getByRole('button', { name: /recettes sélectionnées/ })).toContainText('7');
+
+      // Go to Épicerie without creating a menu
+      await page.getByRole('button', { name: '○ Épicerie' }).click();
+
+      // BUG DETECTION: Should show a message that no menu is planned, not ingredients from selection
+      // Either show "Aucun menu planifié" or show 0 ingredients
+      const noMenuMessage = page.locator('text=/aucun menu|Aucun menu|Planifiez|planifiez|0 ingrédient/i');
+      await expect(noMenuMessage).toBeVisible({ timeout: 5000 });
+    });
+  });
 });

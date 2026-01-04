@@ -319,12 +319,15 @@ function App() {
     }
   }, [])
 
-  // Auto-select all recipes for printing when entering cuisiner tab
+  // Auto-select all recipes for printing when entering cuisiner tab (uses menu recipes)
   useEffect(() => {
     if (activeTab === 'cuisiner') {
-      setRecipesToPrint(new Set(selectedRecipes))
+      const menuRecipeNums = new Set(
+        Object.values(weekPlan).filter(num => num !== null)
+      )
+      setRecipesToPrint(menuRecipeNums)
     }
-  }, [activeTab, selectedRecipes])
+  }, [activeTab, weekPlan])
 
   const toggleRecipe = useCallback((num, event) => {
     if (event) event.stopPropagation()
@@ -560,8 +563,16 @@ function App() {
     return RECETTES.filter(r => selectedRecipes.has(r.num))
   }, [selectedRecipes])
 
+  // Obtenir les recettes du menu planifié (pas de la sélection)
+  const getMenuRecipesList = useCallback(() => {
+    const menuRecipeNums = new Set(
+      Object.values(weekPlan).filter(num => num !== null)
+    )
+    return RECETTES.filter(r => menuRecipeNums.has(r.num))
+  }, [weekPlan])
+
   const getCategorizedIngredients = useCallback(() => {
-    const selected = getSelectedRecipesList()
+    const menuRecipes = getMenuRecipesList()
     const categorized = {}
     const ingredientsByBase = {}
 
@@ -577,7 +588,7 @@ function App() {
     }
 
     // Première passe : regrouper par ingrédient de base avec mise à l'échelle
-    selected.forEach(recette => {
+    menuRecipes.forEach(recette => {
       const multiplier = getRecipeMultiplier(recette.num)
       recette.ingredients.forEach(ing => {
         const baseIng = getBaseIngredient(ing)
@@ -617,7 +628,7 @@ function App() {
     }
 
     return categorized
-  }, [getSelectedRecipesList, weekPlan, weekPortions])
+  }, [getMenuRecipesList, weekPlan, weekPortions])
 
   const handlePrint = useCallback((area) => {
     // Find the print area element
@@ -999,6 +1010,7 @@ function App() {
             recettes={RECETTES}
             onUpdateMeal={updateMeal}
             onUpdatePortions={updateWeekPortions}
+            onShowDetail={setDetailRecipe}
           />
 
           <div id="menu-print-area" className="menu-summary">
@@ -1042,7 +1054,7 @@ function App() {
         {/* Panel Taches */}
         <div className={`panel ${activeTab === 'taches' ? 'active' : ''}`}>
           <TasksPanel
-            selectedRecipes={getSelectedRecipesList()}
+            selectedRecipes={getMenuRecipesList()}
             categorizedIngredients={getCategorizedIngredients()}
             weekPlan={weekPlan}
             weekPortions={weekPortions}
@@ -1054,6 +1066,7 @@ function App() {
             onToggleShoppingMode={() => setShoppingMode(!shoppingMode)}
             purchasedItems={purchasedItems}
             onTogglePurchased={togglePurchased}
+            onShowDetail={setDetailRecipe}
           />
         </div>
 
@@ -1067,8 +1080,8 @@ function App() {
             <div className="panel-actions">
               <button
                 className="btn btn-secondary"
-                onClick={() => setRecipesToPrint(new Set(selectedRecipes))}
-                disabled={selectedRecipes.size === 0}
+                onClick={() => setRecipesToPrint(new Set(getMenuRecipesList().map(r => r.num)))}
+                disabled={getMenuRecipesList().length === 0}
               >
                 Tout cocher
               </button>
@@ -1082,16 +1095,16 @@ function App() {
             </div>
           </div>
 
-          {selectedRecipes.size === 0 ? (
+          {getMenuRecipesList().length === 0 ? (
             <div className="empty-state">
               <div className="empty-icon">👨‍🍳</div>
-              <h3>Aucune recette sélectionnée</h3>
-              <p>Retournez à l'onglet "Sélection" pour choisir vos recettes.</p>
+              <h3>Aucune recette dans le menu</h3>
+              <p>Retournez à l'onglet "Planifier" pour ajouter des recettes au menu.</p>
             </div>
           ) : (
             <>
               <div className="cook-recipes-grid">
-                {getSelectedRecipesList().map(recette => {
+                {getMenuRecipesList().map(recette => {
                   const isChecked = recipesToPrint.has(recette.num)
                   // Chercher les portions dans le plan de la semaine
                   let portions = 4
@@ -1107,28 +1120,33 @@ function App() {
                     <div
                       key={recette.num}
                       className={`cook-recipe-card ${isChecked ? 'checked' : ''}`}
-                      onClick={() => {
-                        setRecipesToPrint(prev => {
-                          const newSet = new Set(prev)
-                          if (newSet.has(recette.num)) {
-                            newSet.delete(recette.num)
-                          } else {
-                            newSet.add(recette.num)
-                          }
-                          return newSet
-                        })
-                      }}
                     >
                       <input
                         type="checkbox"
                         className="cook-checkbox"
                         checked={isChecked}
-                        onChange={() => {}}
+                        onChange={() => {
+                          setRecipesToPrint(prev => {
+                            const newSet = new Set(prev)
+                            if (newSet.has(recette.num)) {
+                              newSet.delete(recette.num)
+                            } else {
+                              newSet.add(recette.num)
+                            }
+                            return newSet
+                          })
+                        }}
                         aria-label={`Imprimer ${recette.nom}`}
                       />
                       <div className="cook-recipe-info">
                         <span className="cook-recipe-num">#{recette.num}</span>
-                        <span className="cook-recipe-name">{recette.nom}</span>
+                        <button
+                          className="cook-recipe-name-btn"
+                          onClick={() => setDetailRecipe(recette)}
+                          aria-label={`Voir la recette ${recette.nom}`}
+                        >
+                          {recette.nom}
+                        </button>
                         <span className="cook-recipe-origin">{recette.origine}</span>
                         {jourAssigne && (
                           <span className="cook-recipe-portions">{jourAssigne} • {portions} portions</span>

@@ -7,8 +7,9 @@
  * @param {Array} props.recettes - Array of all recipes
  * @param {Function} props.onUpdateMeal - Update meal callback
  * @param {Function} props.onUpdatePortions - Update portions callback
+ * @param {Function} props.onShowDetail - Show recipe detail callback
  */
-function WeekPlanner({ weekPlan, weekPortions = {}, selectedRecipes, recettes, onUpdateMeal, onUpdatePortions }) {
+function WeekPlanner({ weekPlan, weekPortions = {}, selectedRecipes, recettes, onUpdateMeal, onUpdatePortions, onShowDetail }) {
   const jours = Object.keys(weekPlan)
   const selected = recettes.filter(r => selectedRecipes.has(r.num))
   const other = recettes.filter(r => !selectedRecipes.has(r.num))
@@ -75,8 +76,14 @@ function WeekPlanner({ weekPlan, weekPortions = {}, selectedRecipes, recettes, o
                 </select>
                 {selectedRecipe && (
                   <div className="selected-preview">
-                    <span className="preview-name">{selectedRecipe.nom}</span>
-                    <span className="preview-origin">{selectedRecipe.origine}</span>
+                    <button
+                      className="preview-info"
+                      onClick={() => onShowDetail && onShowDetail(selectedRecipe)}
+                      aria-label={`Voir la recette ${selectedRecipe.nom}`}
+                    >
+                      <span className="preview-name">{selectedRecipe.nom}</span>
+                      <span className="preview-origin">{selectedRecipe.origine}</span>
+                    </button>
                     <div className="portions-selector">
                       <label>Portions:</label>
                       <select
