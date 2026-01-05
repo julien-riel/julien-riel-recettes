@@ -821,20 +821,19 @@ function App() {
 
   return (
     <>
-      <header>
-        <div className="header-content">
-          <div className="header-text">
-            <h1>Carnet de Recettes</h1>
-            <p>Cuisines du monde sans produits laitiers — équilibre parfait entre légumes, protéines et féculents (50%, 25%, 25%)</p>
-          </div>
-          <button
-            className="dark-mode-toggle"
-            onClick={() => setDarkMode(!darkMode)}
-            aria-label={darkMode ? 'Activer le mode clair' : 'Activer le mode sombre'}
-          >
-            {darkMode ? '☀️' : '🌙'}
-          </button>
-        </div>
+      <header className="header-banner">
+        <img
+          src="/assets/header.png"
+          alt="Bienvenue dans votre Carnet de Recettes - Planifiez, cuisinez, savourez sainement."
+          className="header-banner-image"
+        />
+        <button
+          className="dark-mode-toggle"
+          onClick={() => setDarkMode(!darkMode)}
+          aria-label={darkMode ? 'Activer le mode clair' : 'Activer le mode sombre'}
+        >
+          {darkMode ? '☀️' : '🌙'}
+        </button>
       </header>
 
       <nav className="tabs">

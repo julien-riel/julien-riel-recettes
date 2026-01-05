@@ -113,15 +113,95 @@ body::before {
    ============================================ */
 
 header {
-  background: linear-gradient(135deg, var(--olive-dark) 0%, var(--olive) 100%);
-  color: white;
-  padding: var(--space-xl) var(--space-lg);
-  text-align: center;
   position: relative;
   overflow: hidden;
 }
 
-header::before {
+/* Header avec bannière image */
+header.header-banner {
+  padding: 0;
+  background: var(--creme);
+}
+
+.header-banner-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-height: 280px;
+  object-fit: cover;
+  object-position: center;
+}
+
+header.header-banner .dark-mode-toggle {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(4px);
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-md);
+  border: none;
+  cursor: pointer;
+  font-size: 1.25rem;
+  transition: all var(--duration-fast);
+}
+
+header.header-banner .dark-mode-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Style alternatif pour mode sombre */
+[data-theme="dark"] header.header-banner {
+  background: var(--fond);
+}
+
+[data-theme="dark"] .header-banner-image {
+  filter: brightness(0.85);
+}
+
+[data-theme="dark"] header.header-banner .dark-mode-toggle {
+  background: rgba(45, 45, 45, 0.9);
+}
+
+/* Responsive pour mobile */
+@media (max-width: 768px) {
+  .header-banner-image {
+    max-height: 160px;
+    object-position: left top;
+  }
+
+  header.header-banner .dark-mode-toggle {
+    top: var(--space-sm);
+    right: var(--space-sm);
+    width: 38px;
+    height: 38px;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-banner-image {
+    max-height: 130px;
+    object-position: 15% top;
+  }
+}
+
+/* Legacy header styles (kept for fallback) */
+header:not(.header-banner) {
+  background: linear-gradient(135deg, var(--olive-dark) 0%, var(--olive) 100%);
+  color: white;
+  padding: var(--space-xl) var(--space-lg);
+  text-align: center;
+}
+
+header:not(.header-banner)::before {
   content: '';
   position: absolute;
   top: 0;
@@ -133,7 +213,7 @@ header::before {
   pointer-events: none;
 }
 
-header::after {
+header:not(.header-banner)::after {
   content: '';
   position: absolute;
   bottom: 0;
