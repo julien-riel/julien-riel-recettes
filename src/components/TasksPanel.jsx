@@ -163,42 +163,6 @@ function TasksPanel({
         </>
       )}
 
-      {/* Zone tâches */}
-      {selectedRecipes.length > 0 && (
-      <div id="tasks-print-area" className="print-area visible">
-        <h2>Préparation du week-end</h2>
-        <p className="print-subtitle">
-          {selectedRecipes.length} recette{selectedRecipes.length > 1 ? 's' : ''} à préparer
-        </p>
-        <ul className="task-list">
-          {selectedRecipes.map(recette => (
-            <li key={recette.num}>
-              <span className="task-check"></span>
-              <div className="task-content">
-                <button
-                  className="recipe-name-btn"
-                  onClick={() => onShowDetail && onShowDetail(recette)}
-                  aria-label={`Voir la recette ${recette.nom}`}
-                >
-                  #{recette.num} {recette.nom}
-                </button>
-                <div className="task-description">{recette.prep_weekend}</div>
-                <div className="task-meta">
-                  <span>⏱ {recette.temps_prep_weekend}</span>
-                  <span>📦 {recette.conservation}</span>
-                </div>
-              </div>
-            </li>
-          ))}
-        </ul>
-        <div className="print-buttons">
-          <button className="btn btn-primary" onClick={() => onPrint('tasks')}>
-            🖨️ Imprimer les tâches
-          </button>
-        </div>
-      </div>
-      )}
-
       {/* Zone épicerie */}
       {selectedRecipes.length > 0 && (
       <div id="grocery-print-area" className="print-area visible">

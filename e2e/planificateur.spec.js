@@ -74,11 +74,8 @@ test.describe('Planificateur de Repas', () => {
         await dialog.accept();
       });
 
-      // Click "Nouveau menu"
+      // Click "Nouveau menu" - this now auto-fills the week plan
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
-
-      // Click "Remplissage auto"
-      await page.getByRole('button', { name: 'Remplissage auto' }).click();
 
       // Verify all 7 days have recipes assigned (check comboboxes are not on default)
       const daySelects = page.locator('select[aria-label*="Sélectionner le souper"]');
@@ -102,7 +99,6 @@ test.describe('Planificateur de Repas', () => {
 
       page.on('dialog', dialog => dialog.accept());
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
-      await page.getByRole('button', { name: 'Remplissage auto' }).click();
 
       // Change Monday portions from 4 to 2
       const mondayPortions = page.getByRole('combobox', { name: 'Nombre de portions pour Lundi' });
@@ -122,7 +118,6 @@ test.describe('Planificateur de Repas', () => {
 
       page.on('dialog', dialog => dialog.accept());
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
-      await page.getByRole('button', { name: 'Remplissage auto' }).click();
 
       // Mock window.print to avoid blocking
       await page.evaluate(() => {
@@ -150,7 +145,6 @@ test.describe('Planificateur de Repas', () => {
 
       page.on('dialog', dialog => dialog.accept());
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
-      await page.getByRole('button', { name: 'Remplissage auto' }).click();
 
       // Go to Épicerie tab
       await page.getByRole('button', { name: '🛒 Épicerie' }).click();
@@ -170,7 +164,6 @@ test.describe('Planificateur de Repas', () => {
 
       page.on('dialog', dialog => dialog.accept());
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
-      await page.getByRole('button', { name: 'Remplissage auto' }).click();
 
       // Go to Épicerie tab
       await page.getByRole('button', { name: '🛒 Épicerie' }).click();
@@ -197,7 +190,6 @@ test.describe('Planificateur de Repas', () => {
 
       page.on('dialog', dialog => dialog.accept());
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
-      await page.getByRole('button', { name: 'Remplissage auto' }).click();
 
       // Go to Épicerie tab
       await page.getByRole('button', { name: '🛒 Épicerie' }).click();
@@ -246,7 +238,6 @@ test.describe('Planificateur de Repas', () => {
 
       page.on('dialog', dialog => dialog.accept());
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
-      await page.getByRole('button', { name: 'Remplissage auto' }).click();
 
       // Change Monday portions to 2
       const mondayPortions = page.getByRole('combobox', { name: 'Nombre de portions pour Lundi' });
@@ -275,7 +266,6 @@ test.describe('Planificateur de Repas', () => {
 
       page.on('dialog', dialog => dialog.accept());
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
-      await page.getByRole('button', { name: 'Remplissage auto' }).click();
 
       // Go to Épicerie
       await page.getByRole('button', { name: '🛒 Épicerie' }).click();
@@ -308,7 +298,6 @@ test.describe('Planificateur de Repas', () => {
 
       page.on('dialog', dialog => dialog.accept());
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
-      await page.getByRole('button', { name: 'Remplissage auto' }).click();
 
       // Get Monday's selected recipe
       const mondaySelect = page.getByRole('combobox', { name: 'Sélectionner le souper pour Lundi' });
@@ -446,7 +435,6 @@ test.describe('Planificateur de Repas', () => {
 
       // Create new menu
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
-      await page.getByRole('button', { name: 'Remplissage auto' }).click();
 
       // Go to Cuisiner tab
       await page.getByRole('button', { name: /Cuisiner/ }).click();
@@ -490,7 +478,6 @@ test.describe('Planificateur de Repas', () => {
       await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
       await page.getByRole('button', { name: '📅 Planifier' }).click();
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
-      await page.getByRole('button', { name: 'Remplissage auto' }).click();
 
       // Click on the recipe preview button for Monday (first day with a recipe)
       const recipePreviewBtn = page.locator('button[aria-label^="Voir la recette"]').first();
@@ -513,7 +500,6 @@ test.describe('Planificateur de Repas', () => {
       await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
       await page.getByRole('button', { name: '📅 Planifier' }).click();
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
-      await page.getByRole('button', { name: 'Remplissage auto' }).click();
 
       // Go to Épicerie tab
       await page.getByRole('button', { name: '🛒 Épicerie' }).click();
@@ -539,7 +525,6 @@ test.describe('Planificateur de Repas', () => {
       await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
       await page.getByRole('button', { name: '📅 Planifier' }).click();
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
-      await page.getByRole('button', { name: 'Remplissage auto' }).click();
 
       // Go to Épicerie tab
       await page.getByRole('button', { name: '🛒 Épicerie' }).click();
@@ -565,7 +550,6 @@ test.describe('Planificateur de Repas', () => {
       await page.getByRole('button', { name: '🎲 Semaine aléatoire' }).click();
       await page.getByRole('button', { name: '📅 Planifier' }).click();
       await page.getByRole('button', { name: 'Nouveau menu' }).click();
-      await page.getByRole('button', { name: 'Remplissage auto' }).click();
 
       // Go to Cuisiner tab
       await page.getByRole('button', { name: /Cuisiner/ }).click();

@@ -8,6 +8,7 @@ import WeekPlanner from './components/WeekPlanner'
 import TasksPanel from './components/TasksPanel'
 
 const STORAGE_KEY = 'recettes-app-state'
+const WELCOME_KEY = 'recettes-app-welcome-seen'
 
 /**
  * Gets the next Monday date (or today if it's Monday)
@@ -269,6 +270,9 @@ function App() {
   const [shoppingMode, setShoppingMode] = useState(false)
   const [purchasedItems, setPurchasedItems] = useState(() => new Set(savedState?.purchased || []))
   const [customItems, setCustomItems] = useState(savedState?.customItems || [])
+  const [showWelcome, setShowWelcome] = useState(() => {
+    return !localStorage.getItem(WELCOME_KEY)
+  })
 
   // Save to localStorage when relevant state changes
   useEffect(() => {
@@ -515,6 +519,11 @@ function App() {
   }, [])
 
   const [shareFeedback, setShareFeedback] = useState(false)
+
+  const closeWelcome = useCallback(() => {
+    setShowWelcome(false)
+    localStorage.setItem(WELCOME_KEY, 'true')
+  }, [])
 
   const shareMenu = useCallback(async () => {
     const hasRecipes = Object.values(weekPlan).some(v => v !== null)
@@ -1070,28 +1079,8 @@ function App() {
 
         {/* Panel Cuisiner */}
         <div className={`panel ${activeTab === 'cuisiner' ? 'active' : ''}`}>
-          <div className="panel-header-row">
-            <div>
-              <h2 className="panel-title">Cuisiner</h2>
-              <p className="panel-subtitle">Sélectionnez les recettes à imprimer pour cuisiner.</p>
-            </div>
-            <div className="panel-actions">
-              <button
-                className="btn btn-secondary"
-                onClick={() => setRecipesToPrint(new Set(getMenuRecipesList().map(r => r.num)))}
-                disabled={getMenuRecipesList().length === 0}
-              >
-                ✅ Tout cocher
-              </button>
-              <button
-                className="btn btn-gray"
-                onClick={() => setRecipesToPrint(new Set())}
-                disabled={recipesToPrint.size === 0}
-              >
-                ⬜ Tout décocher
-              </button>
-            </div>
-          </div>
+          <h2 className="panel-title">Cuisiner</h2>
+          <p className="panel-subtitle">Sélectionnez les recettes à imprimer pour cuisiner.</p>
 
           {getMenuRecipesList().length === 0 ? (
             <div className="empty-state">
@@ -1213,10 +1202,98 @@ function App() {
                   )
                 })}
               </div>
+
+              {/* Section Préparation du week-end */}
+              <div id="tasks-print-area" className="print-area visible">
+                <h2>Préparation du week-end</h2>
+                <p className="print-subtitle">
+                  {getMenuRecipesList().length} recette{getMenuRecipesList().length > 1 ? 's' : ''} à préparer
+                </p>
+                <ul className="task-list">
+                  {getMenuRecipesList().map(recette => (
+                    <li key={recette.num}>
+                      <span className="task-check"></span>
+                      <div className="task-content">
+                        <button
+                          className="recipe-name-btn"
+                          onClick={() => setDetailRecipe(recette)}
+                          aria-label={`Voir la recette ${recette.nom}`}
+                        >
+                          #{recette.num} {recette.nom}
+                        </button>
+                        <div className="task-description">{recette.prep_weekend}</div>
+                        <div className="task-meta">
+                          <span>⏱ {recette.temps_prep_weekend}</span>
+                          <span>📦 {recette.conservation}</span>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                <div className="print-buttons">
+                  <button className="btn btn-primary" onClick={() => handlePrint('tasks')}>
+                    🖨️ Imprimer les tâches
+                  </button>
+                </div>
+              </div>
             </>
           )}
         </div>
       </div>
+
+      {/* Modal d'accueil pour les nouveaux utilisateurs */}
+      {showWelcome && (
+        <div className="welcome-modal" onClick={closeWelcome}>
+          <div className="welcome-content" onClick={(e) => e.stopPropagation()}>
+            <h2>Bienvenue dans le Carnet de Recettes!</h2>
+            <p className="welcome-intro">
+              Ce site vous aide à planifier vos repas de la semaine et à préparer vos soupers à l'avance.
+            </p>
+
+            <div className="welcome-steps">
+              <div className="welcome-step">
+                <span className="welcome-step-icon">1</span>
+                <div>
+                  <strong>Sélectionnez vos recettes</strong>
+                  <p>Parcourez le catalogue et choisissez les recettes qui vous plaisent.</p>
+                </div>
+              </div>
+
+              <div className="welcome-step">
+                <span className="welcome-step-icon">2</span>
+                <div>
+                  <strong>Planifiez votre menu</strong>
+                  <p>Créez un nouveau menu et attribuez une recette à chaque jour de la semaine.</p>
+                </div>
+              </div>
+
+              <div className="welcome-step">
+                <span className="welcome-step-icon">3</span>
+                <div>
+                  <strong>Faites vos courses</strong>
+                  <p>Consultez votre liste d'épicerie générée automatiquement et cochez les items au fur et à mesure.</p>
+                </div>
+              </div>
+
+              <div className="welcome-step">
+                <span className="welcome-step-icon">4</span>
+                <div>
+                  <strong>Préparez le week-end</strong>
+                  <p>Suivez les tâches de préparation pour cuisiner à l'avance et vous simplifier les soirs de semaine.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="welcome-note">
+              <strong>Le secret de nos recettes:</strong> chaque plat est composé de <em>50% de légumes</em>, <em>25% de protéines</em> et <em>25% de féculents riches en fibres</em> — l'équilibre parfait pour des repas santé!
+            </div>
+
+            <button className="btn btn-primary welcome-btn" onClick={closeWelcome}>
+              C'est parti!
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Modal detail recette */}
       {detailRecipe && (
