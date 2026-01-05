@@ -17,6 +17,9 @@ import { normalizeIngredient } from '../data/categories'
  * @param {Set} props.purchasedItems - Set of purchased item names
  * @param {Function} props.onTogglePurchased - Toggle purchased item callback
  * @param {Function} props.onShowDetail - Show recipe detail callback
+ * @param {Array} props.customItems - Array of custom items {text, category}
+ * @param {Function} props.onAddCustomItem - Add custom item callback
+ * @param {Function} props.onRemoveCustomItem - Remove custom item callback
  */
 function TasksPanel({
   selectedRecipes,
@@ -31,9 +34,13 @@ function TasksPanel({
   onToggleShoppingMode,
   purchasedItems = new Set(),
   onTogglePurchased,
-  onShowDetail
+  onShowDetail,
+  customItems = [],
+  onAddCustomItem,
+  onRemoveCustomItem
 }) {
   const [copyFeedback, setCopyFeedback] = useState(false)
+  const [newItemText, setNewItemText] = useState('')
 
   const orderedCategories = [
     { key: 'Viandes & Poissons', icon: '🥩' },
@@ -49,12 +56,40 @@ function TasksPanel({
     { key: 'Autres', icon: '📦' }
   ]
 
+  // Merge categorizedIngredients with customItems
+  const mergedIngredients = { ...categorizedIngredients }
+  customItems.forEach((item, index) => {
+    if (!mergedIngredients[item.category]) {
+      mergedIngredients[item.category] = new Set()
+    }
+    // Store custom items with a special marker to identify them
+    mergedIngredients[item.category].add(`__custom__${index}__${item.text}`)
+  })
+
+  // Helper to extract display text from an item (handles custom items)
+  const getDisplayText = (item) => {
+    if (item.startsWith('__custom__')) {
+      return item.replace(/^__custom__\d+__/, '')
+    }
+    return item
+  }
+
+  // Helper to check if an item is custom
+  const isCustomItem = (item) => item.startsWith('__custom__')
+
+  // Helper to get custom item index
+  const getCustomItemIndex = (item) => {
+    const match = item.match(/^__custom__(\d+)__/)
+    return match ? parseInt(match[1]) : -1
+  }
+
   // Count items to buy (not owned and not purchased)
-  const itemsToBuy = Object.values(categorizedIngredients)
+  const itemsToBuy = Object.values(mergedIngredients)
     .reduce((acc, set) => {
       if (!set) return acc
       return acc + Array.from(set).filter(item => {
-        const normalized = normalizeIngredient(item)
+        const displayText = getDisplayText(item)
+        const normalized = normalizeIngredient(displayText)
         return !ownedIngredients.has(normalized) && !purchasedItems.has(normalized)
       }).length
     }, 0)
@@ -67,16 +102,17 @@ function TasksPanel({
     const lines = []
 
     orderedCategories.forEach(({ key }) => {
-      const items = categorizedIngredients[key]
+      const items = mergedIngredients[key]
       if (!items || items.size === 0) return
 
       Array.from(items)
         .filter(item => {
-          const normalized = normalizeIngredient(item)
+          const displayText = getDisplayText(item)
+          const normalized = normalizeIngredient(displayText)
           return !ownedIngredients.has(normalized) && !purchasedItems.has(normalized)
         })
-        .sort((a, b) => a.localeCompare(b))
-        .forEach(item => lines.push(item))
+        .sort((a, b) => getDisplayText(a).localeCompare(getDisplayText(b)))
+        .forEach(item => lines.push(getDisplayText(item)))
     })
 
     try {
@@ -85,6 +121,17 @@ function TasksPanel({
       setTimeout(() => setCopyFeedback(false), 2000)
     } catch (err) {
       console.error('Erreur lors de la copie:', err)
+    }
+  }
+
+  /**
+   * Handles adding a new custom item
+   */
+  const handleAddItem = (e) => {
+    e.preventDefault()
+    if (newItemText.trim()) {
+      onAddCustomItem(newItemText)
+      setNewItemText('')
     }
   }
 
@@ -196,9 +243,29 @@ function TasksPanel({
           </div>
         )}
 
+        {/* Ajouter un item personnalisé */}
+        <form className="add-item-form" onSubmit={handleAddItem}>
+          <input
+            type="text"
+            className="add-item-input"
+            placeholder="Ajouter un item..."
+            value={newItemText}
+            onChange={(e) => setNewItemText(e.target.value)}
+            aria-label="Ajouter un item à la liste d'épicerie"
+          />
+          <button
+            type="submit"
+            className="add-item-btn"
+            disabled={!newItemText.trim()}
+            aria-label="Ajouter"
+          >
+            <span className="add-item-icon">+</span>
+          </button>
+        </form>
+
         <div className="grocery-grid">
           {orderedCategories.map(({ key, icon }) => {
-            const items = categorizedIngredients[key]
+            const items = mergedIngredients[key]
             if (!items || items.size === 0) return null
             return (
               <div key={key} className="grocery-section">
@@ -209,8 +276,10 @@ function TasksPanel({
                 </h3>
                 <ul className="grocery-list">
                   {Array.from(items).sort((a, b) => {
-                    const aNorm = normalizeIngredient(a)
-                    const bNorm = normalizeIngredient(b)
+                    const aText = getDisplayText(a)
+                    const bText = getDisplayText(b)
+                    const aNorm = normalizeIngredient(aText)
+                    const bNorm = normalizeIngredient(bText)
                     // Sort: not checked first, then owned, then purchased
                     const aOwned = ownedIngredients.has(aNorm)
                     const bOwned = ownedIngredients.has(bNorm)
@@ -220,32 +289,45 @@ function TasksPanel({
                     const bChecked = bOwned || bPurchased
                     if (aChecked && !bChecked) return 1
                     if (!aChecked && bChecked) return -1
-                    return a.localeCompare(b)
+                    return aText.localeCompare(bText)
                   }).map((item, i) => {
-                    const normalized = normalizeIngredient(item)
+                    const displayText = getDisplayText(item)
+                    const isCustom = isCustomItem(item)
+                    const customIndex = getCustomItemIndex(item)
+                    const normalized = normalizeIngredient(displayText)
                     const isOwned = ownedIngredients.has(normalized)
                     const isPurchased = purchasedItems.has(normalized)
                     const isChecked = shoppingMode ? isPurchased : isOwned
                     const onToggle = shoppingMode ? onTogglePurchased : onToggleOwned
 
                     return (
-                      <li key={i} className={isOwned || isPurchased ? 'owned' : ''}>
+                      <li key={i} className={`${isOwned || isPurchased ? 'owned' : ''} ${isCustom ? 'custom-item' : ''}`}>
                         <input
                           type="checkbox"
                           className="owned-checkbox"
                           checked={isChecked}
-                          onChange={() => onToggle(item)}
+                          onChange={() => onToggle(displayText)}
                           aria-label={shoppingMode
-                            ? `Marquer ${item} comme acheté`
-                            : `Marquer ${item} comme déjà à la maison`}
+                            ? `Marquer ${displayText} comme acheté`
+                            : `Marquer ${displayText} comme déjà à la maison`}
                         />
                         <span className={`item-text ${isOwned || isPurchased ? 'strikethrough' : ''}`}>
-                          {item}
+                          {displayText}
                         </span>
-                        {isOwned && !shoppingMode && (
+                        {isCustom && (
+                          <button
+                            className="remove-custom-btn"
+                            onClick={() => onRemoveCustomItem(customIndex)}
+                            aria-label={`Supprimer ${displayText}`}
+                            title="Supprimer"
+                          >
+                            ×
+                          </button>
+                        )}
+                        {isOwned && !shoppingMode && !isCustom && (
                           <span className="owned-badge">à la maison</span>
                         )}
-                        {isPurchased && shoppingMode && (
+                        {isPurchased && shoppingMode && !isCustom && (
                           <span className="owned-badge purchased">acheté</span>
                         )}
                       </li>

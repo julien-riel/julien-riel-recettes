@@ -268,6 +268,7 @@ function App() {
   const [menuStartDate, setMenuStartDate] = useState(savedState?.menuStartDate || getNextMonday())
   const [shoppingMode, setShoppingMode] = useState(false)
   const [purchasedItems, setPurchasedItems] = useState(() => new Set(savedState?.purchased || []))
+  const [customItems, setCustomItems] = useState(savedState?.customItems || [])
 
   // Save to localStorage when relevant state changes
   useEffect(() => {
@@ -280,9 +281,10 @@ function App() {
       owned: [...ownedIngredients],
       portions: portionMultipliers,
       menuStartDate,
-      purchased: [...purchasedItems]
+      purchased: [...purchasedItems],
+      customItems
     })
-  }, [selectedRecipes, weekPlan, weekPortions, favoriteRecipes, darkMode, ownedIngredients, portionMultipliers, menuStartDate, purchasedItems])
+  }, [selectedRecipes, weekPlan, weekPortions, favoriteRecipes, darkMode, ownedIngredients, portionMultipliers, menuStartDate, purchasedItems, customItems])
 
   // Apply dark mode
   useEffect(() => {
@@ -307,9 +309,10 @@ function App() {
           // Select the recipes from the shared menu
           const recipeNums = Object.values(decoded.weekPlan).filter(v => v !== null)
           setSelectedRecipes(new Set(recipeNums))
-          // Reset owned/purchased for new menu
+          // Reset owned/purchased/custom items for new menu
           setOwnedIngredients(new Set())
           setPurchasedItems(new Set())
+          setCustomItems([])
           // Go to menu tab
           setActiveTab('menu')
         }
@@ -477,9 +480,10 @@ function App() {
       Samedi: 4,
       Dimanche: 4
     })
-    // Reset owned ingredients and purchased items
+    // Reset owned ingredients, purchased items, and custom items
     setOwnedIngredients(new Set())
     setPurchasedItems(new Set())
+    setCustomItems([])
     // Set new menu date to next Monday
     setMenuStartDate(getNextMonday())
     // Exit shopping mode
@@ -497,6 +501,17 @@ function App() {
       }
       return newSet
     })
+  }, [])
+
+  const addCustomItem = useCallback((text) => {
+    const trimmed = text.trim()
+    if (!trimmed) return
+    const category = categorizeIngredient(trimmed)
+    setCustomItems(prev => [...prev, { text: trimmed, category }])
+  }, [])
+
+  const removeCustomItem = useCallback((index) => {
+    setCustomItems(prev => prev.filter((_, i) => i !== index))
   }, [])
 
   const [shareFeedback, setShareFeedback] = useState(false)
@@ -1047,6 +1062,9 @@ function App() {
             purchasedItems={purchasedItems}
             onTogglePurchased={togglePurchased}
             onShowDetail={setDetailRecipe}
+            customItems={customItems}
+            onAddCustomItem={addCustomItem}
+            onRemoveCustomItem={removeCustomItem}
           />
         </div>
 
